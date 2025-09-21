@@ -10,6 +10,8 @@ const App: React.FC = () => {
       <Header />
       <main>
         <Home />
+{/*         <About />
+        <Contact /> */}
       </main>
       <Footer />
     </>

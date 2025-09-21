@@ -7,7 +7,7 @@ import App from './App.tsx'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 //  custom CSS 
-import './styles/custom.css'
+/* import './styles/custom.css' */
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
