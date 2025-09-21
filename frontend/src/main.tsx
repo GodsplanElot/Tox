@@ -7,7 +7,13 @@ import App from './App.tsx'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 //  custom CSS 
-/* import './styles/custom.css' */
+import './css/bootstrap.min.css' 
+import './css/default-skin.css' 
+import './css/main.css' 
+import './css/photoswipe.css' 
+import './css/plyr.css' 
+import './css/slimselect.css' 
+import './css/splide.min.css'
 import { BrowserRouter } from "react-router-dom";
 
 
