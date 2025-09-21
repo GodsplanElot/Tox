@@ -1,12 +1,13 @@
 // src/components/Header.tsx
 import React from "react";
+import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
   return (
     <header>
       <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
         <div className="container">
-          <a className="navbar-brand" href="/">MyMovieApp</a>
+          <Link className="navbar-brand" to="/">MyMovieApp</Link>
           <button
             className="navbar-toggler"
             type="button"
@@ -18,17 +19,17 @@ const Header: React.FC = () => {
           >
             <span className="navbar-toggler-icon"></span>
           </button>
-          
+
           <div className="collapse navbar-collapse" id="navbarNav">
             <ul className="navbar-nav ms-auto">
               <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="/">Home</a>
+                <Link className="nav-link" to="/">Home</Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/about">About</a>
+                <Link className="nav-link" to="/about">About</Link>
               </li>
               <li className="nav-item">
-                <a className="nav-link" href="/contact">Contact</a>
+                <Link className="nav-link" to="/contact">Contact</Link>
               </li>
             </ul>
           </div>
