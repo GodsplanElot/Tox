@@ -1,32 +1,35 @@
-// src/components/Header.tsx
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import logo from "../assets/img/logo.png";
 
 const Header: React.FC = () => {
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+
   return (
-    <header className="header">
+    <header className={`header ${mobileOpen ? "header--active" : ""}`}>
       <div className="container">
         <div className="row">
           <div className="col-12">
             <div className="header__content">
+
               {/* Logo */}
               <Link to="/" className="header__logo">
-                <img src="/img/logo.png" alt="Logo" />
+                <img src={logo} alt="Logo" />
               </Link>
 
               {/* Navbar */}
               <ul className="header__nav">
-                {/* Categories dropdown */}
+
+                {/* Categories */}
                 <li className="header__nav-item dropdown">
-                  <a
-                    className="header__nav-link"
-                    href="#"
-                    role="button"
+                  <button
+                    className="header__nav-link dropdown-toggle"
                     data-bs-toggle="dropdown"
-                    aria-expanded="false"
                   >
                     Categories <i className="ti ti-chevron-down"></i>
-                  </a>
+                  </button>
+
                   <ul className="dropdown-menu header__dropdown-menu">
                     <li><Link to="/catalog">Catalog style 1</Link></li>
                     <li><Link to="/catalog2">Catalog style 2</Link></li>
@@ -35,17 +38,15 @@ const Header: React.FC = () => {
                   </ul>
                 </li>
 
-                {/* About dropdown */}
+                {/* About */}
                 <li className="header__nav-item dropdown">
-                  <a
-                    className="header__nav-link"
-                    href="#"
-                    role="button"
+                  <button
+                    className="header__nav-link dropdown-toggle"
                     data-bs-toggle="dropdown"
-                    aria-expanded="false"
                   >
                     About☣ <i className="ti ti-chevron-down"></i>
-                  </a>
+                  </button>
+
                   <ul className="dropdown-menu header__dropdown-menu">
                     <li><Link to="/about">About Us</Link></li>
                     <li><Link to="/contact">Contacts</Link></li>
@@ -54,17 +55,15 @@ const Header: React.FC = () => {
                   </ul>
                 </li>
 
-                {/* More dropdown */}
+                {/* More */}
                 <li className="header__nav-item dropdown">
-                  <a
-                    className="header__nav-link header__nav-link--more"
-                    href="#"
-                    role="button"
+                  <button
+                    className="header__nav-link dropdown-toggle"
                     data-bs-toggle="dropdown"
-                    aria-expanded="false"
                   >
                     <i className="ti ti-dots"></i>
-                  </a>
+                  </button>
+
                   <ul className="dropdown-menu header__dropdown-menu">
                     <li><Link to="/radioactive">Radioactive</Link></li>
                     <li><Link to="/hazardtv">HazardTV</Link></li>
@@ -76,36 +75,49 @@ const Header: React.FC = () => {
 
               {/* Auth Section */}
               <div className="header__auth">
+
                 {/* Search */}
-                <form className="header__search">
+                <form className={`header__search ${searchOpen ? "header__search--active" : ""}`}>
                   <input
                     className="header__search-input"
                     type="text"
                     placeholder="Search..."
                   />
-                  <button className="header__search-button" type="button">
+
+                  <button
+                    className="header__search-button"
+                    type="button"
+                  >
                     <i className="ti ti-search"></i>
                   </button>
-                  <button className="header__search-close" type="button">
+
+                  <button
+                    className="header__search-close"
+                    type="button"
+                    onClick={() => setSearchOpen(false)}
+                  >
                     <i className="ti ti-x"></i>
                   </button>
                 </form>
-                <button className="header__search-btn" type="button">
+
+                <button
+                  className="header__search-btn"
+                  type="button"
+                  onClick={() => setSearchOpen(true)}
+                >
                   <i className="ti ti-search"></i>
                 </button>
 
                 {/* Profile Dropdown */}
                 <div className="header__profile dropdown">
-                  <a
-                    className="header__sign-in header__sign-in--user"
-                    href="#"
-                    role="button"
+                  <button
+                    className="header__sign-in header__sign-in--user dropdown-toggle"
                     data-bs-toggle="dropdown"
-                    aria-expanded="false"
                   >
                     <i className="ti ti-user"></i>
                     <span>Nickname</span>
-                  </a>
+                  </button>
+
                   <ul className="dropdown-menu dropdown-menu-end header__dropdown-menu header__dropdown-menu--user">
                     <li><Link to="/profile"><i className="ti ti-ghost"></i> Profile</Link></li>
                     <li><Link to="/subscription"><i className="ti ti-stereo-glasses"></i> Subscription</Link></li>
@@ -117,11 +129,16 @@ const Header: React.FC = () => {
               </div>
 
               {/* Hamburger */}
-              <button className="header__btn" type="button">
+              <button
+                className={`header__btn ${mobileOpen ? "header__btn--active" : ""}`}
+                type="button"
+                onClick={() => setMobileOpen(!mobileOpen)}
+              >
                 <span></span>
                 <span></span>
                 <span></span>
               </button>
+
             </div>
           </div>
         </div>
