@@ -8,7 +8,7 @@ import 'bootstrap/dist/css/bootstrap.min.css'
 
 //  custom CSS 
 import './css/bootstrap.min.css' 
-import './css/default-skin.css' 
+import './css/default-skin.css'
 import './css/main.css' 
 import './css/photoswipe.css' 
 import './css/plyr.css' 
