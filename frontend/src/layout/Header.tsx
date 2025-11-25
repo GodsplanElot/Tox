@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import logo from "../assets/img/logo.png";
+
 
 const Header: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -15,7 +15,7 @@ const Header: React.FC = () => {
 
               {/* Logo */}
               <Link to="/" className="header__logo">
-                <img src={logo} alt="Logo" />
+                <img src="#" alt="Logo" />
               </Link>
 
               {/* Navbar */}
