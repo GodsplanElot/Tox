@@ -1,6 +1,8 @@
 
 
 const MovieDetailPage = () => {
+
+    
   return (
     <>
       
