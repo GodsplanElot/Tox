@@ -5,15 +5,22 @@ import navbarIcon from '../assets/icons/nav_logo.png';
 
 const Header: React.FC = () => {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [mobileOpen, setMobileOpen] = useState<boolean>(false);
   const headerRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
       if (!headerRef.current) return;
-      if (!headerRef.current.contains(e.target as Node)) setOpenDropdown(null);
+      if (!headerRef.current.contains(e.target as Node)) {
+        setOpenDropdown(null);
+        setMobileOpen(false);
+      }
     }
     function onKey(e: KeyboardEvent) {
-      if (e.key === "Escape") setOpenDropdown(null);
+      if (e.key === "Escape") {
+        setOpenDropdown(null);
+        setMobileOpen(false);
+      }
     }
     document.addEventListener("click", onDocClick);
     document.addEventListener("keydown", onKey);
@@ -24,7 +31,7 @@ const Header: React.FC = () => {
   }, []);
 
   return (
-    <header className="header" ref={headerRef}>
+    <header className={`header ${mobileOpen ? 'header--open' : ''}`} ref={headerRef}>
       <div className="container">
         <div className="row">
           <div className="col-12">
@@ -45,14 +52,15 @@ const Header: React.FC = () => {
                     onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'categories' ? null : 'categories'); }}
                     aria-expanded={openDropdown === 'categories'}
                   >
-                    Categories <i className="ti ti-chevron-down"></i>
+                        <i className="ti ti-layout-grid mr-2" aria-hidden="true"></i>
+                        <span>Categories</span>
                   </button>
 
                   <ul className={`dropdown-menu header__dropdown-menu ${openDropdown === 'categories' ? 'show' : ''}`}>
-                    <li><Link to="/catalog1">Catalog style 1</Link></li>
-                    <li><Link to="/catalog2">Catalog style 2</Link></li>
-                    <li><Link to="/details">Details Movie</Link></li>
-                    <li><Link to="/details-tv">Details TV Series</Link></li>
+                    <li><Link to="/movies"><i className="ti ti-video"></i> Movies</Link></li>
+                    <li><Link to="/tv-series"><i className="ti ti-tv"></i> Tv Series</Link></li>
+                    <li><Link to="/animations"><i className="ti ti-paint-bucket"></i> Animations</Link></li>
+                    <li><Link to="/anime-series"><i className="ti ti-star"></i> Anime Series</Link></li>
                   </ul>
                 </li>
 
@@ -124,7 +132,7 @@ const Header: React.FC = () => {
                     aria-expanded="false"
                   >
                     <i className="ti ti-user"></i>
-                    <span>Nickname</span>
+                    <span>SIGN IN</span>
                   </button>
 
                   <ul className="dropdown-menu dropdown-menu-end header__dropdown-menu header__dropdown-menu--user">
@@ -158,7 +166,13 @@ const Header: React.FC = () => {
               </div>
 
               {/* Mobile Hamburger */}
-              <button className="header__btn" type="button">
+              <button
+                className={`header__btn ${mobileOpen ? 'is-active' : ''}`}
+                type="button"
+                aria-expanded={mobileOpen}
+                aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
+                onClick={(e) => { e.stopPropagation(); setMobileOpen(!mobileOpen); }}
+              >
                 <span></span>
                 <span></span>
                 <span></span>
