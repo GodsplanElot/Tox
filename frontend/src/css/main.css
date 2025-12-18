@@ -337,6 +337,16 @@ body::-webkit-scrollbar-thumb {
   color: #fff;
   font-size: 20px;
 }
+
+/* Inline SVG icon for header sign-in (matches previous i icon behavior) */
+.header__icon {
+  color: #fff;
+  width: 20px;
+  height: 20px;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
 .header__sign-in:hover {
   background-color: rgba(249,171,0,0.05);
 }
@@ -501,6 +511,10 @@ body::-webkit-scrollbar-thumb {
     margin-left: 30px;
   }
   .header__sign-in i {
+    display: none;
+  }
+
+  .header__icon {
     display: none;
   }
   .header__sign-in span {

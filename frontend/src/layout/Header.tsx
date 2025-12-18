@@ -131,7 +131,9 @@ const Header: React.FC = () => {
                     data-bs-toggle="dropdown"
                     aria-expanded="false"
                   >
-                    <i className="ti ti-user"></i>
+                    <svg className="header__icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+                      <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.866 0-7 1.79-7 4v1h14v-1c0-2.21-3.134-4-7-4z" />
+                    </svg>
                     <span>SIGN IN</span>
                   </button>
 
