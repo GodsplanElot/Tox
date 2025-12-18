@@ -1,6 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import logo from "../assets/img/logo.png";
+
 
 const Header: React.FC = () => {
   return (
@@ -12,7 +12,7 @@ const Header: React.FC = () => {
 
               {/* Logo */}
               <Link to="/" className="header__logo">
-                <img src={logo} alt="logo" />
+                ### LOGO_HERE ###
               </Link>
 
               {/* Navigation */}
