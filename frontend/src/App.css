@@ -1,0 +1,5 @@
+/* Ensure dropdown-menu shows when `.show` is added by React state */
+.dropdown-menu.show {
+	display: block !important;
+}
+

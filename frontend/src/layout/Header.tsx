@@ -1,11 +1,30 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import navbarIcon from '../assets/icons/nav_logo.png';
 
 
 const Header: React.FC = () => {
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const headerRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    function onDocClick(e: MouseEvent) {
+      if (!headerRef.current) return;
+      if (!headerRef.current.contains(e.target as Node)) setOpenDropdown(null);
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpenDropdown(null);
+    }
+    document.addEventListener("click", onDocClick);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("click", onDocClick);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, []);
+
   return (
-    <header className="header">
+    <header className="header" ref={headerRef}>
       <div className="container">
         <div className="row">
           <div className="col-12">
@@ -20,16 +39,16 @@ const Header: React.FC = () => {
               <ul className="header__nav">
 
                 {/* Categories */}
-                <li className="header__nav-item dropdown">
+                <li className={`header__nav-item dropdown ${openDropdown === 'categories' ? 'show' : ''}`}>
                   <button
                     className="header__nav-link"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
+                    onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'categories' ? null : 'categories'); }}
+                    aria-expanded={openDropdown === 'categories'}
                   >
                     Categories <i className="ti ti-chevron-down"></i>
                   </button>
 
-                  <ul className="dropdown-menu header__dropdown-menu">
+                  <ul className={`dropdown-menu header__dropdown-menu ${openDropdown === 'categories' ? 'show' : ''}`}>
                     <li><Link to="/catalog1">Catalog style 1</Link></li>
                     <li><Link to="/catalog2">Catalog style 2</Link></li>
                     <li><Link to="/details">Details Movie</Link></li>
@@ -38,16 +57,16 @@ const Header: React.FC = () => {
                 </li>
 
                 {/* About */}
-                <li className="header__nav-item dropdown">
+                <li className={`header__nav-item dropdown ${openDropdown === 'about' ? 'show' : ''}`}>
                   <button
                     className="header__nav-link"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
+                    onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'about' ? null : 'about'); }}
+                    aria-expanded={openDropdown === 'about'}
                   >
                     About☣ <i className="ti ti-chevron-down"></i>
                   </button>
 
-                  <ul className="dropdown-menu header__dropdown-menu">
+                  <ul className={`dropdown-menu header__dropdown-menu ${openDropdown === 'about' ? 'show' : ''}`}>
                     <li><Link to="/about">About Us</Link></li>
                     <li><Link to="/contact">Contacts</Link></li>
                     <li><Link to="/faq">Help Center</Link></li>
@@ -56,16 +75,16 @@ const Header: React.FC = () => {
                 </li>
 
                 {/* More */}
-                <li className="header__nav-item dropdown">
+                <li className={`header__nav-item dropdown ${openDropdown === 'more' ? 'show' : ''}`}>
                   <button
                     className="header__nav-link header__nav-link--more"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
+                    onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'more' ? null : 'more'); }}
+                    aria-expanded={openDropdown === 'more'}
                   >
                     <i className="ti ti-dots"></i>
                   </button>
 
-                  <ul className="dropdown-menu header__dropdown-menu">
+                  <ul className={`dropdown-menu header__dropdown-menu ${openDropdown === 'more' ? 'show' : ''}`}>
                     <li><Link to="/radioactive">Radioactive</Link></li>
                     <li><Link to="/hazardtv">HazardTV</Link></li>
                     <li><Link to="/wastecoin">Waste☣Coin</Link></li>
