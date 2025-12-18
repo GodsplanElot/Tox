@@ -167,6 +167,11 @@ body::-webkit-scrollbar-thumb {
 /*==============================
 	Header
 ==============================*/
+.main-content {
+  padding-top: 90px; /* same or slightly more than header height */
+}
+
+
 .header {
   display: block;
   position: fixed;
