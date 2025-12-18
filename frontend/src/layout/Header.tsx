@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import navbarIcon from '../assets/icons/nav_logo.png';
 
 
 const Header: React.FC = () => {
@@ -12,7 +13,7 @@ const Header: React.FC = () => {
 
               {/* Logo */}
               <Link to="/" className="header__logo">
-                ### LOGO_HERE ###
+                <img src={navbarIcon} alt="Navbar Icon" className="navbar-icon" />
               </Link>
 
               {/* Navigation */}
