@@ -47,65 +47,57 @@ const Header: React.FC = () => {
 
           {/* desktop nav */}
           <ul className="header__nav">
-            <li className={`header__nav-item ${openDropdown === 'home' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'home' ? null : 'home') }}>
-              <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'home'}>
+            <li className={`header__nav-item ${openDropdown === 'home' ? 'show' : ''}`}>
+              <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'home'} onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'home' ? null : 'home') }}>
                 Moviez <i className="bi bi-chevron-down"></i>
               </button>
-              {openDropdown === 'home' && (
-                <ul className="dropdown-menu header__dropdown-menu">
-                  <li><Link to="/">HollyWood</Link></li>
-                  <li><Link to="/home2">Home style 2</Link></li>
-                  <li><Link to="/home3">Home style 3</Link></li>
-                </ul>
-              )}
+              <ul className={`dropdown-menu header__dropdown-menu ${openDropdown === 'home' ? 'show' : ''}`}>
+                <li><Link to="/">HollyWood</Link></li>
+                <li><Link to="/home2">Bollywood</Link></li>
+                <li><Link to="/home3">Nollywood</Link></li>
+              </ul>
             </li>
 
-            <li className={`header__nav-item ${openDropdown === 'catalog' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'catalog' ? null : 'catalog') }}>
-              <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'catalog'}>
+            <li className={`header__nav-item ${openDropdown === 'catalog' ? 'show' : ''}`}>
+              <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'catalog'} onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'catalog' ? null : 'catalog') }}>
                 Catalog <i className="ti ti-chevron-down"></i>
               </button>
-              {openDropdown === 'catalog' && (
-                <ul className="dropdown-menu header__dropdown-menu">
-                  <li><Link to="/catalog">Catalog style 1</Link></li>
-                  <li><Link to="/catalog2">Catalog style 2</Link></li>
-                  <li><Link to="/details">Details Movie</Link></li>
-                  <li><Link to="/details2">Details TV Series</Link></li>
-                </ul>
-              )}
+              <ul className={`dropdown-menu header__dropdown-menu ${openDropdown === 'catalog' ? 'show' : ''}`}>
+                <li><Link to="/catalog">Catalog style 1</Link></li>
+                <li><Link to="/catalog2">Catalog style 2</Link></li>
+                <li><Link to="/details">Details Movie</Link></li>
+                <li><Link to="/details2">Details TV Series</Link></li>
+              </ul>
             </li>
 
             <li className="header__nav-item">
               <Link to="/pricing" className="header__nav-link">Pricing plan</Link>
             </li>
 
-            <li className={`header__nav-item ${openDropdown === 'pages' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'pages' ? null : 'pages') }}>
-              <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'pages'}>
+            <li className={`header__nav-item ${openDropdown === 'pages' ? 'show' : ''}`}>
+              <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'pages'} onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'pages' ? null : 'pages') }}>
                 Pages <i className="ti ti-chevron-down"></i>
               </button>
-              {openDropdown === 'pages' && (
-                <ul className="dropdown-menu header__dropdown-menu">
-                  <li><Link to="/about">About Us</Link></li>
-                  <li><Link to="/profile">Profile</Link></li>
-                  <li><Link to="/actor">Actor</Link></li>
-                  <li><Link to="/contacts">Contacts</Link></li>
-                  <li><Link to="/faq">Help center</Link></li>
-                  <li><Link to="/privacy">Privacy policy</Link></li>
-                </ul>
-              )}
+              <ul className={`dropdown-menu header__dropdown-menu ${openDropdown === 'pages' ? 'show' : ''}`}>
+                <li><Link to="/about">About Us</Link></li>
+                <li><Link to="/profile">Profile</Link></li>
+                <li><Link to="/actor">Actor</Link></li>
+                <li><Link to="/contacts">Contacts</Link></li>
+                <li><Link to="/faq">Help center</Link></li>
+                <li><Link to="/privacy">Privacy policy</Link></li>
+              </ul>
             </li>
 
-            <li className={`header__nav-item ${openDropdown === 'more' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'more' ? null : 'more') }}>
-              <button type="button" className="header__nav-link header__nav-link--more" aria-expanded={openDropdown === 'more'}>
+            <li className={`header__nav-item ${openDropdown === 'more' ? 'show' : ''}`}>
+              <button type="button" className="header__nav-link header__nav-link--more" aria-expanded={openDropdown === 'more'} onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'more' ? null : 'more') }}>
                 <i className="ti ti-dots"></i>
               </button>
-              {openDropdown === 'more' && (
-                <ul className="dropdown-menu header__dropdown-menu">
-                  <li><Link to="/signin">Sign in</Link></li>
-                  <li><Link to="/signup">Sign up</Link></li>
-                  <li><Link to="/forgot">Forgot password</Link></li>
-                  <li><Link to="/404">404 Page</Link></li>
-                </ul>
-              )}
+              <ul className={`dropdown-menu header__dropdown-menu ${openDropdown === 'more' ? 'show' : ''}`}>
+                <li><Link to="/signin">Sign in</Link></li>
+                <li><Link to="/signup">Sign up</Link></li>
+                <li><Link to="/forgot">Forgot password</Link></li>
+                <li><Link to="/404">404 Page</Link></li>
+              </ul>
             </li>
           </ul>
 
