@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import navbarIcon from '../assets/icons/nav_logo.png';
+import MobileNavbar from './MobileNavbar'
+import SearchForm from '../components/SearchForm'
 
 
 const Header: React.FC = () => {
@@ -106,30 +108,20 @@ const Header: React.FC = () => {
               <div className="header__auth">
 
                 {/* Search Bar */}
-                <form className="header__search">
-                  <input
-                    className="header__search-input"
-                    type="text"
-                    placeholder="Search..."
-                  />
-                  <button className="header__search-button" type="button">
-                    <i className="ti ti-search"></i>
-                  </button>
-                  <button className="header__search-close" type="button">
-                    <i className="ti ti-x"></i>
-                  </button>
-                </form>
+                <SearchForm />
 
                 <button className="header__search-btn" type="button">
                   <i className="ti ti-search"></i>
                 </button>
 
-                {/* Profile Dropdown */}
-                <div className="header__profile dropdown">
+                {/* Profile Dropdown (React-controlled) */}
+                <div className="header__profile">
                   <button
+                    type="button"
                     className="header__sign-in header__sign-in--user"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
+                    onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'profile' ? null : 'profile'); }}
+                    aria-expanded={openDropdown === 'profile'}
+                    aria-haspopup="true"
                   >
                     <svg className="header__icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
                       <path d="M12 12c2.761 0 5-2.239 5-5s-2.239-5-5-5-5 2.239-5 5 2.239 5 5 5zm0 2c-3.866 0-7 1.79-7 4v1h14v-1c0-2.21-3.134-4-7-4z" />
@@ -137,29 +129,29 @@ const Header: React.FC = () => {
                     <span>SIGN IN</span>
                   </button>
 
-                  <ul className="dropdown-menu dropdown-menu-end header__dropdown-menu header__dropdown-menu--user">
+                  <ul className={`dropdown-menu dropdown-menu-end header__dropdown-menu header__dropdown-menu--user ${openDropdown === 'profile' ? 'show' : ''}`}>
                     <li>
-                      <Link to="/profile">
+                      <Link to="/profile" onClick={() => { setOpenDropdown(null); setMobileOpen(false); }}>
                         <i className="ti ti-ghost"></i> Profile
                       </Link>
                     </li>
                     <li>
-                      <Link to="/subscription">
+                      <Link to="/subscription" onClick={() => { setOpenDropdown(null); setMobileOpen(false); }}>
                         <i className="ti ti-stereo-glasses"></i> Subscription
                       </Link>
                     </li>
                     <li>
-                      <Link to="/favorites">
+                      <Link to="/favorites" onClick={() => { setOpenDropdown(null); setMobileOpen(false); }}>
                         <i className="ti ti-bookmark"></i> Favorites
                       </Link>
                     </li>
                     <li>
-                      <Link to="/settings">
+                      <Link to="/settings" onClick={() => { setOpenDropdown(null); setMobileOpen(false); }}>
                         <i className="ti ti-settings"></i> Settings
                       </Link>
                     </li>
                     <li>
-                      <Link to="/logout">
+                      <Link to="/logout" onClick={() => { setOpenDropdown(null); setMobileOpen(false); }}>
                         <i className="ti ti-logout"></i> Logout
                       </Link>
                     </li>
@@ -179,6 +171,9 @@ const Header: React.FC = () => {
                 <span></span>
                 <span></span>
               </button>
+
+              {/* Mobile nav overlay (React) */}
+              <MobileNavbar open={mobileOpen} onClose={() => { setMobileOpen(false); setOpenDropdown(null); }} />
 
             </div>
           </div>
