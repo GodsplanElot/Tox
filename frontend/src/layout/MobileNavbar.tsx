@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import SearchForm from '../components/SearchForm'
 
@@ -8,21 +8,15 @@ type Props = {
 }
 
 const MobileNavbar: React.FC<Props> = ({ open, onClose }) => {
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null)
-  const navRef = useRef<HTMLElement | null>(null)
+  const panelRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
-      if (!navRef.current) return
-      if (!navRef.current.contains(e.target as Node)) {
-        setOpenDropdown(null)
-      }
+      if (!panelRef.current) return
+      if (!panelRef.current.contains(e.target as Node)) onClose()
     }
     function onKey(e: KeyboardEvent) {
-      if (e.key === 'Escape') {
-        setOpenDropdown(null)
-        onClose()
-      }
+      if (e.key === 'Escape') onClose()
     }
     document.addEventListener('click', onDocClick)
     document.addEventListener('keydown', onKey)
@@ -32,42 +26,30 @@ const MobileNavbar: React.FC<Props> = ({ open, onClose }) => {
     }
   }, [onClose])
 
+  useEffect(() => {
+    if (open) document.body.style.overflow = 'hidden'
+    else document.body.style.overflow = ''
+    return () => { document.body.style.overflow = '' }
+  }, [open])
+
   if (!open) return null
 
   return (
-    <nav className="header__nav header__nav--active" ref={navRef} aria-hidden={!open}>
-      <ul>
-        <li className="header__nav-item">
-          <button className="header__nav-link" onClick={() => setOpenDropdown(openDropdown === 'categories' ? null : 'categories')} aria-expanded={openDropdown === 'categories'}>
-            <i className="ti ti-layout-grid"></i>
-            <span>Categories</span>
-          </button>
-          {openDropdown === 'categories' && (
-            <ul className="header__dropdown-menu">
-              <li><Link to="/movies" onClick={() => { onClose(); setOpenDropdown(null) }}><i className="ti ti-video"></i> Movies</Link></li>
-              <li><Link to="/tv-series" onClick={() => { onClose(); setOpenDropdown(null) }}><i className="ti ti-tv"></i> Tv Series</Link></li>
-              <li><Link to="/animations" onClick={() => { onClose(); setOpenDropdown(null) }}><i className="ti ti-paint-bucket"></i> Animations</Link></li>
-              <li><Link to="/anime-series" onClick={() => { onClose(); setOpenDropdown(null) }}><i className="ti ti-star"></i> Anime Series</Link></li>
-            </ul>
-          )}
-        </li>
-
-
-        <li className="header__nav-item">
-          <SearchForm onClose={onClose} />
-        </li>
-
-        <li className="header__nav-item">
-          <div className="header__dropdown-menu header__dropdown-menu--user">
-            <Link to="/profile" onClick={onClose}><i className="ti ti-ghost"></i> Profile</Link>
-            <Link to="/subscription" onClick={onClose}><i className="ti ti-stereo-glasses"></i> Subscription</Link>
-            <Link to="/favorites" onClick={onClose}><i className="ti ti-bookmark"></i> Favorites</Link>
-            <Link to="/settings" onClick={onClose}><i className="ti ti-settings"></i> Settings</Link>
-            <Link to="/logout" onClick={onClose}><i className="ti ti-logout"></i> Logout</Link>
-          </div>
-        </li>
-      </ul>
-    </nav>
+    <div className="mobile-navbar">
+      <div className="mobile-navbar__backdrop" onClick={onClose} />
+      <div className="mobile-navbar__panel" ref={panelRef} role="dialog" aria-modal="true">
+        <button className="mobile-navbar__close" onClick={onClose} aria-label="Close menu">×</button>
+        <SearchForm onClose={onClose} />
+        <ul className="mobile-navbar__links">
+          <li><Link to="/movies" onClick={onClose}>Movies</Link></li>
+          <li><Link to="/tv-series" onClick={onClose}>TV Series</Link></li>
+          <li><Link to="/animations" onClick={onClose}>Animations</Link></li>
+          <li><Link to="/anime-series" onClick={onClose}>Anime Series</Link></li>
+          <li><Link to="/about" onClick={onClose}>About</Link></li>
+          <li><Link to="/contact" onClick={onClose}>Contact</Link></li>
+        </ul>
+      </div>
+    </div>
   )
 }
 
