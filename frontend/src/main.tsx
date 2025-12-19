@@ -5,9 +5,9 @@ import App from './App.tsx'
 
 //Bootstrap CSS
 import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap-icons/font/bootstrap-icons.css'
 
 //  custom CSS 
-import './css/bootstrap.min.css' 
 import './css/default-skin.css'
 import './css/main.css' 
 import './css/photoswipe.css' 

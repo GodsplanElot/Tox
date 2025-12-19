@@ -31,11 +31,11 @@ const SearchForm: React.FC<Props> = ({ onClose, onSearch, className = '', placeh
         onChange={(e) => setQuery(e.target.value)}
       />
       <button className="header__search-button" type="button" onClick={handleButtonClick} aria-label="Search">
-        <i className="ti ti-search"></i>
+        <i className="bi bi-search"></i>
       </button>
       {onClose && (
         <button className="header__search-close" type="button" onClick={onClose} aria-label="Close search">
-          <i className="ti ti-x"></i>
+          <i className="bi bi-x"></i>
         </button>
       )}
     </form>

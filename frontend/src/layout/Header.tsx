@@ -47,21 +47,21 @@ const Header: React.FC = () => {
 
           {/* desktop nav */}
           <ul className="header__nav">
-            <li className={`header__nav-item ${openDropdown === 'home' ? 'show' : ''}`}>
-              <button type="button" className="header__nav-link" onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'home' ? null : 'home') }} aria-expanded={openDropdown === 'home'}>
-                Home <i className="ti ti-chevron-down"></i>
+            <li className={`header__nav-item ${openDropdown === 'home' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'home' ? null : 'home') }}>
+              <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'home'}>
+                Moviez <i className="bi bi-chevron-down"></i>
               </button>
               {openDropdown === 'home' && (
                 <ul className="dropdown-menu header__dropdown-menu">
-                  <li><Link to="/">Home style 1</Link></li>
+                  <li><Link to="/">HollyWood</Link></li>
                   <li><Link to="/home2">Home style 2</Link></li>
                   <li><Link to="/home3">Home style 3</Link></li>
                 </ul>
               )}
             </li>
 
-            <li className={`header__nav-item ${openDropdown === 'catalog' ? 'show' : ''}`}>
-              <button type="button" className="header__nav-link" onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'catalog' ? null : 'catalog') }} aria-expanded={openDropdown === 'catalog'}>
+            <li className={`header__nav-item ${openDropdown === 'catalog' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'catalog' ? null : 'catalog') }}>
+              <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'catalog'}>
                 Catalog <i className="ti ti-chevron-down"></i>
               </button>
               {openDropdown === 'catalog' && (
@@ -78,8 +78,8 @@ const Header: React.FC = () => {
               <Link to="/pricing" className="header__nav-link">Pricing plan</Link>
             </li>
 
-            <li className={`header__nav-item ${openDropdown === 'pages' ? 'show' : ''}`}>
-              <button type="button" className="header__nav-link" onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'pages' ? null : 'pages') }} aria-expanded={openDropdown === 'pages'}>
+            <li className={`header__nav-item ${openDropdown === 'pages' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'pages' ? null : 'pages') }}>
+              <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'pages'}>
                 Pages <i className="ti ti-chevron-down"></i>
               </button>
               {openDropdown === 'pages' && (
@@ -94,8 +94,8 @@ const Header: React.FC = () => {
               )}
             </li>
 
-            <li className={`header__nav-item ${openDropdown === 'more' ? 'show' : ''}`}>
-              <button type="button" className="header__nav-link header__nav-link--more" onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'more' ? null : 'more') }} aria-expanded={openDropdown === 'more'}>
+            <li className={`header__nav-item ${openDropdown === 'more' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'more' ? null : 'more') }}>
+              <button type="button" className="header__nav-link header__nav-link--more" aria-expanded={openDropdown === 'more'}>
                 <i className="ti ti-dots"></i>
               </button>
               {openDropdown === 'more' && (
@@ -113,9 +113,9 @@ const Header: React.FC = () => {
           <div className="header__auth">
             <SearchForm />
 
-            <div className={`header__lang ${openDropdown === 'lang' ? 'show' : ''}`}>
-              <button type="button" className="header__nav-link" onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'lang' ? null : 'lang') }} aria-expanded={openDropdown === 'lang'}>
-                EN <i className="ti ti-chevron-down"></i>
+            <div className={`header__lang ${openDropdown === 'lang' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'lang' ? null : 'lang') }}>
+              <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'lang'}>
+                EN <i className="bi bi-chevron-down"></i>
               </button>
               {openDropdown === 'lang' && (
                 <ul className="dropdown-menu header__dropdown-menu">
@@ -126,9 +126,9 @@ const Header: React.FC = () => {
               )}
             </div>
 
-            <div className={`header__profile ${openDropdown === 'profile' ? 'show' : ''}`}>
-              <button type="button" className="header__sign-in header__sign-in--user" onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'profile' ? null : 'profile') }} aria-expanded={openDropdown === 'profile'}>
-                <i className="ti ti-user"></i>
+            <div className={`header__profile ${openDropdown === 'profile' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'profile' ? null : 'profile') }}>
+              <button type="button" className="header__sign-in header__sign-in--user" aria-expanded={openDropdown === 'profile'}>
+                <i className="bi bi-person-circle"></i>
                 <span>Nickname</span>
               </button>
               {openDropdown === 'profile' && (
