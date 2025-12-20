@@ -73,8 +73,6 @@ const MobileNavbar: React.FC<Props> = ({ open, onClose, allowBodyScroll = true, 
               {openDropdown === 'lang' && (
                 <ul className="dropdown-menu header__dropdown-menu">
                   <li><button type="button" onClick={() => setOpenDropdown(null)}>English</button></li>
-                  <li><button type="button" onClick={() => setOpenDropdown(null)}>Spanish</button></li>
-                  <li><button type="button" onClick={() => setOpenDropdown(null)}>French</button></li>
                 </ul>
               )}
             </div>
