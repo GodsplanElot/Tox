@@ -49,7 +49,7 @@ const Header: React.FC = () => {
           <ul className="header__nav">
             <li className={`header__nav-item ${openDropdown === 'home' ? 'show' : ''}`}>
               <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'home'} onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'home' ? null : 'home') }}>
-                Moviez <i className="bi bi-chevron-down"></i>
+                Categories <i className="bi bi-chevron-down"></i>
               </button>
               <ul className={`dropdown-menu header__dropdown-menu ${openDropdown === 'home' ? 'show' : ''}`}>
                 <li><Link to="/">HollyWood</Link></li>
@@ -58,54 +58,15 @@ const Header: React.FC = () => {
               </ul>
             </li>
 
-            <li className={`header__nav-item ${openDropdown === 'catalog' ? 'show' : ''}`}>
-              <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'catalog'} onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'catalog' ? null : 'catalog') }}>
-                Catalog <i className="ti ti-chevron-down"></i>
-              </button>
-              <ul className={`dropdown-menu header__dropdown-menu ${openDropdown === 'catalog' ? 'show' : ''}`}>
-                <li><Link to="/catalog">Catalog style 1</Link></li>
-                <li><Link to="/catalog2">Catalog style 2</Link></li>
-                <li><Link to="/details">Details Movie</Link></li>
-                <li><Link to="/details2">Details TV Series</Link></li>
-              </ul>
-            </li>
 
-            <li className="header__nav-item">
-              <Link to="/pricing" className="header__nav-link">Pricing plan</Link>
-            </li>
-
-            <li className={`header__nav-item ${openDropdown === 'pages' ? 'show' : ''}`}>
-              <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'pages'} onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'pages' ? null : 'pages') }}>
-                Pages <i className="ti ti-chevron-down"></i>
-              </button>
-              <ul className={`dropdown-menu header__dropdown-menu ${openDropdown === 'pages' ? 'show' : ''}`}>
-                <li><Link to="/about">About Us</Link></li>
-                <li><Link to="/profile">Profile</Link></li>
-                <li><Link to="/actor">Actor</Link></li>
-                <li><Link to="/contacts">Contacts</Link></li>
-                <li><Link to="/faq">Help center</Link></li>
-                <li><Link to="/privacy">Privacy policy</Link></li>
-              </ul>
-            </li>
-
-            <li className={`header__nav-item ${openDropdown === 'more' ? 'show' : ''}`}>
-              <button type="button" className="header__nav-link header__nav-link--more" aria-expanded={openDropdown === 'more'} onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'more' ? null : 'more') }}>
-                <i className="ti ti-dots"></i>
-              </button>
-              <ul className={`dropdown-menu header__dropdown-menu ${openDropdown === 'more' ? 'show' : ''}`}>
-                <li><Link to="/signin">Sign in</Link></li>
-                <li><Link to="/signup">Sign up</Link></li>
-                <li><Link to="/forgot">Forgot password</Link></li>
-                <li><Link to="/404">404 Page</Link></li>
-              </ul>
-            </li>
+     
           </ul>
 
           {/* auth / search / profile */}
           <div className="header__auth">
             <SearchForm />
 
-            <div className={`header__lang ${openDropdown === 'lang' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'lang' ? null : 'lang') }}>
+            <div className={`header__lang ${openDropdown === 'lang' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'lang' ? null : 'lang') }}>
               <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'lang'}>
                 EN <i className="bi bi-chevron-down"></i>
               </button>
@@ -118,7 +79,7 @@ const Header: React.FC = () => {
               )}
             </div>
 
-            <div className={`header__profile ${openDropdown === 'profile' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'profile' ? null : 'profile') }}>
+            <div className={`header__profile ${openDropdown === 'profile' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'profile' ? null : 'profile') }}>
               <button type="button" className="header__sign-in header__sign-in--user" aria-expanded={openDropdown === 'profile'}>
                 <i className="bi bi-person-circle"></i>
                 <span>Nickname</span>
