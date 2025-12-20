@@ -635,12 +635,36 @@ body::-webkit-scrollbar-thumb {
   .mobile-navbar__links a,
   .offcanvas-panel a {
     color: #e6eef8;
-    display: block;
-    padding: 0.5rem 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
     text-decoration: none;
+    border-top: 1px solid rgba(255,255,255,0.03);
   }
+  .mobile-navbar__links li:first-child a,
+  .offcanvas-panel a:first-child { border-top: 0; }
   .mobile-navbar__links a:hover,
   .offcanvas-panel a:hover { color: #ffffff; }
+
+  /* Active link styling */
+  .mobile-navbar__links .mobile-nav-link.active,
+  .offcanvas-panel .mobile-nav-link.active {
+    color: #f9ab00;
+    background: rgba(249,171,0,0.04);
+  }
+
+  .mobile-navbar__links .mobile-nav-link .mobile-nav-label { flex: 1; }
+
+  /* Improve rendering of the offcanvas panel to avoid 1px edge artifacts */
+  .offcanvas-panel {
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    outline: none;
+    background-clip: padding-box;
+  }
 
   /* Responsive width tweak */
   @media (max-width: 480px) {

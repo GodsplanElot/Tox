@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import SearchForm from '../components/SearchForm'
 
 type Props = {
@@ -65,7 +65,7 @@ const MobileNavbar: React.FC<Props> = ({ open, onClose, allowBodyScroll = true, 
             </li>
           </ul>
 
-          <div className="header__auth mb-3">
+{/*           <div className="header__auth mb-3">
             <div className={`header__lang ${openDropdown === 'lang' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'lang' ? null : 'lang') }}>
               <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'lang'}>
                 EN <i className="bi bi-chevron-down"></i>
@@ -92,15 +92,45 @@ const MobileNavbar: React.FC<Props> = ({ open, onClose, allowBodyScroll = true, 
                 </ul>
               )}
             </div>
-          </div>
+          </div> */}
 
           <ul className="mobile-navbar__links list-unstyled">
-            <li><Link to="/movies" onClick={onClose}>Movies</Link></li>
-            <li><Link to="/tv-series" onClick={onClose}>TV Series</Link></li>
-            <li><Link to="/animations" onClick={onClose}>Animations</Link></li>
-            <li><Link to="/anime-series" onClick={onClose}>Anime Series</Link></li>
-            <li><Link to="/about" onClick={onClose}>About</Link></li>
-            <li><Link to="/contact" onClick={onClose}>Contact</Link></li>
+            <li>
+              <NavLink to="/movies" onClick={onClose} className={({ isActive }) => `mobile-nav-link${isActive ? ' active' : ''}`}>
+                <i className="bi bi-film me-2" aria-hidden="true"></i>
+                <span className="mobile-nav-label">Movies</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/tv-series" onClick={onClose} className={({ isActive }) => `mobile-nav-link${isActive ? ' active' : ''}`}>
+                <i className="bi bi-tv me-2" aria-hidden="true"></i>
+                <span className="mobile-nav-label">TV Series</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/animations" onClick={onClose} className={({ isActive }) => `mobile-nav-link${isActive ? ' active' : ''}`}>
+                <i className="bi bi-camera-reels me-2" aria-hidden="true"></i>
+                <span className="mobile-nav-label">Animations</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/anime-series" onClick={onClose} className={({ isActive }) => `mobile-nav-link${isActive ? ' active' : ''}`}>
+                <i className="bi bi-star me-2" aria-hidden="true"></i>
+                <span className="mobile-nav-label">Anime Series</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/about" onClick={onClose} className={({ isActive }) => `mobile-nav-link${isActive ? ' active' : ''}`}>
+                <i className="bi bi-info-circle me-2" aria-hidden="true"></i>
+                <span className="mobile-nav-label">About</span>
+              </NavLink>
+            </li>
+            <li>
+              <NavLink to="/contact" onClick={onClose} className={({ isActive }) => `mobile-nav-link${isActive ? ' active' : ''}`}>
+                <i className="bi bi-envelope me-2" aria-hidden="true"></i>
+                <span className="mobile-nav-label">Contact</span>
+              </NavLink>
+            </li>
           </ul>
         </div>
       </div>
