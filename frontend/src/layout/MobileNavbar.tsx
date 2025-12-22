@@ -52,7 +52,7 @@ const MobileNavbar: React.FC<Props> = ({ open, onClose, allowBodyScroll = true, 
           <p>Try scrolling the rest of the page to see this option in action.</p>
           <SearchForm onClose={onClose} />
 
-          <ul className="header__nav mb-3">
+          <ul className="mobile-navbar__links mb-3">
             <li className={`header__nav-item ${openDropdown === 'home' ? 'show' : ''}`}>
               <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'home'} onClick={(e) => { e.stopPropagation(); setOpenDropdown(openDropdown === 'home' ? null : 'home') }}>
                 Categories <i className="bi bi-chevron-down"></i>

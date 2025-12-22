@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 
 const slides = [
   {
-    title: 'Savage Beauty',
+    title: 'Savage maryfavour',
     rating: '9.8',
     ratingClass: 'green',
     text:
