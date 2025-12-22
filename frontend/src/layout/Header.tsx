@@ -98,9 +98,6 @@ const Header: React.FC = () => {
               <i className={`bi ${mobileSearchOpen ? 'bi-x' : 'bi-search'}`}></i>
             </button>
 
-
-
-
             {/* Language */}
             <div className="header__lang">
               <button

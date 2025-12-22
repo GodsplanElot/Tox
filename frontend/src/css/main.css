@@ -372,13 +372,21 @@ main,
 /* ================= HAMBURGER ================= */
 
 .header__btn {
-  position: absolute;
-  right: 16px;
-  top: 50%;
+  position: relative;          /* ✅ stays in flex flow */
   width: 22px;
   height: 40px;
-  transform: translateY(-50%);
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  display: inline-flex;        /* ✅ flex item */
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  flex-shrink: 0;
 }
+
 
 .header__btn span {
   display: block;
@@ -481,8 +489,6 @@ main,
 .header__nav-link.active:hover {
   color: var(--default-color);
 }
-
-
 
 
 /*==============================
