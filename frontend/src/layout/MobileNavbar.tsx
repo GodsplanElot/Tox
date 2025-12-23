@@ -65,34 +65,36 @@ const MobileNavbar: React.FC<Props> = ({ open, onClose, allowBodyScroll = true, 
             </li>
           </ul>
 
-{/*           <div className="header__auth mb-3">
-            <div className={`header__lang ${openDropdown === 'lang' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'lang' ? null : 'lang') }}>
-              <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'lang'}>
-                EN <i className="bi bi-chevron-down"></i>
-              </button>
-              {openDropdown === 'lang' && (
-                <ul className="dropdown-menu header__dropdown-menu">
-                  <li><button type="button" onClick={() => setOpenDropdown(null)}>English</button></li>
-                </ul>
-              )}
-            </div>
+          {/* 
+              <div className="header__auth mb-3">
+              <div className={`header__lang ${openDropdown === 'lang' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'lang' ? null : 'lang') }}>
+                <button type="button" className="header__nav-link" aria-expanded={openDropdown === 'lang'}>
+                  EN <i className="bi bi-chevron-down"></i>
+                </button>
+                {openDropdown === 'lang' && (
+                  <ul className="dropdown-menu header__dropdown-menu">
+                    <li><button type="button" onClick={() => setOpenDropdown(null)}>English</button></li>
+                  </ul>
+                )}
+              </div>
 
-            <div className={`header__profile ${openDropdown === 'profile' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'profile' ? null : 'profile') }}>
-              <button type="button" className="header__sign-in header__sign-in--user" aria-expanded={openDropdown === 'profile'}>
-                <i className="bi bi-person-circle"></i>
-                <span>Nickname</span>
-              </button>
-              {openDropdown === 'profile' && (
-                <ul className="dropdown-menu dropdown-menu-end header__dropdown-menu header__dropdown-menu--user">
-                  <li><Link to="/profile" onClick={onClose}><i className="ti ti-ghost"></i>Profile</Link></li>
-                  <li><Link to="/subscription" onClick={onClose}><i className="ti ti-stereo-glasses"></i>Subscription</Link></li>
-                  <li><Link to="/favorites" onClick={onClose}><i className="ti ti-bookmark"></i>Favorites</Link></li>
-                  <li><Link to="/settings" onClick={onClose}><i className="ti ti-settings"></i>Settings</Link></li>
-                  <li><button type="button" onClick={() => { setOpenDropdown(null); onClose() }}><i className="ti ti-logout"></i>Logout</button></li>
-                </ul>
-              )}
-            </div>
-          </div> */}
+              <div className={`header__profile ${openDropdown === 'profile' ? 'show' : ''}`} onClick={(e) => { e.stopPropagation(); e.nativeEvent.stopImmediatePropagation(); setOpenDropdown(openDropdown === 'profile' ? null : 'profile') }}>
+                <button type="button" className="header__sign-in header__sign-in--user" aria-expanded={openDropdown === 'profile'}>
+                  <i className="bi bi-person-circle"></i>
+                  <span>Nickname</span>
+                </button>
+                {openDropdown === 'profile' && (
+                  <ul className="dropdown-menu dropdown-menu-end header__dropdown-menu header__dropdown-menu--user">
+                    <li><Link to="/profile" onClick={onClose}><i className="ti ti-ghost"></i>Profile</Link></li>
+                    <li><Link to="/subscription" onClick={onClose}><i className="ti ti-stereo-glasses"></i>Subscription</Link></li>
+                    <li><Link to="/favorites" onClick={onClose}><i className="ti ti-bookmark"></i>Favorites</Link></li>
+                    <li><Link to="/settings" onClick={onClose}><i className="ti ti-settings"></i>Settings</Link></li>
+                    <li><button type="button" onClick={() => { setOpenDropdown(null); onClose() }}><i className="ti ti-logout"></i>Logout</button></li>
+                  </ul>
+                )}
+              </div>
+              </div> 
+          */}
 
           <ul className="mobile-navbar__links list-unstyled">
             <li>
