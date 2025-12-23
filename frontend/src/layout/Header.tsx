@@ -10,8 +10,9 @@ const Header: React.FC = () => {
   const [openDropdown, setOpenDropdown] = useState<DropdownKey>(null)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false)
+
   const headerRef = useRef<HTMLElement | null>(null)
-  const location = useLocation() // To handle active nav highlighting
+  const location = useLocation()
 
   /* ESC KEY HANDLER */
   useEffect(() => {
@@ -41,108 +42,138 @@ const Header: React.FC = () => {
       <div className="container">
         <div className="header__content">
 
-          {/* Logo */}
-          <Link to="/" className="header__logo" onClick={() => setOpenDropdown(null)}>
+          {/* LOGO */}
+          <Link
+            to="/"
+            className="header__logo"
+            onClick={() => setOpenDropdown(null)}
+          >
             <img src={navbarIcon} alt="Logo" />
           </Link>
 
           {/* ================= DESKTOP NAV ================= */}
-          <ul className="header__nav d-none d-xl-flex align-items-center">
+          <ul className="header__nav">
             <li className="header__nav-item">
               <button
                 type="button"
-                className={`header__nav-link d-flex align-items-center ${
+                className={`header__nav-link ${
                   openDropdown === 'categories' ? 'active' : ''
                 }`}
                 aria-expanded={openDropdown === 'categories'}
-                onClick={(e) => { e.stopPropagation(); toggleDropdown('categories') }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  toggleDropdown('categories')
+                }}
               >
-                <i className="bi bi-grid-fill me-1"></i> {/* Icon for categories */}
-                Categories <i className="bi bi-chevron-down ms-1" />
+                <i className="bi bi-grid-fill" />
+                Categories
+                <i className="bi bi-chevron-down" />
               </button>
-              <ul className={`header__dropdown-menu ${openDropdown === 'categories' ? 'show' : ''}`}>
-                {categories.map(cat => (
-                  <li key={cat.label}>
-                    <Link
-                      to={cat.path}
-                      onClick={() => setOpenDropdown(null)}
-                      className={location.pathname === cat.path ? 'active' : ''}
-                    >
-                      {cat.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
+
+              {openDropdown === 'categories' && (
+                <ul className="header__dropdown-menu">
+                  {categories.map(cat => (
+                    <li key={cat.label}>
+                      <Link
+                        to={cat.path}
+                        className={
+                          location.pathname === cat.path ? 'active' : ''
+                        }
+                        onClick={() => setOpenDropdown(null)}
+                      >
+                        {cat.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
           </ul>
 
-          {/* ================= RIGHT SIDE ================= */}
-          <div className="header__auth d-flex align-items-center">
+          {/* ================= ACTIONS ================= */}
+          <div className="header__auth">
 
-            {/* Desktop Search */}
-            <div className="d-none d-xl-block">
+            {/* DESKTOP SEARCH (hidden on mobile via CSS) */}
+            <div className="header__search header__search--desktop">
               <SearchForm />
             </div>
 
-            {/* Mobile Search Icon */}
-            <button
-              className={`d-xl-none header__mobile-search-icon ${
-                mobileSearchOpen ? 'active' : ''
-              }`}
-              onClick={(e) => {
-                e.stopPropagation()
-                setMobileSearchOpen(prev => !prev)
-              }}
-              aria-label="Search"
-            >
-              <i className={`bi ${mobileSearchOpen ? 'bi-x' : 'bi-search'}`}></i>
+
+              <button
+                className="header__mobile-search-icon header__search--mobile"
+                aria-label="Search"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setMobileSearchOpen(prev => !prev)
+                  setOpenDropdown(null)
+                }}
+              >
+
+              <i className={`bi ${mobileSearchOpen ? 'bi-x' : 'bi-search'}`} />
             </button>
 
-            {/* Language */}
-            <div className="header__lang">
+            {/* LANGUAGE */}
+            <div className="header__nav-item">
               <button
                 type="button"
                 className="header__nav-link"
                 aria-expanded={openDropdown === 'lang'}
-                onClick={(e) => { e.stopPropagation(); toggleDropdown('lang') }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  toggleDropdown('lang')
+                }}
               >
                 EN <i className="bi bi-chevron-down" />
               </button>
-              <ul className={`header__dropdown-menu ${openDropdown === 'lang' ? 'show' : ''}`}>
-                <li><button type="button" onClick={() => setOpenDropdown(null)}>English</button></li>
-                <li><button type="button" onClick={() => setOpenDropdown(null)}>Spanish</button></li>
-                <li><button type="button" onClick={() => setOpenDropdown(null)}>French</button></li>
-              </ul>
+
+              {openDropdown === 'lang' && (
+                <ul className="header__dropdown-menu">
+                  <li><button onClick={() => setOpenDropdown(null)}>English</button></li>
+                  <li><button onClick={() => setOpenDropdown(null)}>Spanish</button></li>
+                  <li><button onClick={() => setOpenDropdown(null)}>French</button></li>
+                </ul>
+              )}
             </div>
 
-            {/* Profile */}
-            <div className="header__profile">
+            {/* PROFILE */}
+            <div className="header__nav-item">
               <button
                 type="button"
-                className="header__sign-in header__sign-in--user"
+                className="header__sign-in"
                 aria-expanded={openDropdown === 'profile'}
-                onClick={(e) => { e.stopPropagation(); toggleDropdown('profile') }}
+                onClick={(e) => {
+                  e.stopPropagation()
+                  toggleDropdown('profile')
+                }}
               >
                 <i className="bi bi-person-circle" />
-                <span>NICKNAME</span>
               </button>
-              <ul className={`header__dropdown-menu header__dropdown-menu--user ${openDropdown === 'profile' ? 'show' : ''}`}>
-                <li><Link to="/profile" onClick={() => setOpenDropdown(null)}>Profile</Link></li>
-                <li><Link to="/subscription" onClick={() => setOpenDropdown(null)}>Subscription</Link></li>
-                <li><Link to="/favorites" onClick={() => setOpenDropdown(null)}>Favorites</Link></li>
-                <li><Link to="/settings" onClick={() => setOpenDropdown(null)}>Settings</Link></li>
-                <li><button type="button" onClick={() => setOpenDropdown(null)}>Logout</button></li>
-              </ul>
+
+              {openDropdown === 'profile' && (
+                <ul className="header__dropdown-menu">
+                  <li><Link to="/profile">Profile</Link></li>
+                  <li><Link to="/subscription">Subscription</Link></li>
+                  <li><Link to="/favorites">Favorites</Link></li>
+                  <li><Link to="/settings">Settings</Link></li>
+                  <li><button>Logout</button></li>
+                </ul>
+              )}
             </div>
 
-            {/* ================= MOBILE TOGGLE ================= */}
+            {/* ================= HAMBURGER ================= */}
             <button
-              className={`header__btn ${mobileOpen ? 'header__btn--active' : ''}`}
+              className={`header__btn ${
+                mobileOpen ? 'header__btn--active' : ''
+              }`}
               type="button"
               aria-expanded={mobileOpen}
               aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-              style={{ color: 'var(--default-color)' }}
-              onClick={(e) => { e.stopPropagation(); setMobileOpen(prev => !prev); setOpenDropdown(null); setMobileSearchOpen(false) }}
+              onClick={(e) => {
+                e.stopPropagation()
+                setMobileOpen(prev => !prev)
+                setOpenDropdown(null)
+                setMobileSearchOpen(false)
+              }}
             >
               <span />
               <span />
@@ -153,20 +184,22 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* ================= MOBILE NAVBAR ================= */}
+      {/* ================= MOBILE NAV ================= */}
       <MobileNavbar
         open={mobileOpen}
-        onClose={() => { setMobileOpen(false); setOpenDropdown(null); setMobileSearchOpen(false) }}
+        onClose={() => {
+          setMobileOpen(false)
+          setOpenDropdown(null)
+          setMobileSearchOpen(false)
+        }}
       />
 
-      {/* Mobile Search Popup with Animation */}
-            <div
-              className={`header__mobile-search-popup ${
-                mobileSearchOpen ? 'open' : ''
-              }`}
-            >
-              {mobileSearchOpen && <SearchForm onClose={() => setMobileSearchOpen(false)} />}
-            </div>
+      {/* ================= MOBILE SEARCH POPUP ================= */}
+      {mobileSearchOpen && (
+        <div className="header__mobile-search-popup open">
+          <SearchForm onClose={() => setMobileSearchOpen(false)} />
+        </div>
+      )}
     </header>
   )
 }
