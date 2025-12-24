@@ -14,7 +14,7 @@ const Header: React.FC = () => {
   const headerRef = useRef<HTMLElement | null>(null)
   const location = useLocation()
 
-  /* ESC KEY HANDLER */
+  /* ESC KEY */
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -43,27 +43,17 @@ const Header: React.FC = () => {
         <div className="header__content">
 
           {/* LOGO */}
-          <Link
-            to="/"
-            className="header__logo"
-            onClick={() => setOpenDropdown(null)}
-          >
+          <Link to="/" className="header__logo">
             <img src={navbarIcon} alt="Logo" />
           </Link>
 
-          {/* ================= DESKTOP NAV ================= */}
+          {/* ===== DESKTOP NAV ===== */}
           <ul className="header__nav">
             <li className="header__nav-item">
               <button
                 type="button"
-                className={`header__nav-link ${
-                  openDropdown === 'categories' ? 'active' : ''
-                }`}
-                aria-expanded={openDropdown === 'categories'}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  toggleDropdown('categories')
-                }}
+                className={`header__nav-link ${openDropdown === 'categories' ? 'active' : ''}`}
+                onClick={() => toggleDropdown('categories')}
               >
                 <i className="bi bi-grid-fill" />
                 Categories
@@ -76,9 +66,7 @@ const Header: React.FC = () => {
                     <li key={cat.label}>
                       <Link
                         to={cat.path}
-                        className={
-                          location.pathname === cat.path ? 'active' : ''
-                        }
+                        className={location.pathname === cat.path ? 'active' : ''}
                         onClick={() => setOpenDropdown(null)}
                       >
                         {cat.label}
@@ -90,47 +78,37 @@ const Header: React.FC = () => {
             </li>
           </ul>
 
-          {/* ================= ACTIONS ================= */}
+          {/* ===== ACTIONS ===== */}
           <div className="header__auth">
 
-            {/* DESKTOP SEARCH (hidden on mobile via CSS) */}
+            {/* DESKTOP SEARCH INPUT */}
             <div className="header__search header__search--desktop">
               <SearchForm />
             </div>
 
-
-              <button
-                className="header__mobile-search-icon header__search--mobile"
-                aria-label="Search"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  setMobileSearchOpen(prev => !prev)
-                  setOpenDropdown(null)
-                }}
-              >
-
+            {/* TABLET / MOBILE SEARCH ICON */}
+            <button
+              className="header__search--mobile"
+              aria-label="Search"
+              onClick={() => setMobileSearchOpen(prev => !prev)}
+            >
               <i className={`bi ${mobileSearchOpen ? 'bi-x' : 'bi-search'}`} />
             </button>
 
             {/* LANGUAGE */}
             <div className="header__nav-item">
               <button
-                type="button"
                 className="header__nav-link"
-                aria-expanded={openDropdown === 'lang'}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  toggleDropdown('lang')
-                }}
+                onClick={() => toggleDropdown('lang')}
               >
                 EN <i className="bi bi-chevron-down" />
               </button>
 
               {openDropdown === 'lang' && (
                 <ul className="header__dropdown-menu">
-                  <li><button onClick={() => setOpenDropdown(null)}>English</button></li>
-                  <li><button onClick={() => setOpenDropdown(null)}>Spanish</button></li>
-                  <li><button onClick={() => setOpenDropdown(null)}>French</button></li>
+                  <li><button>English</button></li>
+                  <li><button>Spanish</button></li>
+                  <li><button>French</button></li>
                 </ul>
               )}
             </div>
@@ -138,13 +116,8 @@ const Header: React.FC = () => {
             {/* PROFILE */}
             <div className="header__nav-item">
               <button
-                type="button"
                 className="header__sign-in"
-                aria-expanded={openDropdown === 'profile'}
-                onClick={(e) => {
-                  e.stopPropagation()
-                  toggleDropdown('profile')
-                }}
+                onClick={() => toggleDropdown('profile')}
               >
                 <i className="bi bi-person-circle" />
               </button>
@@ -152,28 +125,17 @@ const Header: React.FC = () => {
               {openDropdown === 'profile' && (
                 <ul className="header__dropdown-menu">
                   <li><Link to="/profile">Profile</Link></li>
-                  <li><Link to="/subscription">Subscription</Link></li>
-                  <li><Link to="/favorites">Favorites</Link></li>
                   <li><Link to="/settings">Settings</Link></li>
                   <li><button>Logout</button></li>
                 </ul>
               )}
             </div>
 
-            {/* ================= HAMBURGER ================= */}
+            {/* HAMBURGER (TABLET & MOBILE ONLY) */}
             <button
-              className={`header__btn ${
-                mobileOpen ? 'header__btn--active' : ''
-              }`}
-              type="button"
-              aria-expanded={mobileOpen}
-              aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
-              onClick={(e) => {
-                e.stopPropagation()
-                setMobileOpen(prev => !prev)
-                setOpenDropdown(null)
-                setMobileSearchOpen(false)
-              }}
+              className={`header__btn ${mobileOpen ? 'header__btn--active' : ''}`}
+              aria-label="Menu"
+              onClick={() => setMobileOpen(prev => !prev)}
             >
               <span />
               <span />
@@ -184,19 +146,10 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* ================= MOBILE NAV ================= */}
-      <MobileNavbar
-        open={mobileOpen}
-        onClose={() => {
-          setMobileOpen(false)
-          setOpenDropdown(null)
-          setMobileSearchOpen(false)
-        }}
-      />
+      <MobileNavbar open={mobileOpen} onClose={() => setMobileOpen(false)} />
 
-      {/* ================= MOBILE SEARCH POPUP ================= */}
       {mobileSearchOpen && (
-        <div className="header__mobile-search-popup open">
+        <div className="header__mobile-search-popup">
           <SearchForm onClose={() => setMobileSearchOpen(false)} />
         </div>
       )}
