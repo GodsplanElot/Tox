@@ -384,6 +384,22 @@ main,
   background: #1f1f26;
 }
 
+.header__search--mobile {
+  width: 40px;
+  height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #fff;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+.header__search--mobile:hover {
+  color: #f9ab00;
+}
 
 
 
