@@ -1,30 +1,20 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import { BrowserRouter } from 'react-router-dom'
 
-//Bootstrap CSS
+import App from './App'
+
+// Bootstrap CSS
 import 'bootstrap/dist/css/bootstrap.min.css'
 import 'bootstrap-icons/font/bootstrap-icons.css'
 
-//  custom CSS 
-import './css/default-skin.css'
-import './css/main.css' 
-import './css/photoswipe.css' 
-import './css/plyr.css' 
-import './css/slimselect.css' 
-import './css/splide.min.css'
-import { BrowserRouter } from "react-router-dom";
-
-
-
-
+// Optional: minimal global resets (can even remove later)
+import './index.css'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-
-     <BrowserRouter>
-      <App /> 
-     </BrowserRouter>
-  </StrictMode>,
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  </StrictMode>
 )
