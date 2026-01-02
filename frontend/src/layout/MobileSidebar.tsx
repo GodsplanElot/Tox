@@ -9,19 +9,30 @@ type Props = {
 const MobileSidebar = ({ show, onToggle }: Props) => {
   return (
     <>
-      {/* ICON RAIL (ALWAYS VISIBLE) */}
-      <div
-        className="mobile-rail d-lg-none"
-        onClick={onToggle}
-      >
-        <i className="bi bi-list"></i>
-        <i className="bi bi-house"></i>
-        <i className="bi bi-grid"></i>
-        <i className="bi bi-search"></i>
-        <i className="bi bi-person"></i>
+      {/* ICON RAIL (MOBILE ONLY) */}
+      <div className="mobile-rail d-lg-none">
+        <button className="rail-toggle" onClick={onToggle} aria-label="Menu">
+          <i className="bi bi-list"></i>
+        </button>
+
+        <Link to="/">
+          <i className="bi bi-house"></i>
+        </Link>
+
+        <Link to="/categories">
+          <i className="bi bi-grid"></i>
+        </Link>
+
+        <Link to="/search">
+          <i className="bi bi-search"></i>
+        </Link>
+
+        <Link to="/profile">
+          <i className="bi bi-person"></i>
+        </Link>
       </div>
 
-      {/* OFFCANVAS MENU */}
+      {/* OFFCANVAS */}
       <Offcanvas
         show={show}
         onHide={onToggle}
@@ -29,7 +40,7 @@ const MobileSidebar = ({ show, onToggle }: Props) => {
         backdrop={false}
         className="mobile-offcanvas"
       >
-        <Offcanvas.Header>
+        <Offcanvas.Header closeButton>
           <Offcanvas.Title>Menu</Offcanvas.Title>
         </Offcanvas.Header>
 
