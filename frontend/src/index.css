@@ -44,6 +44,9 @@ body {
   border-right: 1px solid #222028;
 }
 
+
+
+
 /* DESKTOP SAFETY */
 @media (min-width: 992px) {
   .mobile-rail,
