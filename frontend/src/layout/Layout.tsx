@@ -7,7 +7,7 @@ const Layout = () => {
     <>
       <Header />
 
-      <main className="container mt-4">
+      <main className="app-content">
         <Outlet />
       </main>
 
