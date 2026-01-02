@@ -1,4 +1,5 @@
 import { Navbar, Container, Nav } from 'react-bootstrap'
+import SearchForm from '../components/SearchForm'
 
 const Header = () => {
   return (
@@ -9,10 +10,15 @@ const Header = () => {
         <Navbar.Toggle aria-controls="main-navbar" />
 
         <Navbar.Collapse id="main-navbar">
-          <Nav className="ms-auto">
+          <Nav className="me-auto">
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/movies">Movies</Nav.Link>
           </Nav>
+
+          {/* DESKTOP SEARCH */}
+          <div className="d-none d-lg-block">
+            <SearchForm />
+          </div>
         </Navbar.Collapse>
       </Container>
     </Navbar>
