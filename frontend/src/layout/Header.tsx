@@ -1,7 +1,12 @@
+import { useState } from 'react'
 import { Navbar, Container, Nav } from 'react-bootstrap'
 import SearchForm from '../components/SearchForm'
+import MobileSidebar from './MobileSidebar'
+
 
 const Header = () => {
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
+  
   return (
     <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
       <Container>
@@ -27,7 +32,13 @@ const Header = () => {
           </div>
         </Navbar.Collapse>
       </Container>
+
+      <MobileSidebar
+        show={mobileSidebarOpen}
+        onToggle={() => setMobileSidebarOpen(prev => !prev)}
+      />
     </Navbar>
+    
   )
 }
 
