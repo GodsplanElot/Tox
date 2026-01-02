@@ -71,3 +71,16 @@ body {
     margin-left: 0;
   }
 }
+
+
+/* APP CONTENT OFFSET (MOBILE ONLY) */
+.app-content {
+  padding: 16px;
+}
+
+/* Mobile sidebar spacing */
+@media (max-width: 991px) {
+  .app-content {
+    padding-left: 72px; /* 56px sidebar + breathing space */
+  }
+}
