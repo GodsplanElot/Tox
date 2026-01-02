@@ -3,13 +3,14 @@ import SearchForm from '../components/SearchForm'
 
 const Header = () => {
   return (
-    <Navbar bg="dark" variant="dark" expand="lg">
+    <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
       <Container>
         <Navbar.Brand href="/">TOX</Navbar.Brand>
 
         <Navbar.Toggle aria-controls="main-navbar" />
 
         <Navbar.Collapse id="main-navbar">
+          {/* LEFT NAV */}
           <Nav className="me-auto">
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/movies">Movies</Nav.Link>
@@ -17,6 +18,11 @@ const Header = () => {
 
           {/* DESKTOP SEARCH */}
           <div className="d-none d-lg-block">
+            <SearchForm />
+          </div>
+
+          {/* MOBILE SEARCH */}
+          <div className="d-lg-none mt-3">
             <SearchForm />
           </div>
         </Navbar.Collapse>
