@@ -1,4 +1,4 @@
-/* index.css */
+/* RESET */
 * {
   box-sizing: border-box;
 }
@@ -8,34 +8,41 @@ body {
   padding: 0;
 }
 
-/* MOBILE ICON RAIL */
+/* ================= MOBILE ICON RAIL ================= */
 .mobile-rail {
   position: fixed;
-  top: 0;
+  top: 56px; /* BELOW bootstrap navbar */
   left: 0;
   width: 56px;
-  height: 100vh;
+  height: calc(100vh - 56px);
   background: #1a191f;
   border-right: 1px solid #222028;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding-top: 80px;
+  padding-top: 20px;
   gap: 24px;
   z-index: 1040;
   color: #fff;
 }
 
+.mobile-rail a,
+.mobile-rail button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
+
 .mobile-rail i {
   font-size: 20px;
-  cursor: pointer;
 }
 
 .mobile-rail i:hover {
   color: #f9ab00;
 }
 
-/* OFFCANVAS OVERRIDE */
+/* ================= OFFCANVAS ================= */
 .mobile-offcanvas {
   width: 280px !important;
   margin-left: 56px;
@@ -44,13 +51,23 @@ body {
   border-right: 1px solid #222028;
 }
 
+/* ================= MOBILE CONTENT OFFSET ================= */
+@media (max-width: 991px) {
+  main,
+  .page-content {
+    margin-left: 56px;
+  }
+}
 
-
-
-/* DESKTOP SAFETY */
+/* ================= DESKTOP SAFETY ================= */
 @media (min-width: 992px) {
   .mobile-rail,
   .mobile-offcanvas {
     display: none !important;
+  }
+
+  main,
+  .page-content {
+    margin-left: 0;
   }
 }
