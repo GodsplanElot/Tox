@@ -3,42 +3,44 @@ import { Navbar, Container, Nav } from 'react-bootstrap'
 import SearchForm from '../components/SearchForm'
 import MobileSidebar from './MobileSidebar'
 
-
 const Header = () => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
-  
+
   return (
-    <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
-      <Container>
-        <Navbar.Brand href="/">TOX</Navbar.Brand>
+    <>
+      <Navbar bg="dark" variant="dark" sticky="top">
+        <Container>
+          <Navbar.Brand href="/">TOX</Navbar.Brand>
 
-        <Navbar.Toggle aria-controls="main-navbar" />
+          {/* MOBILE TOGGLE → SIDEBAR */}
+          <button
+            className="navbar-toggler d-lg-none"
+            type="button"
+            aria-label="Open menu"
+            onClick={() => setMobileSidebarOpen(true)}
+          >
+            <span className="navbar-toggler-icon" />
+          </button>
 
-        <Navbar.Collapse id="main-navbar">
-          {/* LEFT NAV */}
-          <Nav className="me-auto">
+          {/* DESKTOP NAV ONLY */}
+          <Nav className="me-auto d-none d-lg-flex">
             <Nav.Link href="/">Home</Nav.Link>
             <Nav.Link href="/movies">Movies</Nav.Link>
           </Nav>
 
-          {/* DESKTOP SEARCH */}
+          {/* DESKTOP SEARCH ONLY */}
           <div className="d-none d-lg-block">
             <SearchForm />
           </div>
+        </Container>
+      </Navbar>
 
-          {/* MOBILE SEARCH */}
-          <div className="d-lg-none mt-3">
-            <SearchForm />
-          </div>
-        </Navbar.Collapse>
-      </Container>
-
+      {/* MOBILE SIDEBAR */}
       <MobileSidebar
         show={mobileSidebarOpen}
-        onToggle={() => setMobileSidebarOpen(prev => !prev)}
+        onToggle={() => setMobileSidebarOpen(false)}
       />
-    </Navbar>
-    
+    </>
   )
 }
 
