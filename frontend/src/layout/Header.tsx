@@ -8,7 +8,7 @@ const Header = () => {
 
   return (
     <>
-      <Navbar bg="dark" variant="dark" sticky="top">
+      <Navbar bg="dark" variant="dark" sticky="top" className="px-2">
         <Container>
           <Navbar.Brand href="/">TOX</Navbar.Brand>
 

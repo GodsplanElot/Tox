@@ -11,7 +11,7 @@ const MobileSidebar = ({ show, onToggle }: Props) => {
     <>
       {/* ICON RAIL (MOBILE ONLY) */}
       <div className="mobile-rail d-lg-none">
-        <button className="rail-toggle" onClick={onToggle} aria-label="Menu">
+        <button className="rail-toggle" onClick={() => onToggle()} aria-label="Menu">
           <i className="bi bi-list"></i>
         </button>
 
