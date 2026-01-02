@@ -3,17 +3,15 @@ import { Link } from 'react-router-dom'
 
 type Props = {
   show: boolean
-  onToggle: () => void
+  onClose: () => void
 }
 
-const MobileSidebar = ({ show, onToggle }: Props) => {
+const MobileSidebar = ({ show, onClose }: Props) => {
   return (
     <>
       {/* ICON RAIL (MOBILE ONLY) */}
       <div className="mobile-rail d-lg-none">
-        <button className="rail-toggle" onClick={() => onToggle()} aria-label="Menu">
-          <i className="bi bi-list"></i>
-        </button>
+        <i className="bi bi-list"></i>
 
         <Link to="/">
           <i className="bi bi-house"></i>
@@ -35,9 +33,9 @@ const MobileSidebar = ({ show, onToggle }: Props) => {
       {/* OFFCANVAS */}
       <Offcanvas
         show={show}
-        onHide={onToggle}
+        onHide={onClose}
         placement="start"
-        backdrop={false}
+        backdrop
         className="mobile-offcanvas"
       >
         <Offcanvas.Header closeButton>
@@ -46,16 +44,16 @@ const MobileSidebar = ({ show, onToggle }: Props) => {
 
         <Offcanvas.Body>
           <Nav className="flex-column gap-3">
-            <Nav.Link as={Link} to="/">
+            <Nav.Link as={Link} to="/" onClick={onClose}>
               <i className="bi bi-house me-2" /> Home
             </Nav.Link>
-            <Nav.Link as={Link} to="/categories">
+            <Nav.Link as={Link} to="/categories" onClick={onClose}>
               <i className="bi bi-grid me-2" /> Categories
             </Nav.Link>
-            <Nav.Link as={Link} to="/search">
+            <Nav.Link as={Link} to="/search" onClick={onClose}>
               <i className="bi bi-search me-2" /> Search
             </Nav.Link>
-            <Nav.Link as={Link} to="/profile">
+            <Nav.Link as={Link} to="/profile" onClick={onClose}>
               <i className="bi bi-person me-2" /> Profile
             </Nav.Link>
           </Nav>

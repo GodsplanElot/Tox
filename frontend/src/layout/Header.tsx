@@ -9,15 +9,11 @@ const Header = () => {
 
   return (
     <>
-      <Navbar bg="dark" variant="dark" sticky="top" className="px-2">
+      <Navbar bg="dark" variant="dark" sticky="top">
         <Container fluid>
           {/* LOGO */}
-          <Navbar.Brand href="/" className="d-flex align-items-center gap-2">
-            <img
-              src={logo}
-              alt="TOX"
-              height={32}
-            />
+          <Navbar.Brand href="/">
+            <img src={logo} alt="TOX" height={32} />
           </Navbar.Brand>
 
           {/* MOBILE TOGGLE */}
@@ -46,7 +42,7 @@ const Header = () => {
       {/* MOBILE SIDEBAR */}
       <MobileSidebar
         show={mobileSidebarOpen}
-        onToggle={() => setMobileSidebarOpen(false)}
+        onClose={() => setMobileSidebarOpen(false)}
       />
     </>
   )
