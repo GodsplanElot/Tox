@@ -4,7 +4,7 @@ import Footer from "./Footer"
 
 const Layout = () => {
   return (
-    <>
+    <div className="app-layout">
       <Header />
 
       <main className="app-content">
@@ -12,7 +12,7 @@ const Layout = () => {
       </main>
 
       <Footer />
-    </>
+    </div>
   )
 }
 
