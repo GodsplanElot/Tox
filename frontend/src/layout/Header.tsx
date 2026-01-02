@@ -7,6 +7,9 @@ import logo from '../assets/icons/nav_logo.png'
 const Header = () => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
 
+  const openSidebar = () => setMobileSidebarOpen(true)
+  const closeSidebar = () => setMobileSidebarOpen(false)
+
   return (
     <>
       <Navbar bg="dark" variant="dark" sticky="top">
@@ -16,12 +19,12 @@ const Header = () => {
             <img src={logo} alt="TOX" height={32} />
           </Navbar.Brand>
 
-          {/* MOBILE TOGGLE */}
+          {/* MOBILE TOGGLE (TOP NAV) */}
           <button
             className="navbar-toggler d-lg-none"
             type="button"
             aria-label="Open menu"
-            onClick={() => setMobileSidebarOpen(true)}
+            onClick={openSidebar}
           >
             <span className="navbar-toggler-icon" />
           </button>
@@ -42,7 +45,8 @@ const Header = () => {
       {/* MOBILE SIDEBAR */}
       <MobileSidebar
         show={mobileSidebarOpen}
-        onClose={() => setMobileSidebarOpen(false)}
+        onOpen={openSidebar}
+        onClose={closeSidebar}
       />
     </>
   )

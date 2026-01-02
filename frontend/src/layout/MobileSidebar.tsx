@@ -3,15 +3,25 @@ import { Link } from 'react-router-dom'
 
 type Props = {
   show: boolean
+  onOpen: () => void
   onClose: () => void
 }
 
-const MobileSidebar = ({ show, onClose }: Props) => {
+const MobileSidebar = ({ show, onOpen, onClose }: Props) => {
+
   return (
     <>
-      {/* ICON RAIL (MOBILE ONLY) */}
+      {/* MOBILE ICON RAIL */}
       <div className="mobile-rail d-lg-none">
-        <i className="bi bi-list"></i>
+        {/* HAMBURGER BUTTON */}
+        <button
+          type="button"
+          className="rail-toggle"
+          aria-label="Open menu"
+          onClick={onOpen}
+        >
+          <i className="bi bi-list"></i>
+        </button>
 
         <Link to="/">
           <i className="bi bi-house"></i>
@@ -30,7 +40,7 @@ const MobileSidebar = ({ show, onClose }: Props) => {
         </Link>
       </div>
 
-      {/* OFFCANVAS */}
+      {/* OFFCANVAS MENU */}
       <Offcanvas
         show={show}
         onHide={onClose}
@@ -45,16 +55,23 @@ const MobileSidebar = ({ show, onClose }: Props) => {
         <Offcanvas.Body>
           <Nav className="flex-column gap-3">
             <Nav.Link as={Link} to="/" onClick={onClose}>
-              <i className="bi bi-house me-2" /> Home
+              <i className="bi bi-house me-2" />
+              Home
             </Nav.Link>
+
             <Nav.Link as={Link} to="/categories" onClick={onClose}>
-              <i className="bi bi-grid me-2" /> Categories
+              <i className="bi bi-grid me-2" />
+              Categories
             </Nav.Link>
+
             <Nav.Link as={Link} to="/search" onClick={onClose}>
-              <i className="bi bi-search me-2" /> Search
+              <i className="bi bi-search me-2" />
+              Search
             </Nav.Link>
+
             <Nav.Link as={Link} to="/profile" onClick={onClose}>
-              <i className="bi bi-person me-2" /> Profile
+              <i className="bi bi-person me-2" />
+              Profile
             </Nav.Link>
           </Nav>
         </Offcanvas.Body>
