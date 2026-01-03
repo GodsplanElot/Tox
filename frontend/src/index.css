@@ -67,7 +67,6 @@ body {
 /* ================= OFFCANVAS ================= */
 .mobile-offcanvas {
   width: 280px !important;
-  margin-left: 56px;
   background-color: #1a191f;
   color: #fff;
   border-right: 1px solid #222028;
