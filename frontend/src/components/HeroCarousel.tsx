@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 const slides = [
@@ -7,7 +7,7 @@ const slides = [
     rating: '9.8',
     ratingClass: 'green',
     text:
-      "A brilliant scientist discovers a way to harness the power of the ocean's currents to create a new, renewable energy source. But when her groundbreaking technology falls into the wrong hands, she must race against time to stop it from being used for evil.",
+      "A brilliant scientist discovers a way to harness the power of the ocean's currents to create a new, renewable energy source.",
     categories: ['Action', 'Drama', 'Comedy'],
     bg: '/img/bg/home__bg.jpg',
   },
@@ -16,8 +16,8 @@ const slides = [
     rating: '6.9',
     ratingClass: 'yellow',
     text:
-      'In a world where magic is outlawed and hunted, a young witch must use her powers to fight back against the corrupt authorities who seek to destroy her kind.',
-    categories: ['Adventure', 'Triler'],
+      'In a world where magic is outlawed and hunted, a young witch must fight back.',
+    categories: ['Adventure', 'Thriller'],
     bg: '/img/covers/cover1.jpg',
   },
   {
@@ -25,114 +25,90 @@ const slides = [
     rating: '6.2',
     ratingClass: 'red',
     text:
-      "When a renowned archaeologist goes missing, his daughter sets out on a perilous journey to the heart of the Amazon rainforest to find him. Along the way, she discovers a hidden city and a dangerous conspiracy that threatens the very balance of power in the world.",
-    categories: ['Action', 'Drama', 'Triler'],
+      'An archaeologist’s daughter journeys into the Amazon to uncover a hidden city.',
+    categories: ['Action', 'Drama', 'Thriller'],
     bg: '/img/covers/cover2.jpg',
   },
 ]
 
-type Props = {
-  autoplayMs?: number
-}
+const AUTOPLAY_MS = 6000
 
-const HeroCarousel: React.FC<Props> = ({ autoplayMs = 6000 }) => {
+const HeroCarousel = () => {
   const [index, setIndex] = useState(0)
-  const autoplayRef = useRef<number | null>(null)
-  const [rendered, setRendered] = useState(false)
+  const timerRef = useRef<number | null>(null)
+  const startX = useRef<number | null>(null)
+
+  const next = () => setIndex((i) => (i + 1) % slides.length)
+  const prev = () => setIndex((i) => (i - 1 + slides.length) % slides.length)
 
   useEffect(() => {
-    autoplayRef.current = window.setInterval(() => setIndex((i) => (i + 1) % slides.length), autoplayMs)
-    return () => {
-      if (autoplayRef.current) window.clearInterval(autoplayRef.current)
-    }
-  }, [autoplayMs])
-
-  useEffect(() => {
-    // mark splide as rendered so splide.min.css won't keep it hidden
-    setRendered(true)
-    return () => setRendered(false)
+    timerRef.current = window.setInterval(next, AUTOPLAY_MS)
+    return () => timerRef.current && clearInterval(timerRef.current)
   }, [])
 
-  function prev() {
-    setIndex((i) => (i - 1 + slides.length) % slides.length)
-  }
-  function next() {
-    setIndex((i) => (i + 1) % slides.length)
+  function resetAutoplay() {
+    if (timerRef.current) clearInterval(timerRef.current)
+    timerRef.current = window.setInterval(next, AUTOPLAY_MS)
   }
 
-  function resetAutoplay() {
-    if (autoplayRef.current) window.clearInterval(autoplayRef.current)
-    autoplayRef.current = window.setInterval(() => setIndex((i) => (i + 1) % slides.length), autoplayMs)
+  function onTouchStart(e: React.TouchEvent) {
+    startX.current = e.touches[0].clientX
+  }
+
+  function onTouchEnd(e: React.TouchEvent) {
+    if (startX.current === null) return
+    const delta = e.changedTouches[0].clientX - startX.current
+    if (Math.abs(delta) > 50) {
+      delta > 0 ? prev() : next()
+      resetAutoplay()
+    }
+    startX.current = null
   }
 
   return (
-    <section className="home home--hero">
-      <div className="container">
-        <div className="row">
-          <div className="col-12">
-            <div className={`hero splide splide--hero ${rendered ? 'is-initialized is-rendered' : ''}`} aria-roledescription="carousel">
-              <div className="splide__arrows">
-                <button
-                  className="splide__arrow splide__arrow--prev"
-                  type="button"
-                  onClick={() => {
-                    prev()
-                    resetAutoplay()
-                  }}
-                  aria-label="Previous slide"
-                >
-                  <i className="bi bi-chevron-left"></i>
-                </button>
-                <button
-                  className="splide__arrow splide__arrow--next"
-                  type="button"
-                  onClick={() => {
-                    next()
-                    resetAutoplay()
-                  }}
-                  aria-label="Next slide"
-                >
-                  <i className="bi bi-chevron-right"></i>
-                </button>
+    <section
+      className="hero-carousel"
+      onTouchStart={onTouchStart}
+      onTouchEnd={onTouchEnd}
+    >
+      <div
+        className="hero-track"
+        style={{ transform: `translateX(-${index * 100}%)` }}
+      >
+        {slides.map((s) => (
+          <div
+            key={s.title}
+            className="hero-slide"
+            style={{ backgroundImage: `url(${s.bg})` }}
+          >
+            <div className="hero-overlay" />
+            <div className="hero-content">
+              <h1>
+                {s.title} <sub className={s.ratingClass}>{s.rating}</sub>
+              </h1>
+              <p>{s.text}</p>
+
+              <div className="hero-categories">
+                {s.categories.map((c) => (
+                  <span key={c}>{c}</span>
+                ))}
               </div>
 
-              <div className="splide__track">
-                <ul className="splide__list">
-                  {slides.map((s, i) => (
-                    <li
-                      key={s.title}
-                      className={`splide__slide ${i === index ? 'is-active' : ''}`}
-                      aria-hidden={i === index ? 'false' : 'true'}
-                      style={{ display: i === index ? undefined : 'none' }}
-                    >
-                      <div className="hero__slide" data-bg={s.bg} style={{ backgroundImage: `url(${s.bg})` }}>
-                        <div className="hero__content">
-                          <h2 className="hero__title">
-                            {s.title} <sub className={s.ratingClass}>{s.rating}</sub>
-                          </h2>
-                          <p className="hero__text">{s.text}</p>
-                          <p className="hero__category">
-                            {s.categories.map((c) => (
-                              <a key={c} href="#">
-                                {c}
-                              </a>
-                            ))}
-                          </p>
-                          <div className="hero__actions">
-                            <Link to="/details" className="hero__btn">
-                              <span>Watch now</span>
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </li>
-                  ))}
-                </ul>
-              </div>
+              <Link to="/details" className="hero-btn">
+                Watch Now
+              </Link>
             </div>
           </div>
-        </div>
+        ))}
       </div>
+
+      {/* Controls */}
+      <button className="hero-arrow left" onClick={() => { prev(); resetAutoplay() }}>
+        ‹
+      </button>
+      <button className="hero-arrow right" onClick={() => { next(); resetAutoplay() }}>
+        ›
+      </button>
     </section>
   )
 }
