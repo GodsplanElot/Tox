@@ -1,5 +1,5 @@
 import { Offcanvas, Nav } from 'react-bootstrap'
-import { Link } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 
 type Props = {
   show: boolean
@@ -8,12 +8,11 @@ type Props = {
 }
 
 const MobileSidebar = ({ show, onOpen, onClose }: Props) => {
-
   return (
     <>
       {/* MOBILE ICON RAIL */}
       <div className="mobile-rail d-lg-none">
-        {/* HAMBURGER BUTTON */}
+        {/* MENU TOGGLE */}
         <button
           type="button"
           className="rail-toggle"
@@ -23,21 +22,21 @@ const MobileSidebar = ({ show, onOpen, onClose }: Props) => {
           <i className="bi bi-list"></i>
         </button>
 
-        <Link to="/">
+        <NavLink to="/" className="rail-icon">
           <i className="bi bi-house"></i>
-        </Link>
+        </NavLink>
 
-        <Link to="/categories">
+        <NavLink to="/categories" className="rail-icon">
           <i className="bi bi-grid"></i>
-        </Link>
+        </NavLink>
 
-        <Link to="/search">
+        <NavLink to="/search" className="rail-icon">
           <i className="bi bi-search"></i>
-        </Link>
+        </NavLink>
 
-        <Link to="/profile">
+        <NavLink to="/profile" className="rail-icon">
           <i className="bi bi-person"></i>
-        </Link>
+        </NavLink>
       </div>
 
       {/* OFFCANVAS MENU */}
@@ -49,30 +48,28 @@ const MobileSidebar = ({ show, onOpen, onClose }: Props) => {
         className="mobile-offcanvas"
       >
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title>Menu</Offcanvas.Title>
+          <Offcanvas.Title className="text-white fw-semibold">
+            TOX
+          </Offcanvas.Title>
         </Offcanvas.Header>
 
         <Offcanvas.Body>
-          <Nav className="flex-column gap-3">
-            <Nav.Link as={Link} to="/" onClick={onClose}>
-              <i className="bi bi-house me-2" />
+          <Nav className="flex-column gap-2">
+            <NavLink to="/" className="offcanvas-link" onClick={onClose}>
               Home
-            </Nav.Link>
+            </NavLink>
 
-            <Nav.Link as={Link} to="/categories" onClick={onClose}>
-              <i className="bi bi-grid me-2" />
+            <NavLink to="/categories" className="offcanvas-link" onClick={onClose}>
               Categories
-            </Nav.Link>
+            </NavLink>
 
-            <Nav.Link as={Link} to="/search" onClick={onClose}>
-              <i className="bi bi-search me-2" />
+            <NavLink to="/search" className="offcanvas-link" onClick={onClose}>
               Search
-            </Nav.Link>
+            </NavLink>
 
-            <Nav.Link as={Link} to="/profile" onClick={onClose}>
-              <i className="bi bi-person me-2" />
+            <NavLink to="/profile" className="offcanvas-link" onClick={onClose}>
               Profile
-            </Nav.Link>
+            </NavLink>
           </Nav>
         </Offcanvas.Body>
       </Offcanvas>

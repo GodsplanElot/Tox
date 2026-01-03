@@ -34,6 +34,7 @@ body {
   border: none;
   color: inherit;
   cursor: pointer;
+  padding: 0;
 }
 
 .mobile-rail i {
@@ -44,14 +45,45 @@ body {
   color: #f9ab00;
 }
 
+/* ACTIVE ICON (NavLink adds .active) */
+.rail-icon.active i {
+  color: #f9ab00;
+}
+
 /* ================= OFFCANVAS ================= */
 .mobile-offcanvas {
   width: 280px !important;
-  margin-left: 56px;
+  margin-left: 56px; /* clears icon rail */
   background-color: #1a191f;
   color: #fff;
   border-right: 1px solid #222028;
   z-index: 1050 !important;
+}
+
+/* WHITE CLOSE (X) BUTTON */
+.mobile-offcanvas .btn-close {
+  filter: invert(1);
+}
+
+/* ================= OFFCANVAS LINKS ================= */
+.offcanvas-link {
+  color: #cfcfd4;
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-weight: 500;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.offcanvas-link:hover {
+  background-color: #2a2931;
+  color: #ffffff;
+}
+
+/* ACTIVE PAGE */
+.offcanvas-link.active {
+  background-color: #f9ab00;
+  color: #000;
 }
 
 /* ================= APP LAYOUT ================= */
