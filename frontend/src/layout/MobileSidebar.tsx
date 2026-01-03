@@ -44,7 +44,8 @@ const MobileSidebar = ({ show, onOpen, onClose }: Props) => {
         show={show}
         onHide={onClose}
         placement="start"
-        backdrop
+        backdrop="static"
+        scroll={false}
         className="mobile-offcanvas"
       >
         <Offcanvas.Header closeButton>
