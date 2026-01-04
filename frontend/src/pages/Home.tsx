@@ -1,5 +1,5 @@
 import HeroCarousel from "../components/HeroCarousel"
-import MovieRail from "../components/MovieRail"
+import MovieRail from "../components/MovieRail/MovieRail"
 import MovieGrid from "../components/MovieGrid/MovieGrid"
 import type { Movie } from "../components/MovieCard/MovieCard"
 const mockMovies = [
