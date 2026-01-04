@@ -1,12 +1,6 @@
 import React from "react";
 import "./MovieCard.css";
-
-export interface Movie {
-  id: number;
-  title: string;
-  poster: string;
-  year?: string;
-}
+import type { Movie } from "../../types/movie";
 
 interface MovieCardProps {
   movie: Movie;
