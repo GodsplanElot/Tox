@@ -148,7 +148,6 @@ body {
 .app-content {
   flex: 1;
   padding: 1rem;
-  background-color: var(--bg-surface);
   border-radius: 12px;
   margin: 12px;
 }
