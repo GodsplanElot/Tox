@@ -124,27 +124,6 @@ const HeroCarousel = () => {
           </div>
         ))}
       </div>
-
-      {/* Controls */}
-      <button
-        className="hero-arrow left"
-        onClick={() => {
-          prev()
-          resetAutoplay()
-        }}
-      >
-        ‹
-      </button>
-
-      <button
-        className="hero-arrow right"
-        onClick={() => {
-          next()
-          resetAutoplay()
-        }}
-      >
-        ›
-      </button>
     </section>
   )
 }

@@ -252,28 +252,6 @@ body {
   text-decoration: none;
 }
 
-/* Arrows */
-.hero-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
-  color: #ffffff;
-  border: none;
-  font-size: 32px;
-  padding: 6px 12px;
-  cursor: pointer;
-  z-index: 2;
-}
-
-.hero-arrow.left {
-  left: 10px;
-}
-
-.hero-arrow.right {
-  right: 10px;
-}
-
 /* ================= MOBILE OFFSET ================= */
 @media (max-width: 991.98px) {
   .app-content {
