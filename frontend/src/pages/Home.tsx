@@ -1,12 +1,7 @@
 import HeroCarousel from "../components/HeroCarousel";
 import MovieRail from "../components/MovieRail/MovieRail";
 import MovieGrid from "../components/MovieGrid/MovieGrid";
-import { moviesFromDb } from "../data/movies";
-import { mockMovies } from "../data/movies";
-import type { Movie } from "../types/movie";
-
-
-
+import { moviesFromDb, mockMovies } from "../data/movies";
 
 const Home = () => {
   return (

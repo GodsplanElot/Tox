@@ -1,5 +1,8 @@
-/* ================= MOCK DATA (Rails) ================= */
-const mockMovies: Movie[] = [
+// src/data/movies.ts
+import type { Movie } from "../types/movie";
+
+/* ================= MOCK MOVIE RAIL DATA ================= */
+export const mockMovies: Movie[] = [
   {
     id: 1,
     title: "Endless Horizon",
@@ -26,14 +29,54 @@ const mockMovies: Movie[] = [
   },
 ];
 
-/* ================= MOCK DATA (Grid / DB) ================= */
-const moviesFromDb: Movie[] = [
-  { id: 101, title: "Mystic Falls", poster: "/img/covers/cover5.jpg", rating: 8.1 },
-  { id: 102, title: "Mystic Falls", poster: "/img/covers/cover1.jpg", rating: 8.1 },
-  { id: 103, title: "Mystic Falls", poster: "/img/covers/cover2.jpg", rating: 8.1 },
-  { id: 104, title: "Mystic Falls", poster: "/img/covers/cover3.jpg", rating: 8.1 },
-  { id: 105, title: "Mystic Falls", poster: "/img/covers/cover4.jpg", rating: 8.1 },
-  { id: 106, title: "Mystic Falls", poster: "/img/covers/cover5.jpg", rating: 8.1 },
-  { id: 107, title: "Mystic Falls", poster: "/img/covers/cover6.jpg", rating: 8.1 },
-  { id: 108, title: "Mystic Falls", poster: "/img/covers/cover8.jpg", rating: 8.1 },
+/* ================= MOCK DB GRID DATA ================= */
+export const moviesFromDb: Movie[] = [
+  {
+    id: 101,
+    title: "Mystic Falls",
+    poster: "/img/covers/cover5.jpg",
+    rating: 8.1,
+  },
+  {
+    id: 102,
+    title: "Mystic Falls",
+    poster: "/img/covers/cover1.jpg",
+    rating: 8.1,
+  },
+  {
+    id: 103,
+    title: "Mystic Falls",
+    poster: "/img/covers/cover2.jpg",
+    rating: 8.1,
+  },
+  {
+    id: 104,
+    title: "Mystic Falls",
+    poster: "/img/covers/cover3.jpg",
+    rating: 8.1,
+  },
+  {
+    id: 105,
+    title: "Mystic Falls",
+    poster: "/img/covers/cover4.jpg",
+    rating: 8.1,
+  },
+  {
+    id: 106,
+    title: "Mystic Falls",
+    poster: "/img/covers/cover5.jpg",
+    rating: 8.1,
+  },
+  {
+    id: 107,
+    title: "Mystic Falls",
+    poster: "/img/covers/cover6.jpg",
+    rating: 8.1,
+  },
+  {
+    id: 108,
+    title: "Mystic Falls",
+    poster: "/img/covers/cover8.jpg",
+    rating: 8.1,
+  },
 ];
