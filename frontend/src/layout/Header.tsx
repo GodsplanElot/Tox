@@ -1,25 +1,26 @@
-import { useState } from 'react'
-import { Navbar, Container, Nav } from 'react-bootstrap'
-import SearchForm from '../components/SearchForm'
-import MobileSidebar from './MobileSidebar'
-import logo from '../assets/icons/nav_logo.png'
+import { useState } from "react";
+import { Navbar, Container, Nav } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
+import SearchForm from "../components/SearchForm";
+import MobileSidebar from "./MobileSidebar";
+import logo from "../assets/icons/nav_logo.png";
 
 const Header = () => {
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
-  const openSidebar = () => setMobileSidebarOpen(true)
-  const closeSidebar = () => setMobileSidebarOpen(false)
+  const openSidebar = () => setMobileSidebarOpen(true);
+  const closeSidebar = () => setMobileSidebarOpen(false);
 
   return (
     <>
-      <Navbar bg="dark" variant="dark" sticky="top">
+      <Navbar bg="dark" variant="dark" sticky="top" className="navbar">
         <Container fluid>
           {/* LOGO */}
-          <Navbar.Brand href="/">
+          <Navbar.Brand as={NavLink} to="/">
             <img src={logo} alt="TOX" height={32} />
           </Navbar.Brand>
 
-          {/* MOBILE TOGGLE (TOP NAV) */}
+          {/* MOBILE TOGGLE */}
           <button
             className="navbar-toggler d-lg-none"
             type="button"
@@ -30,9 +31,14 @@ const Header = () => {
           </button>
 
           {/* DESKTOP NAV */}
-          <Nav className="me-auto d-none d-lg-flex">
-            <Nav.Link href="/">Home</Nav.Link>
-            <Nav.Link href="/movies">Movies</Nav.Link>
+          <Nav className="me-auto d-none d-lg-flex gap-3">
+            <Nav.Link as={NavLink} to="/">
+              Home
+            </Nav.Link>
+
+            <Nav.Link as={NavLink} to="/categories">
+              Categories
+            </Nav.Link>
           </Nav>
 
           {/* DESKTOP SEARCH */}
@@ -49,7 +55,7 @@ const Header = () => {
         onClose={closeSidebar}
       />
     </>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;
