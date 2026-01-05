@@ -1,29 +1,28 @@
-import { Form, Button, InputGroup } from 'react-bootstrap'
-import { useState } from 'react'
+import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 const SearchForm = () => {
-  const [query, setQuery] = useState('')
+  const [query, setQuery] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    console.log('Search:', query)
-  }
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!query.trim()) return;
+
+    navigate(`/search?q=${encodeURIComponent(query)}`);
+  };
 
   return (
-    <Form onSubmit={handleSubmit} className="d-flex">
-      <InputGroup>
-        <Form.Control
-          type="search"
-          placeholder="Search movies..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
-        <Button variant="warning" type="submit">
-          <i className="bi bi-search" />
-        </Button>
-      </InputGroup>
-    </Form>
-  )
-}
+    <form onSubmit={onSubmit}>
+      <input
+        type="search"
+        placeholder="Search movies..."
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        className="form-control"
+      />
+    </form>
+  );
+};
 
-export default SearchForm
+export default SearchForm;
