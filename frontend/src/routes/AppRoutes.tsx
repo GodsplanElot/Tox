@@ -4,6 +4,7 @@ import Home from "../pages/Home"
 import NotFound from "../pages/NotFound"
 import Categories from "../pages/Categories"
 import CategoryDetail from "../pages/CategoryDetail"
+import Search from "../pages/Search"
 
 const AppRoutes = () => {
   return (
