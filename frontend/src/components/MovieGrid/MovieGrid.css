@@ -1,5 +1,5 @@
 .movie-grid-section {
-  padding: 24px 16px;
+  padding: 0;
 }
 
 .movie-grid-title {
@@ -9,10 +9,9 @@
   margin-bottom: 16px;
 }
 
-/* GRID LAYOUT */
 .movie-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
   gap: 16px;
 }
 
@@ -28,13 +27,5 @@
 @media (min-width: 641px) and (max-width: 1024px) {
   .movie-grid {
     grid-template-columns: repeat(5, 1fr);
-  }
-}
-
-/* Desktop */
-@media (min-width: 1025px) {
-  .movie-grid {
-    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-    gap: 20px;
   }
 }

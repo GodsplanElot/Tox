@@ -142,11 +142,17 @@ body {
   background-color: var(--bg-app);
 }
 
+/* 🔴 CRITICAL FIX */
 .app-content {
   flex: 1;
   padding: 1rem;
-  border-radius: 12px;
-  margin: 12px;
+
+  /* SCROLL CONTAINMENT */
+  overflow-y: auto;
+  overflow-x: hidden;
+
+  /* REQUIRED FOR GRID + FLEX */
+  min-height: 0;
 }
 
 /* ================= CONTENT SECTIONS ================= */
@@ -300,9 +306,10 @@ body {
 /* ================= MOBILE OFFSET ================= */
 @media (max-width: 991.98px) {
   .app-content {
-    margin-left: 56px;
-    margin-right: 12px;
+    padding-left: calc(56px + 1rem);
+    padding-right: 1rem;
   }
+
 
   .hero-carousel {
     height: 60vh;
