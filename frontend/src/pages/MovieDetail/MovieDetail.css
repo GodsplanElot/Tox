@@ -1,0 +1,163 @@
+/* ================================
+   MOVIE DETAIL – NETFLIX STYLE
+================================ */
+
+.movie-detail {
+  background-color: #0b0b0b;
+  color: #ffffff;
+  min-height: 100vh;
+}
+
+/* ---------- NOT FOUND ---------- */
+.movie-detail__not-found {
+  min-height: 60vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+}
+
+/* ---------- HERO ---------- */
+.movie-detail__hero {
+  position: relative;
+  background-size: cover;
+  background-position: center;
+  padding: 80px 16px 48px;
+}
+
+.movie-detail__hero-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 32px;
+}
+
+/* ---------- POSTER ---------- */
+.movie-detail__poster {
+  position: relative;
+}
+
+.movie-detail__poster img {
+  width: 100%;
+  border-radius: 10px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+}
+
+.movie-detail__rating {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: rgba(0, 0, 0, 0.75);
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* ---------- INFO ---------- */
+.movie-detail__info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.movie-detail__title {
+  font-size: 2.4rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.movie-detail__meta {
+  display: flex;
+  gap: 12px;
+  color: #b5b5b5;
+  font-size: 0.95rem;
+  margin-bottom: 14px;
+}
+
+.movie-detail__meta span::after {
+  content: "•";
+  margin-left: 12px;
+}
+
+.movie-detail__meta span:last-child::after {
+  content: "";
+}
+
+/* ---------- GENRES ---------- */
+.movie-detail__genres {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.movie-detail__genres span {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+
+/* ---------- DESCRIPTION ---------- */
+.movie-detail__description {
+  color: #ddd;
+  line-height: 1.6;
+  max-width: 720px;
+  margin-bottom: 24px;
+}
+
+/* ---------- CTA ---------- */
+.movie-detail__play-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: #e50914;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-weight: 600;
+  text-decoration: none;
+  width: fit-content;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.movie-detail__play-btn:hover {
+  background: #f40612;
+  transform: translateY(-1px);
+}
+
+/* ---------- RELATED ---------- */
+.movie-detail__related {
+  padding: 40px 16px 64px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* ================================
+   RESPONSIVE
+================================ */
+
+@media (max-width: 768px) {
+  .movie-detail__hero {
+    padding-top: 64px;
+  }
+
+  .movie-detail__hero-content {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+
+  .movie-detail__poster {
+    max-width: 220px;
+  }
+
+  .movie-detail__title {
+    font-size: 1.9rem;
+  }
+
+  .movie-detail__description {
+    font-size: 0.95rem;
+  }
+}
