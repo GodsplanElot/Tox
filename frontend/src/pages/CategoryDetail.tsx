@@ -3,6 +3,7 @@ import { useMemo, useState } from "react";
 import { categories } from "../data/categories";
 import { moviesFromDb } from "../data/movies";
 import MovieGrid from "../components/MovieGrid/MovieGrid";
+import "../styles/CategoryDetail.css";
 import type { Movie } from "../types/movie";
 
 type SortOption = "az" | "newest" | "oldest" | "rating";
@@ -16,7 +17,7 @@ const CategoryDetail = () => {
   const movies = useMemo(() => {
     if (!category) return [];
 
-    let filtered = moviesFromDb.filter((movie) =>
+    const filtered = moviesFromDb.filter((movie) =>
       movie.categoryIds.includes(category.id)
     );
 
