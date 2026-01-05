@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import MovieRail from "../components/MovieRail/MovieRail";
 import MovieGrid from "../components/MovieGrid/MovieGrid";
 import { moviesFromDb } from "../data/movies";
-import "./Search.css";
+import "../styles/Search.css";
 
 const Search = () => {
   const [params, setParams] = useSearchParams();
