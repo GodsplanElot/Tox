@@ -1,18 +1,17 @@
-import { Offcanvas, Nav } from 'react-bootstrap'
-import { NavLink } from 'react-router-dom'
+import { Offcanvas, Nav } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
 
 type Props = {
-  show: boolean
-  onOpen: () => void
-  onClose: () => void
-}
+  show: boolean;
+  onOpen: () => void;
+  onClose: () => void;
+};
 
 const MobileSidebar = ({ show, onOpen, onClose }: Props) => {
   return (
     <>
       {/* MOBILE ICON RAIL */}
       <div className="mobile-rail d-lg-none">
-        {/* MENU TOGGLE */}
         <button
           type="button"
           className="rail-toggle"
@@ -45,7 +44,6 @@ const MobileSidebar = ({ show, onOpen, onClose }: Props) => {
         onHide={onClose}
         placement="start"
         backdrop="static"
-        scroll={false}
         className="mobile-offcanvas"
       >
         <Offcanvas.Header closeButton>
@@ -60,7 +58,11 @@ const MobileSidebar = ({ show, onOpen, onClose }: Props) => {
               Home
             </NavLink>
 
-            <NavLink to="/categories" className="offcanvas-link" onClick={onClose}>
+            <NavLink
+              to="/categories"
+              className="offcanvas-link"
+              onClick={onClose}
+            >
               Categories
             </NavLink>
 
@@ -75,7 +77,7 @@ const MobileSidebar = ({ show, onOpen, onClose }: Props) => {
         </Offcanvas.Body>
       </Offcanvas>
     </>
-  )
-}
+  );
+};
 
-export default MobileSidebar
+export default MobileSidebar;
