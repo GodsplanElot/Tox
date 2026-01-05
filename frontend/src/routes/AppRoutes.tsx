@@ -3,6 +3,7 @@ import Layout from "../layout/Layout"
 import Home from "../pages/Home"
 import NotFound from "../pages/NotFound"
 import Categories from "../pages/Categories"
+import CategoryDetail from "../pages/CategoryDetail"
 
 const AppRoutes = () => {
   return (
