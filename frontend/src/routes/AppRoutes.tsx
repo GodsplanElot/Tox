@@ -10,6 +10,7 @@ const AppRoutes = () => {
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/categories" element={<Categories />} />
+        <Route path="/categories/:slug" element={<CategoryDetail />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

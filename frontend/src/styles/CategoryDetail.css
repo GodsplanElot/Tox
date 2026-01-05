@@ -1,0 +1,25 @@
+.category-header {
+  margin-bottom: 1.5rem;
+}
+
+.category-header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+}
+
+.category-header p {
+  color: var(--text-muted);
+  max-width: 600px;
+}
+
+.category-sort {
+  margin-top: 12px;
+}
+
+.category-sort select {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border-subtle);
+  padding: 6px 10px;
+  border-radius: 6px;
+}
