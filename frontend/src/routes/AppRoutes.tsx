@@ -5,6 +5,7 @@ import NotFound from "../pages/NotFound"
 import Categories from "../pages/Categories"
 import CategoryDetail from "../pages/CategoryDetail"
 import Search from "../pages/Search"
+import MovieDetail from "../pages/MovieDetail/MovieDetail"
 
 const AppRoutes = () => {
   return (
