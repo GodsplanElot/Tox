@@ -34,7 +34,27 @@ export const mockMovies: Movie[] = [
     rating: 7.4,
     releaseDate: "2023-06-21",
     categoryIds: [3],
+    runtime: 125,
+    genres: ["Action", "Sci-Fi"],
+    description: "In a sprawling metropolis bathed in neon lights, a renegade detective uncovers a conspiracy that threatens to unravel the fabric of society.",
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer"
   },
+
+
+  /* 
+   id: number;
+  title: string;
+  poster: string;
+  year?: string;
+  rating?: number;
+  releaseDate?: string; // ISO string for sorting
+  categoryIds: number[]; // <-- key for filtering
+  backdrop?: string
+  runtime?: number
+  genres?: string[]
+  description?: string
+  trailer?: string
+  */
 ];
 
 /* ================= MOCK DB GRID DATA ================= */
@@ -45,7 +65,12 @@ export const moviesFromDb: Movie[] = [
     poster: "/img/covers/cover1.jpg",
     rating: 8.3,
     releaseDate: "2024-01-12",
-    categoryIds: [1]
+    categoryIds: [1],
+  
+    runtime: 125,
+    genres: ["Action", "Sci-Fi"],
+    description: "In a sprawling metropolis bathed in neon lights, a renegade detective uncovers a conspiracy that threatens to unravel the fabric of society.",
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer"
   },
   {
     id: 102,
