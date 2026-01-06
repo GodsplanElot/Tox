@@ -246,5 +246,22 @@ export const moviesFromDb: Movie[] = [
     duration: 30}
     
   },
+  {
+    id: 112,
+    title: "Number Fight",
+    poster: "/img/covers/cover12.jpg",
+    rating: 6.0,
+    releaseDate: "2024-03-31",
+    categoryIds: [1],
+    runtime: 110,
+    genres: ["Action", "Thriller"],
+    description: "In a dystopian future where numbers dictate social status, a rebellious mathematician challenges the system to ignite a revolution.",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30}
+    
+  },
   
 ];
