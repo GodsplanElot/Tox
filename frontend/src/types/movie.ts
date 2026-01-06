@@ -1,3 +1,9 @@
+export interface MovieVideo {
+  src: string;        // mp4 / webm / HLS later
+  poster?: string;    // fallback image
+  duration?: number;  // seconds (optional)
+}
+
 export interface Movie {
   id: number;
   title: string;
@@ -11,5 +17,10 @@ export interface Movie {
   genres?: string[]
   description?: string
   trailer?: string
+
+  video?: MovieVideo; // 👈 NEW (mini screen video)
 }
-  
+
+
+
+
