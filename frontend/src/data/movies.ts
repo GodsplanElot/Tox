@@ -117,5 +117,16 @@ export const moviesFromDb: Movie[] = [
     genres: ["Drama", "Mystery"],
     description: "In a small town shrouded in secrets, a young detective uncovers dark truths that have been buried for decades.",
   },
+    {
+    id: 106,
+    title: "Shadow Realm",
+    poster: "/img/covers/cover7.jpg",
+    rating: 7.9,
+    releaseDate: "2023-06-21",
+    categoryIds: [4],
+    runtime: 130,
+    genres: ["Thriller", "drama"],
+    description: "Trapped between reality and a parallel dimension, a scientist must navigate a web of intrigue to save her loved ones.",
+  },
   
 ];
