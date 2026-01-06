@@ -69,7 +69,12 @@ export const moviesFromDb: Movie[] = [
     runtime: 125,
     genres: ["Action", "Sci-Fi"],
     description: "In a sprawling metropolis bathed in neon lights, a renegade detective uncovers a conspiracy that threatens to unravel the fabric of society.",
-    trailer: "https://www.youtube.com/watch?v=neoncitytrailer"
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30}
   },
   {
     id: 102,
@@ -81,7 +86,12 @@ export const moviesFromDb: Movie[] = [
     runtime: 125,
     genres: ["Action", "porn"],
     description: "The story of a mute artist who finds his voice through a series of extraordinary events that challenge his perception of reality.",
-    trailer: "https://www.youtube.com/watch?v=neoncitytrailer"
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30}
   },
   {
     id: 103,
@@ -93,7 +103,12 @@ export const moviesFromDb: Movie[] = [
     runtime: 95,
     genres: ["Comedy"],
     description: "A group of misfit friends embark on a hilarious road trip that tests their friendship and leads to unexpected adventures.",
-    trailer: "https://www.youtube.com/watch?v=neoncitytrailer"
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30}
   },
   {
     id: 104,
@@ -105,6 +120,12 @@ export const moviesFromDb: Movie[] = [
     runtime: 100,
     genres: ["action", "comedy"],
     description: "Things go badly when the government tires to control the comedy industry.",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30
+  }
   },
   {
     id: 105,
@@ -123,7 +144,7 @@ export const moviesFromDb: Movie[] = [
     duration: 30
   }
   },
-    {
+  {
     id: 106,
     title: "Shadow Realm",
     poster: "/img/covers/cover7.jpg",
@@ -133,6 +154,97 @@ export const moviesFromDb: Movie[] = [
     runtime: 130,
     genres: ["Thriller", "drama"],
     description: "Trapped between reality and a parallel dimension, a scientist must navigate a web of intrigue to save her loved ones.",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30}
+    
+  },
+  {
+    id: 107,
+    title: "Justice League",
+    poster: "/img/covers/cover8.jpg",
+    rating: 8.9,
+    releaseDate: "2022-06-21",
+    categoryIds: [1],
+    runtime: 230,
+    genres: ["Action", "drama"],
+    description: "Trapped between reality and a parallel dimension, a scientist must navigate a web of intrigue to save her loved ones.",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30}
+    
+  },
+  {
+    id: 108,
+    title: "Black waters",
+    poster: "/img/covers/cover9.jpg",
+    rating: 9.0,
+    releaseDate: "2021-03-31",
+    categoryIds: [5],
+    runtime: 80,
+    genres: ["Horror", "drama"],
+    description: "Trapped between reality and a parallel dimension, a scientist must navigate a web of intrigue to save her loved ones.",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30}
+    
+  },
+  {
+    id: 109,
+    title: "Gunmetal skies",
+    poster: "/img/covers/cover10.jpg",
+    rating: 7.0,
+    releaseDate: "2021-03-31",
+    categoryIds: [1],
+    runtime: 180,
+    genres: ["Action", "comedy"],
+    description: "Trapped between reality and a parallel dimension, a scientist must navigate a web of intrigue to save her loved ones.",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30}
+    
+  },
+  {
+    id: 110,
+    title: "Throne of lies",
+    poster: "/img/covers/cover11.jpg",
+    rating: 8.0,
+    releaseDate: "2022-03-31",
+    categoryIds: [2],
+    runtime: 110,
+    genres: ["Drama", "comedy"],
+    description: "The battle for the throne intensifies as alliances are forged and broken in a kingdom rife with deception and ambition.",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30}
+    
+  },
+  {
+    id: 111,
+    title: "battle for lies",
+    poster: "/img/covers/cover11.jpg",
+    rating: 9.0,
+    releaseDate: "2021-03-31",
+    categoryIds: [2],
+    runtime: 110,
+    genres: ["Drama", "comedy"],
+    description: "The battle for the throne intensifies as alliances are forged and broken in a kingdom rife with deception and ambition.",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30}
+    
   },
   
 ];
