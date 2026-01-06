@@ -120,6 +120,7 @@ export const moviesFromDb: Movie[] = [
     runtime: 100,
     genres: ["action", "comedy"],
     description: "Things go badly when the government tires to control the comedy industry.",
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
 
     video: {
     src: "/videos/dawn-mini.mp4",
@@ -137,6 +138,7 @@ export const moviesFromDb: Movie[] = [
     runtime: 110,
     genres: ["Drama", "Mystery"],
     description: "In a small town shrouded in secrets, a young detective uncovers dark truths that have been buried for decades.",
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
 
     video: {
     src: "/videos/dawn-mini.mp4",
@@ -154,6 +156,7 @@ export const moviesFromDb: Movie[] = [
     runtime: 130,
     genres: ["Thriller", "drama"],
     description: "Trapped between reality and a parallel dimension, a scientist must navigate a web of intrigue to save her loved ones.",
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
 
     video: {
     src: "/videos/dawn-mini.mp4",
@@ -171,7 +174,7 @@ export const moviesFromDb: Movie[] = [
     runtime: 230,
     genres: ["Action", "drama"],
     description: "Trapped between reality and a parallel dimension, a scientist must navigate a web of intrigue to save her loved ones.",
-
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
     video: {
     src: "/videos/dawn-mini.mp4",
     poster: "/images/dawn-video-poster.jpg",
@@ -188,6 +191,7 @@ export const moviesFromDb: Movie[] = [
     runtime: 80,
     genres: ["Horror", "drama"],
     description: "Trapped between reality and a parallel dimension, a scientist must navigate a web of intrigue to save her loved ones.",
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
 
     video: {
     src: "/videos/dawn-mini.mp4",
@@ -205,6 +209,7 @@ export const moviesFromDb: Movie[] = [
     runtime: 180,
     genres: ["Action", "comedy"],
     description: "Trapped between reality and a parallel dimension, a scientist must navigate a web of intrigue to save her loved ones.",
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
 
     video: {
     src: "/videos/dawn-mini.mp4",
@@ -222,6 +227,7 @@ export const moviesFromDb: Movie[] = [
     runtime: 110,
     genres: ["Drama", "comedy"],
     description: "The battle for the throne intensifies as alliances are forged and broken in a kingdom rife with deception and ambition.",
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
 
     video: {
     src: "/videos/dawn-mini.mp4",
@@ -239,6 +245,7 @@ export const moviesFromDb: Movie[] = [
     runtime: 110,
     genres: ["Drama", "comedy"],
     description: "The battle for the throne intensifies as alliances are forged and broken in a kingdom rife with deception and ambition.",
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
 
     video: {
     src: "/videos/dawn-mini.mp4",
@@ -256,6 +263,7 @@ export const moviesFromDb: Movie[] = [
     runtime: 110,
     genres: ["Action", "Thriller"],
     description: "In a dystopian future where numbers dictate social status, a rebellious mathematician challenges the system to ignite a revolution.",
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
 
     video: {
     src: "/videos/dawn-mini.mp4",

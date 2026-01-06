@@ -85,6 +85,21 @@ const MovieDetail: React.FC = () => {
             )}
           </div>
         </div>
+
+        {/* 🎬 MINI VIDEO SCREEN (ADDED – NOTHING REMOVED) */}
+        {movie.video && (
+          <div className="movie-detail__mini-video">
+            <video
+              src={movie.video.src}
+              poster={movie.video.poster || movie.poster}
+              muted
+              autoPlay
+              loop
+              playsInline
+              preload="metadata"
+            />
+          </div>
+        )}
       </section>
 
       {/* RECOMMENDATIONS */}
