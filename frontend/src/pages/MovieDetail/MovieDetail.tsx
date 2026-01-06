@@ -1,7 +1,7 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import MovieGrid from "../../components/MovieGrid/MovieGrid";
-import { movies } from "../../data/movies"; // adjust path if needed
+import { moviesFromDb } from "../../data/movies"; // adjust path if needed
 import type { Movie } from "../../types/movie";
 import "./MovieDetail.css";
 
@@ -9,7 +9,7 @@ const MovieDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
   // Find movie by ID (mock DB)
-  const movie: Movie | undefined = movies.find(
+  const movie: Movie | undefined = moviesFromDb.find(
     (m) => String(m.id) === id
   );
 
@@ -22,7 +22,7 @@ const MovieDetail: React.FC = () => {
   }
 
   // Simple related movies logic (same genre, exclude current)
-  const relatedMovies = movies
+  const relatedMovies = moviesFromDb
     .filter(
       (m) =>
         m.id !== movie.id &&
