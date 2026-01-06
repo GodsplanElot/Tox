@@ -116,6 +116,12 @@ export const moviesFromDb: Movie[] = [
     runtime: 110,
     genres: ["Drama", "Mystery"],
     description: "In a small town shrouded in secrets, a young detective uncovers dark truths that have been buried for decades.",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30
+  }
   },
     {
     id: 106,
