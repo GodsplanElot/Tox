@@ -1,13 +1,14 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import MovieGrid from "../../components/MovieGrid/MovieGrid";
-import { moviesFromDb } from "../../data/movies";
+import { moviesFromDb } from "../../data/movies"; // adjust path if needed
 import type { Movie } from "../../types/movie";
 import "./MovieDetail.css";
 
 const MovieDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
 
+  // Find movie by ID (mock DB)
   const movie: Movie | undefined = moviesFromDb.find(
     (m) => String(m.id) === id
   );
@@ -20,6 +21,7 @@ const MovieDetail: React.FC = () => {
     );
   }
 
+  // Simple related movies logic (same genre, exclude current)
   const relatedMovies = moviesFromDb
     .filter(
       (m) =>
@@ -30,66 +32,68 @@ const MovieDetail: React.FC = () => {
 
   return (
     <div className="movie-detail">
-
-      {/* HERO */}
+      {/* HERO SECTION */}
       <section
         className="movie-detail__hero"
         style={{
           backgroundImage: `linear-gradient(
             to bottom,
-            rgba(0,0,0,0.5),
+            rgba(0,0,0,0.4),
             rgba(0,0,0,0.95)
           ), url(${movie.backdrop || movie.poster})`,
         }}
       >
         <div className="movie-detail__hero-content">
+          <div className="movie-detail__poster">
+            <img src={movie.poster} alt={movie.title} />
+            {movie.rating && (
+              <span className="movie-detail__rating">
+                ⭐ {movie.rating}
+              </span>
+            )}
+          </div>
 
-          {/* MINI VIDEO SCREEN */}
-          {movie.video && (
-            <div className="movie-detail__video">
-              <video
-                src={movie.video.src}
-                poster={movie.video.poster || movie.poster}
-                muted
-                autoPlay
-                loop
-                playsInline
-                preload="metadata"
-              />
-            </div>
-          )}
-
-          {/* CORE INFO ONLY */}
           <div className="movie-detail__info">
-            <h1>{movie.title}</h1>
+            <h1 className="movie-detail__title">{movie.title}</h1>
 
             <div className="movie-detail__meta">
               {movie.year && <span>{movie.year}</span>}
               {movie.runtime && <span>{movie.runtime} min</span>}
-              {movie.rating && <span>⭐ {movie.rating}</span>}
             </div>
 
             {movie.genres && (
               <div className="movie-detail__genres">
-                {movie.genres.map((g) => (
-                  <span key={g}>{g}</span>
+                {movie.genres.map((genre) => (
+                  <span key={genre}>{genre}</span>
                 ))}
               </div>
             )}
 
-            {movie.description && (
-              <p className="movie-detail__description">
-                {movie.description}
-              </p>
+            <p className="movie-detail__description">
+              {movie.description}
+            </p>
+
+            {movie.trailer && (
+              <a
+                href={movie.trailer}
+                target="_blank"
+                rel="noreferrer"
+                className="movie-detail__play-btn"
+              >
+                ▶ Watch Trailer
+              </a>
             )}
           </div>
         </div>
       </section>
 
-      {/* RECOMMENDED */}
+      {/* RECOMMENDATIONS */}
       {relatedMovies.length > 0 && (
         <section className="movie-detail__related">
-          <MovieGrid title="Recommended" movies={relatedMovies} />
+          <MovieGrid
+            title="More Like This"
+            movies={relatedMovies}
+          />
         </section>
       )}
     </div>
