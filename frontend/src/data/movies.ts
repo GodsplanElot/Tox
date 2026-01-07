@@ -264,6 +264,7 @@ export const moviesFromDb: Movie[] = [
     genres: ["Action", "Thriller"],
     description: "In a dystopian future where numbers dictate social status, a rebellious mathematician challenges the system to ignite a revolution.",
     trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
+    downloadUrl: "/downloads/inception.mp4",
 
     video: {
     src: "/videos/dawn-mini.mp4",

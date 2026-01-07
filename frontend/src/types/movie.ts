@@ -10,6 +10,7 @@ export interface Movie {
   poster: string;
   year?: string;
   rating?: number;
+  downloadUrl?: string
   releaseDate?: string; // ISO string for sorting
   categoryIds: number[]; // <-- key for filtering
   backdrop?: string

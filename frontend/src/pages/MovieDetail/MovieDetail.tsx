@@ -73,16 +73,29 @@ const MovieDetail: React.FC = () => {
               {movie.description}
             </p>
 
-            {movie.trailer && (
-              <a
-                href={movie.trailer}
-                target="_blank"
-                rel="noreferrer"
-                className="movie-detail__play-btn"
-              >
-                ▶ Watch Trailer
-              </a>
-            )}
+            <div className="movie-detail__actions">
+              {movie.trailer && (
+                <a
+                  href={movie.trailer}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="movie-detail__play-btn"
+                >
+                  ▶ Watch Trailer
+                </a>
+              )}
+
+              {movie.downloadUrl && (
+                <a
+                  href={movie.downloadUrl}
+                  download
+                  className="movie-detail__download-btn"
+                >
+                  ⬇ Download
+                </a>
+              )}
+            </div>
+
           </div>
         </div>
 
