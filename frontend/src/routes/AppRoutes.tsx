@@ -6,6 +6,8 @@ import Categories from "../pages/Categories"
 import CategoryDetail from "../pages/CategoryDetail"
 import Search from "../pages/Search"
 import MovieDetail from "../pages/MovieDetail/MovieDetail"
+import SeriesList from "../pages/Series/SeriesList"
+import SeriesDetail from "../pages/Series/SeriesDetail"
 
 const AppRoutes = () => {
   return (
@@ -16,6 +18,8 @@ const AppRoutes = () => {
         <Route path="/categories/:slug" element={<CategoryDetail />} />
         <Route path="/search" element={<Search />} />
         <Route path="/movies/:id" element={<MovieDetail />} />
+        <Route path="/series" element={<SeriesList />} />
+        <Route path="/series/:id" element={<SeriesDetail />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
