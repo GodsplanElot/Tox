@@ -1,27 +1,25 @@
 export interface Episode {
-  id: string
+  id: number
   title: string
   episodeNumber: number
   runtime?: number
-  videoUrl: string
-  downloadUrl?: string
-  description?: string
+  videoUrl?: string
 }
 
 export interface Season {
-  id: string
+  id: number
   seasonNumber: number
   episodes: Episode[]
 }
 
 export interface Series {
-  id: string
+  id: number
   title: string
+  description: string
   poster: string
   backdrop?: string
-  description: string
-  genres: string[]
   rating?: number
   year?: number
+  genres?: string[]
   seasons: Season[]
 }
