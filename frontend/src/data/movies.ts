@@ -272,5 +272,24 @@ export const moviesFromDb: Movie[] = [
     duration: 30}
     
   },
+  {
+    id: 113,
+    title: "Number Fight 2",
+    poster: "/img/covers/cover13.jpg",
+    rating: 7.0,
+    releaseDate: "2024-03-31",
+    categoryIds: [1],
+    runtime: 120,
+    genres: ["Action", "Thriller"],
+    description: "A very funny movie about numbers in action.",
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
+    downloadUrl: "/downloads/inception.mp4",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30}
+    
+  },
   
 ];
