@@ -310,5 +310,24 @@ export const moviesFromDb: Movie[] = [
     duration: 30}
     
   },
+  {
+    id: 115,
+    title: "Killer Bean",
+    poster: "/img/covers/cover15.jpg",
+    rating: 7.0,
+    releaseDate: "2025-03-31",
+    categoryIds: [2],
+    runtime: 180,
+    genres: ["Thriller", "Comedy"],
+    description: "An elite assassin who happens to be a coffee bean takes on a mission that could change the fate of the coffee world.",
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
+    downloadUrl: "/downloads/inception.mp4",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30}
+    
+  },
   
 ];
