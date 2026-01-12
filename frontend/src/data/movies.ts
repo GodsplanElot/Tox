@@ -291,5 +291,24 @@ export const moviesFromDb: Movie[] = [
     duration: 30}
     
   },
+  {
+    id: 114,
+    title: "Dead Silent",
+    poster: "/img/covers/cover14.jpg",
+    rating: 9.0,
+    releaseDate: "2023-03-31",
+    categoryIds: [2],
+    runtime: 160,
+    genres: ["Action", "horror"],
+    description: "In a world where silence is survival, a deaf protagonist must navigate a city overrun by sound-sensitive creatures to find safety.",
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
+    downloadUrl: "/downloads/inception.mp4",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30}
+    
+  },
   
 ];
