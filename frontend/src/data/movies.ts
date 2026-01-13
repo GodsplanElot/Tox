@@ -329,5 +329,24 @@ export const moviesFromDb: Movie[] = [
     duration: 30}
     
   },
+  {
+    id: 116,
+    title: "Man Eater",
+    poster: "/img/covers/cover17.jpg",
+    rating: 10.0,
+    releaseDate: "2025-03-31",
+    categoryIds: [3],
+    runtime: 110,
+    genres: ["Action", "Horror"],
+    description: "A thrilling tale of survival as a group of friends face off against a man-eating creature in the wilderness.",
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
+    downloadUrl: "/downloads/inception.mp4",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30}
+    
+  },
   
 ];
