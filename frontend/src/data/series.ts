@@ -53,4 +53,56 @@ export const seriesFromDb: Series[] = [
       },
     ],
   },
+  {
+    id: 2,
+    title: "jolly",
+    description: "happy go lucky show  ",
+    poster: "/img/covers/cover16.jpg",
+    backdrop: "/img/covers/cover16.jpg",
+    rating: 9.9,
+    year: 2023,
+    genres: ["Sci-Fi", "Thriller"],
+    seasons: [
+      {
+        id: 1,
+        seasonNumber: 1,
+        episodes: [
+          {
+            id: 1,
+            episodeNumber: 1,
+            title: "Runaway Killer",
+            runtime: 48,
+            videoUrl: "/videos/dark-signal/s1e1.mp4",
+          },
+          {
+            id: 2,
+            episodeNumber: 2,
+            title: "Echoes",
+            runtime: 50,
+            videoUrl: "/videos/dark-signal/s1e2.mp4",
+          },
+        ],
+      },
+      {
+        id: 2,
+        seasonNumber: 2,
+        episodes: [
+          {
+            id: 1,
+            episodeNumber: 1,
+            title: "The Signalxx",
+            runtime: 48,
+            videoUrl: "/videos/dark-signal/s1e1.mp4",
+          },
+          {
+            id: 2,
+            episodeNumber: 2,
+            title: "Echoes vc",
+            runtime: 50,
+            videoUrl: "/videos/dark-signal/s1e2.mp4",
+          },
+        ],
+      },
+    ],
+  },
 ]
