@@ -1,31 +1,25 @@
-import { useParams } from "react-router-dom"
-import { seriesFromDb } from "../../data/series"
-import { useState } from "react"
-import SeasonSelector from "../../components/SeasonSelector/SeasonSelector"
-import EpisodeList from "../../components/EpisodeList/EpisodeList"
+import type { Season } from "../../types/series"
 
-const SeriesDetail = () => {
-  const { id } = useParams<{ id: string }>()
-  const series = seriesFromDb.find((s) => String(s.id) === id)
+interface Props {
+  seasons: Season[]
+  activeSeason: number
+  onSelect: (index: number) => void
+}
 
-  const [activeSeason, setActiveSeason] = useState(0)
-
-  if (!series) return <h2>Series not found</h2>
-
+const SeasonSelector = ({ seasons, activeSeason, onSelect }: Props) => {
   return (
-    <div className="movie-detail">
-      <h1>{series.title}</h1>
-      <p>{series.description}</p>
-
-      <SeasonSelector
-        seasons={series.seasons}
-        activeSeason={activeSeason}
-        onSelect={setActiveSeason}
-      />
-
-      <EpisodeList episodes={series.seasons[activeSeason].episodes} />
+    <div className="season-selector">
+      {seasons.map((season, index) => (
+        <button
+          key={season.id}
+          className={index === activeSeason ? "active" : ""}
+          onClick={() => onSelect(index)}
+        >
+          Season {season.seasonNumber}
+        </button>
+      ))}
     </div>
   )
 }
 
-export default SeriesDetail
+export default SeasonSelector
