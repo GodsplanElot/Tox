@@ -21,5 +21,6 @@ export interface Series {
   rating?: number
   year?: number
   genres?: string[]
+  categoryIds: number[]   // ✅ ADD THIS
   seasons: Season[]
 }

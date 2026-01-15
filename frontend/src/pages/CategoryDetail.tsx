@@ -1,10 +1,14 @@
 import { useParams } from "react-router-dom";
 import { useMemo, useState } from "react";
+
 import { categories } from "../data/categories";
 import { moviesFromDb } from "../data/movies";
+import { seriesFromDb } from "../data/series";
+
 import MovieGrid from "../components/MovieGrid/MovieGrid";
+import SeriesRail from "../components/SeriesRail/SeriesRail";
+
 import "../styles/CategoryDetail.css";
-import type { Movie } from "../types/movie";
 
 type SortOption = "az" | "newest" | "oldest" | "rating";
 
@@ -14,6 +18,9 @@ const CategoryDetail = () => {
 
   const category = categories.find((c) => c.slug === slug);
 
+  /**
+   * MOVIES
+   */
   const movies = useMemo(() => {
     if (!category) return [];
 
@@ -21,32 +28,66 @@ const CategoryDetail = () => {
       movie.categoryIds.includes(category.id)
     );
 
-    switch (sortBy) {
-      case "az":
-        return filtered.sort((a, b) => a.title.localeCompare(b.title));
+    return [...filtered].sort((a, b) => {
+      switch (sortBy) {
+        case "az":
+          return a.title.localeCompare(b.title);
 
-      case "newest":
-        return filtered.sort(
-          (a, b) =>
+        case "newest":
+          return (
             new Date(b.releaseDate ?? "").getTime() -
             new Date(a.releaseDate ?? "").getTime()
-        );
+          );
 
-      case "oldest":
-        return filtered.sort(
-          (a, b) =>
+        case "oldest":
+          return (
             new Date(a.releaseDate ?? "").getTime() -
             new Date(b.releaseDate ?? "").getTime()
-        );
+          );
 
-      case "rating":
-        return filtered.sort(
-          (a, b) => (b.rating ?? 0) - (a.rating ?? 0)
-        );
+        case "rating":
+          return (b.rating ?? 0) - (a.rating ?? 0);
 
-      default:
-        return filtered;
-    }
+        default:
+          return 0;
+      }
+    });
+  }, [category, sortBy]);
+
+  /**
+   * SERIES
+   */
+  const series = useMemo(() => {
+    if (!category) return [];
+
+    const filtered = seriesFromDb.filter((show) =>
+      show.categoryIds.includes(category.id)
+    );
+
+    return [...filtered].sort((a, b) => {
+      switch (sortBy) {
+        case "az":
+          return a.title.localeCompare(b.title);
+
+        case "newest":
+          return (
+            new Date(b.firstAirDate ?? "").getTime() -
+            new Date(a.firstAirDate ?? "").getTime()
+          );
+
+        case "oldest":
+          return (
+            new Date(a.firstAirDate ?? "").getTime() -
+            new Date(b.firstAirDate ?? "").getTime()
+          );
+
+        case "rating":
+          return (b.rating ?? 0) - (a.rating ?? 0);
+
+        default:
+          return 0;
+      }
+    });
   }, [category, sortBy]);
 
   if (!category) {
@@ -73,7 +114,18 @@ const CategoryDetail = () => {
         </div>
       </header>
 
-      <MovieGrid movies={movies} />
+      {/* MOVIES */}
+      {movies.length > 0 && <MovieGrid movies={movies} />}
+
+      {/* SERIES */}
+      {series.length > 0 && (
+        <SeriesRail title="TV Series" series={series} />
+      )}
+
+      {/* EMPTY STATE */}
+      {movies.length === 0 && series.length === 0 && (
+        <p>No movies or TV series found in this category.</p>
+      )}
     </section>
   );
 };
