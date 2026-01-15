@@ -1,20 +1,40 @@
 import { useSearchParams } from "react-router-dom";
 import { useMemo, useState } from "react";
+
 import MovieRail from "../components/MovieRail/MovieRail";
 import MovieGrid from "../components/MovieGrid/MovieGrid";
+import SeriesRail from "../components/SeriesRail/SeriesRail";
+
 import { moviesFromDb } from "../data/movies";
+import { seriesFromDb } from "../data/series";
+
 import "../styles/Search.css";
 
 const Search = () => {
   const [params, setParams] = useSearchParams();
+
   const initialQuery = params.get("q") || "";
   const [query, setQuery] = useState(initialQuery);
 
-  const results = useMemo(() => {
+  /**
+   * MOVIE RESULTS
+   */
+  const movieResults = useMemo(() => {
     if (!initialQuery) return [];
 
     return moviesFromDb.filter((movie) =>
       movie.title.toLowerCase().includes(initialQuery.toLowerCase())
+    );
+  }, [initialQuery]);
+
+  /**
+   * SERIES RESULTS
+   */
+  const seriesResults = useMemo(() => {
+    if (!initialQuery) return [];
+
+    return seriesFromDb.filter((series) =>
+      series.title.toLowerCase().includes(initialQuery.toLowerCase())
     );
   }, [initialQuery]);
 
@@ -32,20 +52,39 @@ const Search = () => {
       <form className="search-mobile" onSubmit={onSearch}>
         <input
           type="search"
-          placeholder="Search movies..."
+          placeholder="Search movies or TV series..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
         />
       </form>
 
-      {/* RESULTS */}
+      {/* SEARCH RESULTS */}
       {initialQuery && (
         <>
           <h2 className="search-title">
             Results for “{initialQuery}”
           </h2>
 
-          <MovieGrid movies={results} />
+          {/* MOVIES */}
+          {movieResults.length > 0 && (
+            <MovieGrid movies={movieResults} />
+          )}
+
+          {/* SERIES */}
+          {seriesResults.length > 0 && (
+            <SeriesRail
+              title="TV Series"
+              series={seriesResults}
+            />
+          )}
+
+          {/* EMPTY STATE */}
+          {movieResults.length === 0 &&
+            seriesResults.length === 0 && (
+              <p className="no-results">
+                No movies or TV series found.
+              </p>
+            )}
         </>
       )}
 
