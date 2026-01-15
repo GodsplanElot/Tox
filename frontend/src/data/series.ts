@@ -10,6 +10,7 @@ export const seriesFromDb: Series[] = [
     rating: 8.9,
     year: 2023,
     genres: ["Sci-Fi", "Thriller"],
+    categoryIds: [1, 3],
     seasons: [
       {
         id: 1,
@@ -62,6 +63,7 @@ export const seriesFromDb: Series[] = [
     rating: 9.9,
     year: 2023,
     genres: ["Sci-Fi", "Thriller"],
+    categoryIds: [1],
     seasons: [
       {
         id: 1,
