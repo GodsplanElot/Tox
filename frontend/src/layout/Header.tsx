@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import {  NavLink } from "react-router-dom";
 import SearchForm from "../components/SearchForm";
 import MobileSidebar from "./MobileSidebar";
 import logo from "../assets/icons/nav_logo.png";
@@ -40,6 +40,11 @@ const Header = () => {
               Categories
             </Nav.Link>
           </Nav>
+
+          <Nav.Link as={NavLink} to="/series">
+            TV Series
+          </Nav.Link>
+
 
           {/* DESKTOP SEARCH */}
           <div className="d-none d-lg-block">
