@@ -39,12 +39,11 @@ const Header = () => {
             <Nav.Link as={NavLink} to="/categories">
               Categories
             </Nav.Link>
+
+            <Nav.Link as={NavLink} to="/series">
+            Tv Series
+            </Nav.Link>
           </Nav>
-
-          <Nav.Link as={NavLink} to="/series">
-            TV Series
-          </Nav.Link>
-
 
           {/* DESKTOP SEARCH */}
           <div className="d-none d-lg-block">
