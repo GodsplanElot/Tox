@@ -21,6 +21,7 @@ const EpisodeDetail = () => {
         controls
         style={{ width: "100%", maxWidth: 900 }}
       />
+      <p>test page</p>
     </div>
   )
 }
