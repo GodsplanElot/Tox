@@ -209,7 +209,7 @@ export const seriesFromDb: Series[] = [
           {
             id: 1,
             episodeNumber: 1,
-            title: "The Signalxx",
+            title: "The Signalx",
             runtime: 48,
             videoUrl: "/videos/jolly/s2e1.mp4",
           },
