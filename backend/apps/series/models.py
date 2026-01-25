@@ -1,13 +1,12 @@
 from django.db import models
 from apps.categories.models import Category
 
-# Create your models here.
+
 class Series(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
 
-    # Single canonical image
-    poster = models.URLField()
+    poster = models.URLField(help_text="Poster image URL")
 
     rating = models.FloatField(null=True, blank=True)
     first_air_date = models.DateField(null=True, blank=True)
@@ -33,9 +32,6 @@ class Season(models.Model):
 
     season_number = models.PositiveIntegerField()
     title = models.CharField(max_length=255, blank=True)
-    description = models.TextField(blank=True)
-
-    release_date = models.DateField(null=True, blank=True)
 
     class Meta:
         unique_together = ("series", "season_number")
@@ -43,3 +39,25 @@ class Season(models.Model):
 
     def __str__(self):
         return f"{self.series.title} - Season {self.season_number}"
+
+
+class Episode(models.Model):
+    season = models.ForeignKey(
+        Season,
+        related_name="episodes",
+        on_delete=models.CASCADE
+    )
+
+    episode_number = models.PositiveIntegerField()
+    title = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+
+    runtime = models.PositiveIntegerField(null=True, blank=True)
+    release_date = models.DateField(null=True, blank=True)
+
+    class Meta:
+        unique_together = ("season", "episode_number")
+        ordering = ["episode_number"]
+
+    def __str__(self):
+        return f"{self.season} - Episode {self.episode_number}"
