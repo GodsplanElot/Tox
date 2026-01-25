@@ -1,5 +1,6 @@
 from django.db import models
 from apps.categories.models import Category
+from apps.media.models import VideoSource
 
 
 class Series(models.Model):
@@ -61,3 +62,19 @@ class Episode(models.Model):
 
     def __str__(self):
         return f"{self.season} - Episode {self.episode_number}"
+
+
+class EpisodeVideo(models.Model):
+    episode = models.ForeignKey(
+        Episode,
+        related_name="videos",
+        on_delete=models.CASCADE
+    )
+    video_source = models.ForeignKey(
+        VideoSource,
+        on_delete=models.CASCADE
+    )
+
+    def __str__(self):
+        return f"{self.episode} - {self.video_source}"
+
