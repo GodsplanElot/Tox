@@ -77,6 +77,23 @@ export const moviesFromDb: Movie[] = [
     duration: 30}
   },
   {
+    id: 100,
+    title: "Endless Horizon",
+    poster: "/img/covers/cover2.jpg",
+    rating: 8.2,
+    releaseDate: "2024-01-12",
+    categoryIds: [1],
+    runtime: 125,
+    genres: ["Action", "Sci-Fi"],
+    description: "Endless Horizon is a thrilling action-adventure film that follows a group of survivors as they navigate a post-apocalyptic world filled with danger and uncertainty.",
+    trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
+
+    video: {
+    src: "/videos/dawn-mini.mp4",
+    poster: "/images/dawn-video-poster.jpg",
+    duration: 30}
+  },
+  {
     id: 102,
     title: "Broken Silence",
     poster: "/img/covers/cover2.jpg",
