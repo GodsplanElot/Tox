@@ -59,14 +59,14 @@ export const moviesFromDb: Movie[] = [
   },
   {
     id: 103,
-    title: "Laugh Riot",
+    title: "KingMan",
     poster: "/img/covers/cover3.jpg",
     rating: 7.9,
     releaseDate: "2023-06-21",
     categoryIds: [3],
     runtime: 95,
     genres: ["Comedy"],
-    description: "A group of misfit friends embark on a hilarious road trip that tests their friendship and leads to unexpected adventures.",
+    description: "Kingman is runing from dev",
     trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
 
     video: {
