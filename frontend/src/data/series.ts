@@ -173,7 +173,7 @@ export const seriesFromDb: Series[] = [
     ],
   },
   {
-    id: 2,
+    id: 4,
     title: "Jolly",
     description: "A happy-go-lucky show full of unexpected twists.",
     poster: "/img/covers/cover16.jpg",
@@ -227,8 +227,8 @@ export const seriesFromDb: Series[] = [
     ],
   },
   {
-    id: 2,
-    title: "slade winger",
+    id: 5,
+    title: "Slade Winger",
     description: "A warrior's journey through a land of myths and legends.",
     poster: "/img/covers/cover17.jpg",
     backdrop: "/img/covers/cover17.jpg",
@@ -281,8 +281,8 @@ export const seriesFromDb: Series[] = [
     ],
   },
   {
-    id: 2,
-    title: "Rain man",
+    id: 6,
+    title: "Rain Man",
     description: "A thrilling saga of survival and hope in a post-apocalyptic world.",
     poster: "/img/covers/cover18.jpg",
     backdrop: "/img/covers/cover18.jpg",
