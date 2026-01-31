@@ -74,7 +74,7 @@ const SeriesDetail = () => {
       {/* Seasons & Episodes Section */}
       <div className="series-body">
         <div className="section-head">
-          <h2>Seasons ({series.seasons.length})</h2>
+          <h2>Seasons-({series.seasons.length})</h2>
           <SeasonSelector
             seasons={series.seasons}
             activeSeason={activeSeason}
