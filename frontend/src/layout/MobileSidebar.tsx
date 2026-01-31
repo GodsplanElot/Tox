@@ -29,6 +29,10 @@ const MobileSidebar = ({ show, onOpen, onClose }: Props) => {
           <i className="bi bi-grid"></i>
         </NavLink>
 
+        <NavLink to="/series" className="rail-icon">
+          <i className="bi bi-play-circle"></i>
+        </NavLink>
+
         <NavLink to="/search" className="rail-icon">
           <i className="bi bi-search"></i>
         </NavLink>
@@ -64,6 +68,10 @@ const MobileSidebar = ({ show, onOpen, onClose }: Props) => {
               onClick={onClose}
             >
               Categories
+            </NavLink>
+
+            <NavLink to="/series" className="offcanvas-link" onClick={onClose}>
+              Series
             </NavLink>
 
             <NavLink to="/search" className="offcanvas-link" onClick={onClose}>

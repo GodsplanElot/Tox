@@ -1,16 +1,15 @@
-import { Routes, Route } from "react-router-dom"
-import Layout from "../layout/Layout"
-import Home from "../pages/Home"
-import NotFound from "../pages/NotFound"
-import Categories from "../pages/Categories"
-import CategoryDetail from "../pages/CategoryDetail"
-import Search from "../pages/Search"
-import MovieDetail from "../pages/MovieDetail/MovieDetail"
-import SeriesList from "../pages/Series/SeriesList"
-import SeriesDetail from "../pages/Series/SeriesDetail"
-import EpisodeDetail from "../pages/Series/EpisodeDetail"
+import { Routes, Route } from "react-router-dom";
+import Layout from "../layout/Layout";
+import Home from "../pages/Home";
+import NotFound from "../pages/NotFound";
+import Categories from "../pages/Categories";
+import CategoryDetail from "../pages/CategoryDetail";
+import Search from "../pages/Search";
+import MovieDetail from "../pages/MovieDetail/MovieDetail";
+import SeriesList from "../pages/Series/SeriesList";
+import SeriesDetail from "../pages/Series/SeriesDetail";
+import EpisodeDetail from "../pages/Series/EpisodeDetail";
 import SeriesCategories from "../pages/SeriesCategories";
-
 
 const AppRoutes = () => {
   return (
@@ -19,16 +18,16 @@ const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/categories/:slug" element={<CategoryDetail />} />
-        <Route path="/series" element={<SeriesCategories />} />
-        <Route path="/search" element={<Search />} />
-        <Route path="/movies/:id" element={<MovieDetail />} />
         <Route path="/series" element={<SeriesList />} />
         <Route path="/series/:id" element={<SeriesDetail />} />
-        <Route path="/series/:seriesId/episode/:episodeId" element={<EpisodeDetail />} />
+        <Route
+          path="/series/:seriesId/episode/:episodeId"
+          element={<EpisodeDetail />}
+        />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>
-  )
-}
+  );
+};
 
-export default AppRoutes
+export default AppRoutes;
