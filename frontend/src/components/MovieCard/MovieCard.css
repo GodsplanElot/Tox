@@ -37,7 +37,17 @@
 
 /* Mobile tweaks */
 @media (max-width: 640px) {
-  .movie-card {
+  .movie-grid .movie-card {
+    width: 100%;
+    min-width: 0;
+  }
+  
+  /* Keep fixed width ONLY for rails */
+  .movie-rail .movie-card {
     width: 120px;
+  }
+
+  .movie-card-info h4 {
+    font-size: 0.8rem;
   }
 }
