@@ -25,14 +25,14 @@ const EpisodeDetail = () => {
 
   return (
     <div className="episode-detail-container">
-      {/* Video Section */}
+      {/* Hero Poster Section (Replacing Video) */}
       <div className="video-player-section">
-        <video
-          src={episode.videoUrl}
-          controls
-          autoPlay
-          poster={episode.thumb || series?.backdrop}
+        <img
+          src={episode.thumb || series?.backdrop || series?.poster}
+          alt={episode.title}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
+        <div className="hero-overlay" />
       </div>
 
       <div className="episode-content-body">

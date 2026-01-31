@@ -304,13 +304,165 @@ export const moviesFromDb: Movie[] = [
     genres: ["Action", "Horror"],
     description: "A thrilling tale of survival as a group of friends face off against a man-eating creature in the wilderness.",
     trailer: "https://www.youtube.com/watch?v=neoncitytrailer",
-    downloadUrl: "/downloads/inception.mp4",
-
+    downloadUrl: "/downloads/man-eater.mp4",
     video: {
-    src: "/videos/dawn-mini.mp4",
-    poster: "/images/dawn-video-poster.jpg",
-    duration: 30}
-    
+      src: "/videos/dawn-mini.mp4",
+      poster: "/images/dawn-video-poster.jpg",
+      duration: 30
+    }
   },
+  {
+    id: 117,
+    title: "Silent Echo",
+    poster: "/img/covers/cover18.jpg",
+    rating: 7.5,
+    releaseDate: "2024-05-20",
+    categoryIds: [4],
+    runtime: 115,
+    genres: ["Mystery", "Thriller"],
+    description: "A detective specializing in cold cases discovers a recurring pattern in disappearances across decades.",
+    trailer: "https://www.youtube.com/watch?v=silentechotrailer",
+    video: {
+      src: "/videos/dawn-mini.mp4",
+      poster: "/images/dawn-video-poster.jpg",
+      duration: 30
+    }
+  },
+  {
+    id: 118,
+    title: "Solar Drift",
+    poster: "/img/covers/cover19.jpg",
+    rating: 8.8,
+    releaseDate: "2024-09-15",
+    categoryIds: [1],
+    runtime: 142,
+    genres: ["Sci-Fi", "Adventure"],
+    description: "The crew of a damaged exploration vessel must find a way back home across the vast emptiness of uncharted space.",
+    trailer: "https://www.youtube.com/watch?v=solardrifttrailer",
+    video: {
+      src: "/videos/dawn-mini.mp4",
+      poster: "/images/dawn-video-poster.jpg",
+      duration: 30
+    }
+  },
+  {
+    id: 119,
+    title: "The Last Guardian",
+    poster: "/img/covers/cover20.jpg",
+    rating: 9.2,
+    releaseDate: "2023-12-01",
+    categoryIds: [1, 2],
+    runtime: 155,
+    genres: ["Fantasy", "Action"],
+    description: "An ancient protector awakens to defend the last bastion of humanity against an unstoppable magical force.",
+    trailer: "https://www.youtube.com/watch?v=lastguardiantrailer",
+    video: {
+      src: "/videos/dawn-mini.mp4",
+      poster: "/images/dawn-video-poster.jpg",
+      duration: 30
+    }
+  },
+  {
+    id: 120,
+    title: "Urban Jungle",
+    poster: "/img/covers/cover1.jpg",
+    rating: 6.9,
+    releaseDate: "2024-02-14",
+    categoryIds: [3],
+    runtime: 98,
+    genres: ["Comedy", "Action"],
+    description: "Two mismatched park rangers are forced to work together in the middle of a major metropolitan area.",
+    trailer: "https://www.youtube.com/watch?v=urbanjungletrailer",
+    video: {
+      src: "/videos/dawn-mini.mp4",
+      poster: "/images/dawn-video-poster.jpg",
+      duration: 30
+    }
+  },
+  {
+    id: 121,
+    title: "Cyber Pulse",
+    poster: "/img/covers/cover3.jpg",
+    rating: 8.1,
+    releaseDate: "2024-07-04",
+    categoryIds: [1, 4],
+    runtime: 128,
+    genres: ["Sci-Fi", "Thriller"],
+    description: "In a world where memories can be traded, a data thief accidentally steals the identity of a government official.",
+    trailer: "https://www.youtube.com/watch?v=cyberpulsetrailer",
+    video: {
+      src: "/videos/dawn-mini.mp4",
+      poster: "/images/dawn-video-poster.jpg",
+      duration: 30
+    }
+  },
+  {
+    id: 122,
+    title: "Frozen Dawn",
+    poster: "/img/covers/cover5.jpg",
+    rating: 7.3,
+    releaseDate: "2024-11-28",
+    categoryIds: [2],
+    runtime: 112,
+    genres: ["Drama", "Survival"],
+    description: "An expedition to the Arctic turns into a desperate struggle for survival when their equipment fails during a record-breaking storm.",
+    trailer: "https://www.youtube.com/watch?v=frozendawntrailer",
+    video: {
+      src: "/videos/dawn-mini.mp4",
+      poster: "/images/dawn-video-poster.jpg",
+      duration: 30
+    }
+  },
+  {
+    id: 123,
+    title: "Midnight Run",
+    poster: "/img/covers/cover7.jpg",
+    rating: 8.5,
+    releaseDate: "2023-04-12",
+    categoryIds: [1],
+    runtime: 105,
+    genres: ["Action", "Crime"],
+    description: "A simple courier job becomes a race for life when the package turns out to be a key to a billion-dollar offshore account.",
+    trailer: "https://www.youtube.com/watch?v=midnightruntrailer",
+    video: {
+      src: "/videos/dawn-mini.mp4",
+      poster: "/images/dawn-video-poster.jpg",
+      duration: 30
+    }
+  },
+  {
+    id: 124,
+    title: "Ghost Protocol",
+    poster: "/img/covers/cover9.jpg",
+    rating: 7.8,
+    releaseDate: "2022-10-31",
+    categoryIds: [4, 5],
+    runtime: 119,
+    genres: ["Horror", "Mystery"],
+    description: "A team of paranormal investigators enters a long-abandoned asylum only to find that some secrets are better left undisturbed.",
+    trailer: "https://www.youtube.com/watch?v=ghostprotocoltrailer",
+    video: {
+      src: "/videos/dawn-mini.mp4",
+      poster: "/images/dawn-video-poster.jpg",
+      duration: 30
+    }
+  },
+  {
+    id: 125,
+    title: "Iron Will",
+    poster: "/img/covers/cover12.jpg",
+    rating: 8.0,
+    releaseDate: "2021-08-15",
+    categoryIds: [2],
+    runtime: 135,
+    genres: ["Biography", "Drama"],
+    description: "The inspiring true story of an underdog athlete who overcame physical adversity to compete in the world championships.",
+    trailer: "https://www.youtube.com/watch?v=ironwilltrailer",
+    video: {
+      src: "/videos/dawn-mini.mp4",
+      poster: "/images/dawn-video-poster.jpg",
+      duration: 30
+    }
+  }
   
 ];
