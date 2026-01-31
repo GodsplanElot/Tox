@@ -4,7 +4,7 @@ import Breadcrumbs from "../../components/common/Breadcrumbs";
 import "./EpisodeDetail.css";
 
 const EpisodeDetail = () => {
-  const { id: seriesId, episodeId } = useParams();
+  const { seriesId, episodeId } = useParams();
   const navigate = useNavigate();
 
   const series = seriesFromDb.find((s) => String(s.id) === seriesId);
