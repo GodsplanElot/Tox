@@ -29,14 +29,14 @@ const SeriesDetail = () => {
       {/* Hero Section */}
       <div className="series-hero">
         <div
-          className="hero-backdrop"
+          className="detail-hero-backdrop"
           style={{
             backgroundImage: `url(${series.backdrop || series.poster})`,
           }}
         />
-        <div className="hero-overlay" />
+        <div className="detail-hero-overlay" />
 
-        <div className="hero-content">
+        <div className="detail-hero-content">
           <div className="series-poster-main">
             <img src={series.poster} alt={series.title} />
           </div>

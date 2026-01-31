@@ -17,7 +17,7 @@
   align-items: flex-end;
 }
 
-.hero-backdrop {
+.detail-hero-backdrop {
   position: absolute;
   top: 0;
   left: 0;
@@ -28,7 +28,7 @@
   z-index: 1;
 }
 
-.hero-overlay {
+.detail-hero-overlay {
   position: absolute;
   inset: 0;
   background: linear-gradient(
@@ -41,7 +41,7 @@
 }
 
 /* ================= GLASS CONTENT ================= */
-.hero-content {
+.detail-hero-content {
   position: relative;
   z-index: 3;
   width: 100%;
@@ -280,7 +280,7 @@
   .series-hero {
     height: 50vh;
   }
-  .hero-content {
+  .detail-hero-content {
     padding: 1.5rem;
   }
   .series-body {

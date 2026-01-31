@@ -32,7 +32,7 @@ const EpisodeDetail = () => {
           alt={episode.title}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
-        <div className="hero-overlay" />
+        <div className="detail-hero-overlay" />
       </div>
 
       <div className="episode-content-body">
