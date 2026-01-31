@@ -4,6 +4,7 @@ export interface Episode {
   episodeNumber: number
   runtime?: number
   videoUrl?: string
+  thumb?: string // Thumbnail/Poster for the episode
 }
 
 export interface Season {

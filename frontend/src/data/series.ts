@@ -17,12 +17,13 @@ export const seriesFromDb: Series[] = [
         id: 1,
         seasonNumber: 1,
         episodes: [
-          {
+            {
             id: 1,
             episodeNumber: 1,
             title: "The Signal",
             runtime: 48,
             videoUrl: "/videos/dark-signal/s1e1.mp4",
+            thumb: "/img/covers/cover15.jpg",
           },
           {
             id: 2,
@@ -30,6 +31,7 @@ export const seriesFromDb: Series[] = [
             title: "Echoes",
             runtime: 50,
             videoUrl: "/videos/dark-signal/s1e2.mp4",
+            thumb: "/img/covers/cover15.jpg",
           },
         ],
       },
