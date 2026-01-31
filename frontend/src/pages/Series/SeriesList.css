@@ -1,0 +1,52 @@
+.series-list-page {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.category-section {
+  position: relative;
+}
+
+.category-accent {
+  width: 4px;
+  height: 24px;
+  background-color: var(--accent-primary);
+  border-radius: 99px;
+}
+
+.tracking-wider {
+  letter-spacing: 0.1em;
+}
+
+.category-divider {
+  border: 0;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--border-subtle), transparent);
+  margin: 4rem 0;
+  opacity: 0.5;
+}
+
+.animate-in {
+  animation: fadeInDown 0.6s ease-out both;
+}
+
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Series Rail Overrides for this page */
+.series-list-page .content-section {
+  margin-bottom: 0 !important;
+  padding: 0 !important;
+}
+
+.series-list-page .section-title {
+  display: none; /* We use our own custom title */
+}
