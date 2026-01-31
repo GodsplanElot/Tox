@@ -1,37 +1,39 @@
+/* ================= MOBILE FIRST STYLES (Default) ================= */
 .categories-page {
   max-width: 1400px;
   margin: 0 auto;
 }
 
 .category-header-line {
-  width: 60px;
-  height: 4px;
+  width: 40px;
+  height: 3px;
   background: var(--accent-primary);
   border-radius: 99px;
-  box-shadow: 0 0 15px rgba(249, 171, 0, 0.4);
+  margin: 0 auto 1rem;
+  box-shadow: 0 0 10px rgba(249, 171, 0, 0.4);
 }
 
 .categories-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 24px;
+  grid-template-columns: 1fr; /* Stacked by default */
+  gap: 16px;
   perspective: 1000px;
 }
 
 .category-card-premium {
   position: relative;
-  height: 180px;
-  border-radius: 20px;
+  height: 120px; /* Smaller height for mobile */
+  border-radius: 16px;
   overflow: hidden;
   text-decoration: none !important;
   color: #fff !important;
   display: flex;
   align-items: flex-end;
-  padding: 20px;
+  padding: 16px;
   z-index: 1;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   border: 1px solid rgba(255, 255, 255, 0.05);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
 
 .card-bg {
@@ -39,7 +41,7 @@
   inset: 0;
   background-size: cover;
   background-position: center;
-  transition: transform 0.8s ease;
+  transition: transform 0.6s ease;
   z-index: -1;
 }
 
@@ -48,10 +50,10 @@
   inset: 0;
   background: linear-gradient(
     to bottom,
-    rgba(18, 18, 24, 0.1) 0%,
-    rgba(18, 18, 24, 0.8) 100%
+    rgba(18, 18, 24, 0.2) 0%,
+    rgba(18, 18, 24, 0.85) 100%
   );
-  transition: all 0.4s ease;
+  transition: all 0.3s ease;
   z-index: 0;
 }
 
@@ -59,71 +61,82 @@
   position: relative;
   z-index: 2;
   width: 100%;
-  transition: transform 0.4s ease;
 }
 
 .card-accent {
   display: block;
-  width: 20px;
-  height: 3px;
+  width: 16px;
+  height: 2px;
   background: var(--accent-primary);
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   border-radius: 99px;
-  transition: width 0.4s ease;
+}
+
+.category-card-premium h2 {
+  font-size: 1.1rem;
+  font-weight: 700;
 }
 
 .category-card-premium p {
-  transition: all 0.4s ease;
+  font-size: 0.85rem;
+  opacity: 0.8 !important;
   max-height: 0;
   overflow: hidden;
+  transition: all 0.3s ease;
 }
 
-/* --- HOVER EFFECTS --- */
-.category-card-premium:hover {
-  transform: translateY(-8px) scale(1.02);
-  border-color: rgba(249, 171, 0, 0.3);
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-}
-
-.category-card-premium:hover .card-bg {
-  transform: scale(1.15) rotate(1deg);
-}
-
-.category-card-premium:hover .card-overlay {
-  background: linear-gradient(
-    to bottom,
-    rgba(249, 171, 0, 0.1) 0%,
-    rgba(18, 18, 24, 0.9) 100%
-  );
-}
-
-.category-card-premium:hover .card-accent {
-  width: 100%;
-}
-
-.category-card-premium:hover p {
-  opacity: 1 !important;
-  max-height: 100px;
-  margin-top: 8px;
-}
-
-/* MOBILE */
-@media (max-width: 768px) {
+/* ================= LARGE MOBILE / TABLET (min-width: 576px) ================= */
+@media (min-width: 576px) {
   .categories-grid {
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
   }
+  
   .category-card-premium {
-    height: 150px;
-    padding: 15px;
-  }
-  .display-4 {
-    font-size: 2.5rem;
+    height: 140px;
   }
 }
 
-@media (max-width: 480px) {
+/* ================= DESKTOP (min-width: 992px) ================= */
+@media (min-width: 992px) {
   .categories-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .category-card-premium {
+    height: 180px;
+    padding: 24px;
+  }
+
+  .card-accent {
+    width: 24px;
+    height: 3px;
+    transition: width 0.4s ease;
+  }
+
+  /* HOVER EFFECTS ONLY ON DESKTOP */
+  .category-card-premium:hover {
+    transform: translateY(-5px) scale(1.02);
+    border-color: rgba(249, 171, 0, 0.3);
+  }
+
+  .category-card-premium:hover .card-bg {
+    transform: scale(1.1);
+  }
+
+  .category-card-premium:hover .card-accent {
+    width: 100%;
+  }
+
+  .category-card-premium:hover p {
+    max-height: 100px;
+    margin-top: 8px;
+  }
+}
+
+/* ================= ULTRA WIDE (min-width: 1400px) ================= */
+@media (min-width: 1400px) {
+  .categories-grid {
+    grid-template-columns: repeat(4, 1fr);
   }
 }
