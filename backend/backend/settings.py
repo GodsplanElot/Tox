@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # Third-party
     "rest_framework",
     "corsheaders",
+    "nested_admin",
 
     # Local apps
     "apps.movies",
