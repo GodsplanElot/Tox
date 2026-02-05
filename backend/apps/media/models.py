@@ -55,19 +55,15 @@ class VideoSource(models.Model):
 
     def clean(self):
         """
-        Enforce that a VideoSource belongs to either
-        a Movie or an Episode, but not both.
+        Validation for source type consistency.
+        Linking to Movie or Episode is now optional at creation time
+        to allow for library-style uploads.
         """
         from django.core.exceptions import ValidationError
 
         if self.movie and self.episode:
             raise ValidationError(
                 "VideoSource can belong to either a Movie or an Episode, not both."
-            )
-
-        if not self.movie and not self.episode:
-            raise ValidationError(
-                "VideoSource must be linked to a Movie or an Episode."
             )
 
         if self.source_type == "upload" and not self.video_file:
@@ -82,4 +78,7 @@ class VideoSource(models.Model):
 
     def __str__(self):
         target = self.movie or self.episode
-        return f"{target} - {self.label or self.source_type}"
+        identifier = self.label or self.source_type
+        if target:
+            return f"{target} - {identifier}"
+        return f"Unassigned Video ({identifier}) - ID: {self.id}"

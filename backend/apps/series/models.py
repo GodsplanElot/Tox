@@ -7,13 +7,15 @@ class Series(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField()
 
-    poster = models.URLField(help_text="Poster image URL")
+    poster = models.URLField(help_text="Primary poster image URL")
+    backdrop = models.URLField(help_text="Wide hero image URL", null=True, blank=True)
+    trailer_url = models.URLField(help_text="Link to YouTube/Vimeo trailer", null=True, blank=True)
 
     rating = models.FloatField(null=True, blank=True)
     first_air_date = models.DateField(null=True, blank=True)
 
     categories = models.ManyToManyField(
-        Category,
+        Category, 
         related_name="series",
         blank=True
     )
@@ -32,7 +34,9 @@ class Season(models.Model):
     )
 
     season_number = models.PositiveIntegerField()
-    title = models.CharField(max_length=255, blank=True)
+    title = models.CharField(max_length=255, blank=True, help_text="e.g. 'The Beginning' or leave blank")
+    description = models.TextField(blank=True, help_text="Summary for this specific season")
+    poster = models.URLField(null=True, blank=True, help_text="Per-season poster image")
 
     class Meta:
         unique_together = ("series", "season_number")
@@ -51,9 +55,10 @@ class Episode(models.Model):
 
     episode_number = models.PositiveIntegerField()
     title = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
+    plot = models.TextField(blank=True, help_text="Narrative summary of the episode")
+    thumbnail = models.URLField(null=True, blank=True, help_text="Preview image for the episode")
 
-    runtime = models.PositiveIntegerField(null=True, blank=True)
+    runtime = models.PositiveIntegerField(null=True, blank=True, help_text="In minutes")
     release_date = models.DateField(null=True, blank=True)
 
     class Meta:
