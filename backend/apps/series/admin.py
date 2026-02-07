@@ -1,40 +1,69 @@
 from django.contrib import admin
-import nested_admin
+from django.utils.html import format_html
+from django.urls import reverse
 from .models import Series, Season, Episode, EpisodeVideo
 from apps.media.models import VideoSource
 
-class EpisodeVideoInline(nested_admin.NestedTabularInline):
+class EpisodeVideoInline(admin.TabularInline):
     model = EpisodeVideo
     extra = 1
     autocomplete_fields = ['video_source']
     verbose_name = "Linked Media"
     verbose_name_plural = "Linked Media (Assign from Library)"
 
-class EpisodeInline(nested_admin.NestedStackedInline):
-    model = Episode
-    extra = 0
-    sortable_field_name = "episode_number"
-    fieldsets = (
-        (None, {
-            'fields': (('episode_number', 'title'), 'plot', ('runtime', 'release_date'), 'thumbnail'),
-        }),
-    )
+@admin.register(Episode)
+class EpisodeAdmin(admin.ModelAdmin):
+    list_display = ('title', 'season', 'episode_number', 'release_date')
+    list_filter = ('season__series', 'season')
+    search_fields = ('title', 'plot')
+    autocomplete_fields = ['season']
     inlines = [EpisodeVideoInline]
 
-class SeasonInline(nested_admin.NestedStackedInline):
-    model = Season
+class EpisodeInline(admin.TabularInline):
+    model = Episode
     extra = 0
-    sortable_field_name = "season_number"
-    fieldsets = (
-        (None, {
-            'fields': (('season_number', 'title'), 'description', 'poster'),
-        }),
-    )
+    fields = ('episode_number', 'title', 'view_episode_link')
+    readonly_fields = ('view_episode_link',)
+
+    def view_episode_link(self, obj):
+        if obj.id:
+            url = reverse('admin:series_episode_change', args=[obj.id])
+            return format_html('<a href="{}">Edit Full Episode</a>', url)
+        return "-"
+
+@admin.register(Season)
+class SeasonAdmin(admin.ModelAdmin):
+    list_display = ('season_label', 'series', 'episode_count_link')
+    list_filter = ('series',)
+    search_fields = ('title', 'description')
+    autocomplete_fields = ['series']
     inlines = [EpisodeInline]
 
+    def season_label(self, obj):
+        return str(obj)
+    season_label.short_description = 'Season'
+
+    def episode_count_link(self, obj):
+        count = obj.episodes.count()
+        url = reverse('admin:series_episode_changelist') + f'?season__id__exact={obj.id}'
+        return format_html('<a href="{}">{} Episodes</a>', url, count)
+    episode_count_link.short_description = 'Episodes'
+
+class SeasonInline(admin.TabularInline):
+    model = Season
+    extra = 0
+    fields = ('season_number', 'title', 'view_season_link')
+    readonly_fields = ('view_season_link',)
+
+    def view_season_link(self, obj):
+        if obj.id:
+            url = reverse('admin:series_season_change', args=[obj.id])
+            return format_html('<a href="{}">Edit Full Season</a>', url)
+        return "-"
+
 @admin.register(Series)
-class SeriesAdmin(nested_admin.NestedModelAdmin):
-    list_display = ('title', 'first_air_date', 'rating')
+class SeriesAdmin(admin.ModelAdmin):
+    list_display = ('title', 'first_air_date', 'rating', 'view_seasons_link')
     search_fields = ('title',)
     autocomplete_fields = ['categories']
     
@@ -53,5 +82,8 @@ class SeriesAdmin(nested_admin.NestedModelAdmin):
     
     inlines = [SeasonInline]
 
-# Keep existing standalone registrations commented out or remove them
-# to avoid clutter, as they are now managed within Series.
+    def view_seasons_link(self, obj):
+        count = obj.seasons.count()
+        url = reverse('admin:series_season_changelist') + f'?series__id__exact={obj.id}'
+        return format_html('<a href="{}">{} Seasons</a>', url, count)
+    view_seasons_link.short_description = 'Seasons'
