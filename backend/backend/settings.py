@@ -137,3 +137,13 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# TMDB API Configuration
+# Get your API Key at https://www.themoviedb.org/settings/api
+TMDB_API_KEY = "YOUR_TMDB_API_KEY_HERE"
+
+# AWS S3 Configuration
+AWS_ACCESS_KEY_ID = "YOUR_ACCESS_KEY"
+AWS_SECRET_ACCESS_KEY = "YOUR_SECRET_KEY"
+AWS_STORAGE_BUCKET_NAME = "your-bucket-name"
+AWS_S3_REGION_NAME = "your-region"  # e.g., 'us-east-1'
+

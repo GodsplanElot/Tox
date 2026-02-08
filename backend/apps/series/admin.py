@@ -1,7 +1,8 @@
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.utils.html import format_html
 from django.urls import reverse
 from .models import Series, Season, Episode
+from apps.common.tmdb import TMDBService
 
 @admin.register(Episode)
 class EpisodeAdmin(admin.ModelAdmin):
@@ -72,6 +73,7 @@ class SeriesAdmin(admin.ModelAdmin):
     search_fields = ('title',)
     autocomplete_fields = ['categories']
     prepopulated_fields = {"slug": ("title",)}
+    actions = ['sync_from_tmdb']
     
     fieldsets = (
         ("Content Information", {
@@ -87,6 +89,24 @@ class SeriesAdmin(admin.ModelAdmin):
     )
     
     inlines = [SeasonInline]
+
+    @admin.action(description="Sync metadata from TMDB")
+    def sync_from_tmdb(self, request, queryset):
+        service = TMDBService()
+        success_count = 0
+        for series in queryset:
+            if series.tmdb_id:
+                data = service.fetch_series_data(series.tmdb_id)
+                if data:
+                    series.title = data['title']
+                    series.description = data['description']
+                    series.poster = data['poster']
+                    series.backdrop = data['backdrop']
+                    series.rating = data['rating']
+                    series.first_air_date = data['first_air_date']
+                    series.save()
+                    success_count += 1
+        self.message_user(request, f"Successfully synced {success_count} series.", messages.SUCCESS)
 
     def view_seasons_link(self, obj):
         count = obj.seasons.count()
