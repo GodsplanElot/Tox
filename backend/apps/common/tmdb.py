@@ -48,3 +48,7 @@ class TMDBService:
                 "first_air_date": data.get("first_air_date"),
             }
         return None
+# ... (Keep existing fetch logic but NOTE: fields are now ImageFields)
+# The sync actions in admin will needs to be updated if you want to 
+# automatically download TMDB images into your local media storage.
+# For now, it will attempt to assign the URL which may fail for ImageFields.

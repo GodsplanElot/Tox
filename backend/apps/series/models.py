@@ -8,11 +8,17 @@ class Series(models.Model):
     tmdb_id = models.IntegerField(null=True, blank=True, help_text="TMDB ID for metadata sync")
     description = models.TextField()
 
-    poster = models.URLField(help_text="Primary poster image URL")
-    backdrop = models.URLField(help_text="Wide hero image URL", null=True, blank=True)
+    poster = models.ImageField(
+        upload_to="posters/series/",
+        help_text="Recommended size: 600x900px (2:3 aspect ratio)"
+    )
     trailer_url = models.URLField(help_text="Link to YouTube/Vimeo trailer", null=True, blank=True)
 
-    rating = models.FloatField(null=True, blank=True)
+    rating = models.FloatField(
+        null=True, 
+        blank=True,
+        help_text="Scale: 0.0 to 10.0"
+    )
     first_air_date = models.DateField(null=True, blank=True)
 
     categories = models.ManyToManyField(
@@ -43,7 +49,12 @@ class Season(models.Model):
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     title = models.CharField(max_length=255, blank=True, help_text="e.g. 'The Beginning' or leave blank")
     description = models.TextField(blank=True, help_text="Summary for this specific season")
-    poster = models.URLField(null=True, blank=True, help_text="Per-season poster image")
+    poster = models.ImageField(
+        upload_to="posters/seasons/",
+        null=True, 
+        blank=True, 
+        help_text="Per-season poster image"
+    )
 
     class Meta:
         unique_together = ("series", "season_number")
@@ -74,7 +85,12 @@ class Episode(models.Model):
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     title = models.CharField(max_length=255)
     plot = models.TextField(blank=True, help_text="Narrative summary of the episode")
-    thumbnail = models.URLField(null=True, blank=True, help_text="Preview image for the episode")
+    thumbnail = models.ImageField(
+        upload_to="thumbnails/episodes/",
+        null=True, 
+        blank=True, 
+        help_text="Preview image for the episode"
+    )
 
     # Video Source Fields (Moved directly into model for easier upload)
     source_type = models.CharField(
@@ -94,7 +110,11 @@ class Episode(models.Model):
         help_text="Link to external stream if source_type is External"
     )
 
-    runtime = models.PositiveIntegerField(null=True, blank=True, help_text="In minutes")
+    runtime = models.PositiveIntegerField(
+        null=True, 
+        blank=True, 
+        help_text="Duration in minutes"
+    )
     release_date = models.DateField(null=True, blank=True)
 
     class Meta:

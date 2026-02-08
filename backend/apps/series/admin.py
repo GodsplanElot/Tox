@@ -100,8 +100,8 @@ class SeriesAdmin(admin.ModelAdmin):
             'fields': (('title', 'slug', 'tmdb_id'), 'description', 'categories'),
         }),
         ("Media Assets", {
-            'fields': (('poster', 'backdrop'), 'trailer_url'),
-            'description': "Links to images and trailer content",
+            'fields': ('poster', 'trailer_url'),
+            'description': "Upload a poster and provide a trailer link.",
         }),
         ("Metadata", {
             'fields': (('rating', 'first_air_date'),),

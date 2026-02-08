@@ -19,7 +19,7 @@ class MovieAdmin(admin.ModelAdmin):
             'description': "Upload a file or provide an external link.",
         }),
         ("Media Assets", {
-            'fields': (('poster', 'backdrop'),),
+            'fields': ('poster',),
         }),
         ("Metadata", {
             'fields': (('rating', 'release_date', 'runtime'),),

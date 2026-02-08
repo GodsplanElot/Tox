@@ -25,7 +25,7 @@ class SeriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Series
         fields = [
-            'id', 'title', 'slug', 'description', 'poster', 'backdrop',
+            'id', 'title', 'slug', 'description', 'poster',
             'trailer_url', 'rating', 'first_air_date', 'categories',
             'seasons', 'created_at'
         ]

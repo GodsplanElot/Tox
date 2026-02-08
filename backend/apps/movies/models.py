@@ -13,9 +13,11 @@ class Movie(models.Model):
     tmdb_id = models.IntegerField(null=True, blank=True, help_text="TMDB ID for metadata sync")
     description = models.TextField()
 
-    # Single canonical image
-    poster = models.URLField(help_text="Poster image URL")
-    backdrop = models.URLField(help_text="Wide hero image URL", null=True, blank=True)
+    # Image Assets
+    poster = models.ImageField(
+        upload_to="posters/movies/",
+        help_text="Recommended size: 600x900px (2:3 aspect ratio)"
+    )
 
     # Video Source Fields (Moved directly into model for easier upload)
     source_type = models.CharField(
@@ -35,9 +37,17 @@ class Movie(models.Model):
         help_text="Link to external stream if source_type is External"
     )
 
-    rating = models.FloatField(null=True, blank=True)
+    rating = models.FloatField(
+        null=True, 
+        blank=True,
+        help_text="Scale: 0.0 to 10.0"
+    )
     release_date = models.DateField(null=True, blank=True)
-    runtime = models.PositiveIntegerField(null=True, blank=True)
+    runtime = models.PositiveIntegerField(
+        null=True, 
+        blank=True,
+        help_text="Duration in minutes"
+    )
 
     categories = models.ManyToManyField(
         Category,
