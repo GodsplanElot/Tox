@@ -1,15 +1,7 @@
 from django.contrib import admin
 from django.utils.html import format_html
 from django.urls import reverse
-from .models import Series, Season, Episode, EpisodeVideo
-from apps.media.models import VideoSource
-
-class EpisodeVideoInline(admin.TabularInline):
-    model = EpisodeVideo
-    extra = 1
-    autocomplete_fields = ['video_source']
-    verbose_name = "Linked Media"
-    verbose_name_plural = "Linked Media (Assign from Library)"
+from .models import Series, Season, Episode
 
 @admin.register(Episode)
 class EpisodeAdmin(admin.ModelAdmin):
@@ -17,7 +9,19 @@ class EpisodeAdmin(admin.ModelAdmin):
     list_filter = ('season__series', 'season')
     search_fields = ('title', 'plot')
     autocomplete_fields = ['season']
-    inlines = [EpisodeVideoInline]
+    prepopulated_fields = {"slug": ("title",)}
+
+    fieldsets = (
+        ("Episode Information", {
+            'fields': (('episode_number', 'title', 'slug'), 'plot', 'thumbnail'),
+        }),
+        ("Video Source", {
+            'fields': ('source_type', 'video_file', 'external_url'),
+        }),
+        ("Metadata", {
+            'fields': (('runtime', 'release_date'),),
+        }),
+    )
 
 class EpisodeInline(admin.TabularInline):
     model = Episode
@@ -38,6 +42,7 @@ class SeasonAdmin(admin.ModelAdmin):
     search_fields = ('title', 'description')
     autocomplete_fields = ['series']
     inlines = [EpisodeInline]
+    prepopulated_fields = {"slug": ("season_number",)} # Simple slug for season
 
     def season_label(self, obj):
         return str(obj)
@@ -66,10 +71,11 @@ class SeriesAdmin(admin.ModelAdmin):
     list_display = ('title', 'first_air_date', 'rating', 'view_seasons_link')
     search_fields = ('title',)
     autocomplete_fields = ['categories']
+    prepopulated_fields = {"slug": ("title",)}
     
     fieldsets = (
         ("Content Information", {
-            'fields': ('title', 'description', 'categories'),
+            'fields': (('title', 'slug'), 'description', 'categories'),
         }),
         ("Media Assets", {
             'fields': (('poster', 'backdrop'), 'trailer_url'),

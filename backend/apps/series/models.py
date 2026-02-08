@@ -1,10 +1,10 @@
 from django.db import models
+from django.utils.text import slugify
 from apps.categories.models import Category
-from apps.media.models import VideoSource
-
 
 class Series(models.Model):
     title = models.CharField(max_length=255)
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
     description = models.TextField()
 
     poster = models.URLField(help_text="Primary poster image URL")
@@ -22,6 +22,11 @@ class Series(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return self.title
 
@@ -34,6 +39,7 @@ class Season(models.Model):
     )
 
     season_number = models.PositiveIntegerField()
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
     title = models.CharField(max_length=255, blank=True, help_text="e.g. 'The Beginning' or leave blank")
     description = models.TextField(blank=True, help_text="Summary for this specific season")
     poster = models.URLField(null=True, blank=True, help_text="Per-season poster image")
@@ -42,11 +48,21 @@ class Season(models.Model):
         unique_together = ("series", "season_number")
         ordering = ["season_number"]
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f"{self.series.title}-season-{self.season_number}")
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.series.title} - Season {self.season_number}"
 
 
 class Episode(models.Model):
+    SOURCE_TYPE_CHOICES = (
+        ("upload", "Uploaded File"),
+        ("external", "External Link"),
+    )
+
     season = models.ForeignKey(
         Season,
         related_name="episodes",
@@ -54,9 +70,28 @@ class Episode(models.Model):
     )
 
     episode_number = models.PositiveIntegerField()
+    slug = models.SlugField(max_length=255, unique=True, blank=True)
     title = models.CharField(max_length=255)
     plot = models.TextField(blank=True, help_text="Narrative summary of the episode")
     thumbnail = models.URLField(null=True, blank=True, help_text="Preview image for the episode")
+
+    # Video Source Fields (Moved directly into model for easier upload)
+    source_type = models.CharField(
+        max_length=20,
+        choices=SOURCE_TYPE_CHOICES,
+        default="upload"
+    )
+    video_file = models.FileField(
+        upload_to="videos/episodes/",
+        blank=True,
+        null=True,
+        help_text="Upload raw MP4 file here"
+    )
+    external_url = models.URLField(
+        blank=True,
+        null=True,
+        help_text="Link to external stream if source_type is External"
+    )
 
     runtime = models.PositiveIntegerField(null=True, blank=True, help_text="In minutes")
     release_date = models.DateField(null=True, blank=True)
@@ -65,21 +100,11 @@ class Episode(models.Model):
         unique_together = ("season", "episode_number")
         ordering = ["episode_number"]
 
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(f"{self.season.series.title}-s{self.season.season_number}e{self.episode_number}")
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.season} - Episode {self.episode_number}"
-
-
-class EpisodeVideo(models.Model):
-    episode = models.ForeignKey(
-        Episode,
-        related_name="videos",
-        on_delete=models.CASCADE
-    )
-    video_source = models.ForeignKey(
-        VideoSource,
-        on_delete=models.CASCADE
-    )
-
-    def __str__(self):
-        return f"{self.episode} - {self.video_source}"
 

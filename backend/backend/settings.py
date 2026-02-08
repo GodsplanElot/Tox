@@ -50,7 +50,6 @@ INSTALLED_APPS = [
     "apps.categories",
     "apps.users",
     "apps.common",
-    "apps.media",
 ]
 
 MIDDLEWARE = [
