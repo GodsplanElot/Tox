@@ -75,7 +75,7 @@ class SeriesAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ("Content Information", {
-            'fields': (('title', 'slug'), 'description', 'categories'),
+            'fields': (('title', 'slug', 'tmdb_id'), 'description', 'categories'),
         }),
         ("Media Assets", {
             'fields': (('poster', 'backdrop'), 'trailer_url'),

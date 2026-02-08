@@ -12,7 +12,7 @@ class MovieAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ("Content Information", {
-            'fields': (('title', 'slug'), 'description', 'categories'),
+            'fields': (('title', 'slug', 'tmdb_id'), 'description', 'categories'),
         }),
         ("Video Source", {
             'fields': ('source_type', 'video_file', 'external_url'),

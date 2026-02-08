@@ -10,6 +10,7 @@ class Movie(models.Model):
 
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
+    tmdb_id = models.IntegerField(null=True, blank=True, help_text="TMDB ID for metadata sync")
     description = models.TextField()
 
     # Single canonical image
