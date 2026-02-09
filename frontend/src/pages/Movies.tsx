@@ -1,11 +1,11 @@
-import React from 'react'
+import React from "react";
 
 const Movies = () => {
   return (
     <div>
-      <p>Movies Page   </p>
+      <p className="text-white">Movies Page</p>
     </div>
-  )
-}
+  );
+};
 
-export default Movies
+export default Movies;
