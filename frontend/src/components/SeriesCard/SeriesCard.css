@@ -1,5 +1,5 @@
 .series-card {
-  min-width: 140px;
+  width: 140px;
   flex-shrink: 0;
   text-decoration: none;
   color: inherit;

@@ -1,7 +1,11 @@
 .movie-card {
-  width: 100%;
+  width: 140px;
   flex-shrink: 0;
   cursor: pointer;
+}
+
+.movie-grid .movie-card {
+  width: 100%;
 }
 
 .movie-card-image {
