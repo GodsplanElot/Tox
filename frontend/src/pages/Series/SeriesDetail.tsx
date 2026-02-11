@@ -31,7 +31,7 @@ const SeriesDetail = () => {
         <div
           className="detail-hero-backdrop"
           style={{
-            backgroundImage: `url(${series.backdrop || series.poster})`,
+            backgroundImage: `url(${series.poster})`,
           }}
         />
         <div className="detail-hero-overlay" />
@@ -43,18 +43,20 @@ const SeriesDetail = () => {
           <div className="series-info-main">
             <div className="series-meta">
               <span className="rating-badge">★ {series.rating}</span>
-              <span>{series.year}</span>
-              {series.firstAirDate && (
-                <span>
-                  {new Date(series.firstAirDate).toLocaleDateString()}
-                </span>
+              {series.first_air_date && (
+                <>
+                  <span>{new Date(series.first_air_date).getFullYear()}</span>
+                  <span>
+                    {new Date(series.first_air_date).toLocaleDateString()}
+                  </span>
+                </>
               )}
             </div>
             <h1 className="series-title-large">{series.title}</h1>
             <div className="series-genres">
-              {series.genres?.map((genre) => (
-                <span key={genre} className="genre-tag">
-                  {genre}
+              {series.categories?.map((cat) => (
+                <span key={cat.id} className="genre-tag">
+                  {cat.name}
                 </span>
               ))}
             </div>

@@ -25,7 +25,7 @@ const CategoryDetail = () => {
     if (!category) return [];
 
     const filtered = moviesFromDb.filter((movie) =>
-      movie.categoryIds.includes(category.id)
+      movie.categories.some((c) => c.id === category.id),
     );
 
     return [...filtered].sort((a, b) => {
@@ -35,14 +35,14 @@ const CategoryDetail = () => {
 
         case "newest":
           return (
-            new Date(b.releaseDate ?? "").getTime() -
-            new Date(a.releaseDate ?? "").getTime()
+            new Date(b.release_date ?? "").getTime() -
+            new Date(a.release_date ?? "").getTime()
           );
 
         case "oldest":
           return (
-            new Date(a.releaseDate ?? "").getTime() -
-            new Date(b.releaseDate ?? "").getTime()
+            new Date(a.release_date ?? "").getTime() -
+            new Date(b.release_date ?? "").getTime()
           );
 
         case "rating":
@@ -61,7 +61,7 @@ const CategoryDetail = () => {
     if (!category) return [];
 
     const filtered = seriesFromDb.filter((show) =>
-      show.categoryIds.includes(category.id)
+      show.categories.some((c) => c.id === category.id),
     );
 
     return [...filtered].sort((a, b) => {
@@ -71,14 +71,14 @@ const CategoryDetail = () => {
 
         case "newest":
           return (
-            new Date(b.firstAirDate ?? "").getTime() -
-            new Date(a.firstAirDate ?? "").getTime()
+            new Date(b.first_air_date ?? "").getTime() -
+            new Date(a.first_air_date ?? "").getTime()
           );
 
         case "oldest":
           return (
-            new Date(a.firstAirDate ?? "").getTime() -
-            new Date(b.firstAirDate ?? "").getTime()
+            new Date(a.first_air_date ?? "").getTime() -
+            new Date(b.first_air_date ?? "").getTime()
           );
 
         case "rating":
@@ -118,9 +118,7 @@ const CategoryDetail = () => {
       {movies.length > 0 && <MovieGrid movies={movies} />}
 
       {/* SERIES */}
-      {series.length > 0 && (
-        <SeriesRail title="TV Series" series={series} />
-      )}
+      {series.length > 0 && <SeriesRail title="TV Series" series={series} />}
 
       {/* EMPTY STATE */}
       {movies.length === 0 && series.length === 0 && (

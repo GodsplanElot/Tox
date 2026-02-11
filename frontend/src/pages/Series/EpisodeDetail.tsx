@@ -28,7 +28,7 @@ const EpisodeDetail = () => {
       {/* Hero Poster Section (Replacing Video) */}
       <div className="video-player-section">
         <img
-          src={episode.thumb || series?.backdrop || series?.poster}
+          src={episode.thumbnail || series?.poster}
           alt={episode.title}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
@@ -47,7 +47,7 @@ const EpisodeDetail = () => {
         {/* Content */}
         <div className="episode-header-main">
           <div className="episode-meta-top">
-            <span>Episode {episode.episodeNumber}</span>
+            <span>Episode {episode.episode_number}</span>
             {episode.runtime && (
               <>
                 <span className="dot">•</span>
@@ -60,11 +60,7 @@ const EpisodeDetail = () => {
 
         <div className="episode-description-box">
           <h3>Overview</h3>
-          <p>{series?.description}</p>
-          <p className="mt-3 text-muted" style={{ fontSize: "0.9rem" }}>
-            This is where episode-specific descriptions would go if available in
-            the data model.
-          </p>
+          <p>{episode.plot || series?.description}</p>
         </div>
       </div>
     </div>

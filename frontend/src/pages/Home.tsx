@@ -10,8 +10,8 @@ const Home = () => {
   // Trending: Newest movies first
   const trendingMovies = useMemo(() => {
     return [...moviesFromDb].sort((a, b) => {
-      const dateA = new Date(a.releaseDate ?? "").getTime();
-      const dateB = new Date(b.releaseDate ?? "").getTime();
+      const dateA = new Date(a.release_date ?? "").getTime();
+      const dateB = new Date(b.release_date ?? "").getTime();
       return dateB - dateA;
     });
   }, []);

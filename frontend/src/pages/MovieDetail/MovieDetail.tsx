@@ -10,7 +10,7 @@ const MovieDetail: React.FC = () => {
 
   // Find movie by ID (mock DB)
   const movie: Movie | undefined = moviesFromDb.find(
-    (m) => String(m.id) === id
+    (m) => String(m.id) === id,
   );
 
   if (!movie) {
@@ -21,12 +21,14 @@ const MovieDetail: React.FC = () => {
     );
   }
 
-  // Simple related movies logic (same genre, exclude current)
+  // Simple related movies logic (same categories, exclude current)
   const relatedMovies = moviesFromDb
     .filter(
       (m) =>
         m.id !== movie.id &&
-        m.genres?.some((g) => movie.genres?.includes(g))
+        m.categories?.some((cat) =>
+          movie.categories?.some((c) => c.id === cat.id),
+        ),
     )
     .slice(0, 12);
 
@@ -40,16 +42,14 @@ const MovieDetail: React.FC = () => {
             to bottom,
             rgba(0,0,0,0.4),
             rgba(0,0,0,0.95)
-          ), url(${movie.backdrop || movie.poster})`,
+          ), url(${movie.poster})`,
         }}
       >
         <div className="movie-detail__hero-content">
           <div className="movie-detail__poster">
             <img src={movie.poster} alt={movie.title} />
             {movie.rating && (
-              <span className="movie-detail__rating">
-                ⭐ {movie.rating}
-              </span>
+              <span className="movie-detail__rating">⭐ {movie.rating}</span>
             )}
           </div>
 
@@ -57,71 +57,36 @@ const MovieDetail: React.FC = () => {
             <h1 className="movie-detail__title">{movie.title}</h1>
 
             <div className="movie-detail__meta">
-              {movie.year && <span>{movie.year}</span>}
+              {movie.release_date && (
+                <span>{new Date(movie.release_date).getFullYear()}</span>
+              )}
               {movie.runtime && <span>{movie.runtime} min</span>}
             </div>
 
-            {movie.genres && (
+            {movie.categories && (
               <div className="movie-detail__genres">
-                {movie.genres.map((genre) => (
-                  <span key={genre}>{genre}</span>
+                {movie.categories.map((cat) => (
+                  <span key={cat.id}>{cat.name}</span>
                 ))}
               </div>
             )}
 
-            <p className="movie-detail__description">
-              {movie.description}
-            </p>
+            <p className="movie-detail__description">{movie.description}</p>
 
             <div className="movie-detail__actions">
-              {movie.trailer && (
-                <a
-                  href={movie.trailer}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="movie-detail__play-btn"
-                >
-                  ▶ Watch Trailer
-                </a>
-              )}
-
-              {movie.downloadUrl && (
-                <a
-                  href={movie.downloadUrl}
-                  download
-                  className="movie-detail__download-btn"
-                >
-                  ⬇ Download
-                </a>
-              )}
+              {/* Play button/Link will be implemented later */}
+              <button className="movie-detail__play-btn">▶ Watch Now</button>
             </div>
-
           </div>
         </div>
 
-        {/* 🎬 MINI VIDEO SCREEN (ADDED – NOTHING REMOVED) */}
-        {movie.video && (
-          <div className="movie-detail__mini-video">
-            <video
-              src={movie.video.src}
-              poster={movie.video.poster || movie.poster}
-              muted
-              autoPlay
-              loop
-              playsInline
-              preload="metadata"
-            />
-          </div>
-        )}
+        {/* Mini video screen removed per user request */}
       </section>
 
       {/* RECOMMENDATIONS */}
       {relatedMovies.length > 0 && (
         <section className="movie-detail__related">
-          <MovieGrid
-            title="More Like This"
-            movies={relatedMovies}
-          />
+          <MovieGrid title="More Like This" movies={relatedMovies} />
         </section>
       )}
     </div>

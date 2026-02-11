@@ -1,27 +1,21 @@
-export interface MovieVideo {
-  src: string;        // mp4 / webm / HLS later
-  poster?: string;    // fallback image
-  duration?: number;  // seconds (optional)
-}
+import type { Category } from "./category";
 
 export interface Movie {
   id: number;
   title: string;
+  slug: string;
   poster: string;
-  year?: string;
+  description: string;
   rating?: number;
-  downloadUrl?: string
-  releaseDate?: string; // ISO string for sorting
-  categoryIds: number[]; // <-- key for filtering
-  backdrop?: string
-  runtime?: number
-  genres?: string[]
-  description?: string
-  trailer?: string
-
-  video?: MovieVideo; // 👈 NEW (mini screen video)
+  release_date?: string;
+  runtime?: number;
+  categories: Category[];
+  tmdb_id?: number;
+  
+  // Video Source Fields
+  source_type?: "upload" | "external";
+  video_file?: string;
+  external_url?: string;
+  
+  created_at?: string;
 }
-
-
-
-

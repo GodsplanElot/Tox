@@ -1,9 +1,9 @@
-import type { Season } from "../../types/series"
+import type { Season } from "../../types/series";
 
 interface Props {
-  seasons: Season[]
-  activeSeason: number
-  onSelect: (index: number) => void
+  seasons: Season[];
+  activeSeason: number;
+  onSelect: (index: number) => void;
 }
 
 const SeasonSelector = ({ seasons, activeSeason, onSelect }: Props) => {
@@ -15,11 +15,11 @@ const SeasonSelector = ({ seasons, activeSeason, onSelect }: Props) => {
           className={index === activeSeason ? "active" : ""}
           onClick={() => onSelect(index)}
         >
-          Season {season.seasonNumber}
+          Season {season.season_number}
         </button>
       ))}
     </div>
-  )
-}
+  );
+};
 
-export default SeasonSelector
+export default SeasonSelector;

@@ -1,9 +1,9 @@
-import { Link } from "react-router-dom"
-import type { Series } from "../../types/series"
-import "./SeriesCard.css"
+import { Link } from "react-router-dom";
+import type { Series } from "../../types/series";
+import "./SeriesCard.css";
 
 interface Props {
-  series: Series
+  series: Series;
 }
 
 const SeriesCard = ({ series }: Props) => {
@@ -12,10 +12,12 @@ const SeriesCard = ({ series }: Props) => {
       <img src={series.poster} alt={series.title} />
       <div className="series-card-info">
         <h4>{series.title}</h4>
-        {series.year && <span>{series.year}</span>}
+        {series.first_air_date && (
+          <span>{new Date(series.first_air_date).getFullYear()}</span>
+        )}
       </div>
     </Link>
-  )
-}
+  );
+};
 
-export default SeriesCard
+export default SeriesCard;
