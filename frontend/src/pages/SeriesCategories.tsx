@@ -9,7 +9,7 @@ const SeriesCategories = () => {
 
       {categories.map((category) => {
         const seriesInCategory = seriesFromDb.filter((show) =>
-          show.categoryIds.includes(category.id)
+          show.categories.some((c) => c.id === category.id),
         );
 
         if (seriesInCategory.length === 0) return null;

@@ -13,7 +13,7 @@ const SeriesList = () => {
 
       {categories.map((cat, index) => {
         const filteredSeries = seriesFromDb.filter((s) =>
-          s.categoryIds.includes(cat.id),
+          s.categories.some((c) => c.id === cat.id),
         );
 
         // Only show category if it has series
