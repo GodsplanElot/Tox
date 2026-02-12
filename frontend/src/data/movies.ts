@@ -1628,4 +1628,17 @@ export const moviesFromDb: Movie[] = [
     source_type: "upload",
     video_file: "/videos/movies/neon-city.mp4"
   }
+  {
+    id: 226,
+    title: "Crime Pulse: Finale",
+    slug: "crimson-pulse-finale",
+    poster: "/img/covers/cover11.jpg",
+    rating: 8.0,
+    release_date: "2025-01-01",
+    categories: [categories[0], categories[1]],
+    runtime: 140,
+    description: "Thunder and light",
+    source_type: "upload",
+    video_file: "/videos/movies/neon-city.mp4"
+  }
 ];
