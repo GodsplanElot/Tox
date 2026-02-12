@@ -1627,7 +1627,8 @@ export const moviesFromDb: Movie[] = [
     description: "The last pulse of the rebellion.",
     source_type: "upload",
     video_file: "/videos/movies/neon-city.mp4"
-  }
+  },
+
   {
     id: 226,
     title: "Crime Pulse: Finale",
