@@ -204,14 +204,14 @@
 
 .episode-list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 1rem;
 }
 
 .episode-item {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);
-  border-radius: 12px;
+  border-radius: 8px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -221,7 +221,7 @@
 }
 
 .episode-item:hover {
-  transform: translateY(-5px);
+  transform: translateY(-3px);
   background: #2a2931;
   border-color: var(--accent-primary);
 }
@@ -246,33 +246,33 @@
 
 .episode-number-overlay {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
+  bottom: 4px;
+  right: 4px;
   background: rgba(0, 0, 0, 0.8);
-  padding: 2px 8px;
+  padding: 2px 6px;
   border-radius: 4px;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
   font-weight: 700;
   color: var(--accent-primary);
   border: 1px solid rgba(249, 171, 0, 0.3);
 }
 
 .episode-info {
-  padding: 1rem;
+  padding: 0.6rem;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
 }
 
 .episode-info strong {
-  font-size: 1rem;
+  font-size: 0.85rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .episode-runtime {
-  font-size: 0.8rem;
+  font-size: 0.7rem;
   color: var(--text-muted);
 }
 
