@@ -70,7 +70,12 @@ const SeriesDetail = () => {
         <button className="back-btn" onClick={handleBack}>
           <i className="bi bi-arrow-left"></i> Back
         </button>
-        <Breadcrumbs />
+        <Breadcrumbs
+          items={[
+            { label: "Series", path: "/series" },
+            { label: series.title, path: `/series/${series.id}` },
+          ]}
+        />
       </div>
 
       {/* Seasons & Episodes Section */}

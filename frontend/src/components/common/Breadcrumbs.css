@@ -1,20 +1,44 @@
 .breadcrumb-container {
   padding: 0.5rem 0;
-  margin-bottom: 1rem;
+  margin-bottom: 0.5rem;
+  overflow-x: auto;
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.breadcrumb-container::-webkit-scrollbar {
+  display: none; /* Chrome/Safari/Brave */
 }
 
 .breadcrumb {
   display: flex;
-  flex-wrap: wrap;
-  padding: 0 0;
-  margin-bottom: 1rem;
+  flex-wrap: nowrap;
+  padding: 0;
+  margin: 0;
   list-style: none;
   background-color: transparent;
   font-size: 0.85rem;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.breadcrumb-item {
+  display: flex;
+  align-items: center;
+  max-width: 150px;
+}
+
+.breadcrumb-item a, 
+.breadcrumb-item.active {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .breadcrumb-item + .breadcrumb-item {
   padding-left: 0.5rem;
+  flex-shrink: 0;
 }
 
 .breadcrumb-item + .breadcrumb-item::before {
@@ -22,6 +46,7 @@
   padding-right: 0.5rem;
   color: var(--text-muted);
   content: "/";
+  flex-shrink: 0;
 }
 
 .breadcrumb-item a {
@@ -37,4 +62,15 @@
 
 .breadcrumb-item.active {
   color: var(--text-muted);
+  max-width: 200px;
+}
+
+@media (max-width: 767px) {
+  .breadcrumb {
+    font-size: 0.75rem;
+  }
+  
+  .breadcrumb-item {
+    max-width: 100px;
+  }
 }
