@@ -86,7 +86,42 @@
 }
 
 @media (max-width: 767px) {
+  .video-player-section {
+    aspect-ratio: 16/9;
+    max-height: 40vh;
+    margin-bottom: 1.5rem;
+  }
+
   .episode-content-body {
-    padding: 0 1.5rem;
+    padding: 0 1.25rem;
+  }
+
+  .episode-header-main {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .episode-title-large {
+    font-size: clamp(1.4rem, 5vw, 1.8rem);
+  }
+
+  .episode-meta-top {
+    font-size: 0.8rem;
+    gap: 0.75rem;
+  }
+
+  .episode-description-box {
+    padding: 1rem;
+    margin-top: 1.5rem;
+    border-radius: 8px;
+  }
+
+  .episode-description-box h3 {
+    font-size: 1rem;
+  }
+
+  .episode-description-box p {
+    font-size: 0.9rem;
+    line-height: 1.5;
   }
 }

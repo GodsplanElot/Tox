@@ -267,17 +267,24 @@ body {
 /* ================= MOBILE OFFSET ================= */
 @media (max-width: 991.98px) {
   .app-content {
-    padding-left: calc(56px + 1rem);
-    padding-right: 1rem;
+    padding: 1rem 0.75rem;
+    padding-left: calc(56px + 0.75rem);
   }
 
+  .section-title {
+    font-size: clamp(1.1rem, 4vw, 1.25rem);
+    margin-bottom: 0.5rem;
+  }
 
   .hero-carousel {
-    height: 60vh;
+    height: 55vh;
+    border-radius: 12px;
   }
 
   .hero-content {
-    bottom: 10%;
+    bottom: 8%;
+    left: 8%;
+    max-width: 85%;
   }
 }
 

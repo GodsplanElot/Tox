@@ -8,9 +8,12 @@ const EpisodeDetail = () => {
   const navigate = useNavigate();
 
   const series = seriesFromDb.find((s) => String(s.id) === seriesId);
-  const episode = series?.seasons
-    .flatMap((s) => s.episodes)
-    .find((e) => String(e.id) === episodeId);
+  const currentSeason = series?.seasons.find((s) =>
+    s.episodes.some((e) => String(e.id) === episodeId),
+  );
+  const episode = currentSeason?.episodes.find(
+    (e) => String(e.id) === episodeId,
+  );
 
   if (!episode)
     return (
@@ -47,6 +50,8 @@ const EpisodeDetail = () => {
         {/* Content */}
         <div className="episode-header-main">
           <div className="episode-meta-top">
+            <span>Season {currentSeason?.season_number}</span>
+            <span className="dot">•</span>
             <span>Episode {episode.episode_number}</span>
             {episode.runtime && (
               <>
