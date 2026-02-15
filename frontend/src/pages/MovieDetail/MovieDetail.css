@@ -154,11 +154,21 @@
   }
 
   .movie-detail__title {
-    font-size: 1.9rem;
+    font-size: clamp(1.5rem, 5vw, 1.9rem);
+  }
+
+  .movie-detail__meta {
+    font-size: 0.85rem;
   }
 
   .movie-detail__description {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .movie-detail__genres span {
+    font-size: 0.75rem;
+    padding: 5px 10px;
   }
 }
 /* ============================= */
