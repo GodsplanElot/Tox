@@ -13,14 +13,17 @@ const SearchForm = () => {
   };
 
   return (
-    <form onSubmit={onSubmit}>
-      <input
-        type="search"
-        placeholder="Search movies..."
-        value={query}
-        onChange={(e) => setQuery(e.target.value)}
-        className="form-control"
-      />
+    <form onSubmit={onSubmit} className="search-form">
+      <div className="search-wrapper">
+        <i className="bi bi-search search-icon"></i>
+        <input
+          type="search"
+          placeholder="Search movies..."
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          className="navbar-search-input"
+        />
+      </div>
     </form>
   );
 };

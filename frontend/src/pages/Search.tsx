@@ -23,7 +23,7 @@ const Search = () => {
     if (!initialQuery) return [];
 
     return moviesFromDb.filter((movie) =>
-      movie.title.toLowerCase().includes(initialQuery.toLowerCase())
+      movie.title.toLowerCase().includes(initialQuery.toLowerCase()),
     );
   }, [initialQuery]);
 
@@ -34,7 +34,7 @@ const Search = () => {
     if (!initialQuery) return [];
 
     return seriesFromDb.filter((series) =>
-      series.title.toLowerCase().includes(initialQuery.toLowerCase())
+      series.title.toLowerCase().includes(initialQuery.toLowerCase()),
     );
   }, [initialQuery]);
 
@@ -50,41 +50,34 @@ const Search = () => {
     <section className="search-page">
       {/* MOBILE SEARCH INPUT */}
       <form className="search-mobile" onSubmit={onSearch}>
-        <input
-          type="search"
-          placeholder="Search movies or TV series..."
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-        />
+        <div className="search-wrapper">
+          <i className="bi bi-search search-icon"></i>
+          <input
+            type="search"
+            placeholder="Search movies or TV series..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+          />
+        </div>
       </form>
 
       {/* SEARCH RESULTS */}
       {initialQuery && (
         <>
-          <h2 className="search-title">
-            Results for “{initialQuery}”
-          </h2>
+          <h2 className="search-title">Results for “{initialQuery}”</h2>
 
           {/* MOVIES */}
-          {movieResults.length > 0 && (
-            <MovieGrid movies={movieResults} />
-          )}
+          {movieResults.length > 0 && <MovieGrid movies={movieResults} />}
 
           {/* SERIES */}
           {seriesResults.length > 0 && (
-            <SeriesRail
-              title="TV Series"
-              series={seriesResults}
-            />
+            <SeriesRail title="TV Series" series={seriesResults} />
           )}
 
           {/* EMPTY STATE */}
-          {movieResults.length === 0 &&
-            seriesResults.length === 0 && (
-              <p className="no-results">
-                No movies or TV series found.
-              </p>
-            )}
+          {movieResults.length === 0 && seriesResults.length === 0 && (
+            <p className="no-results">No movies or TV series found.</p>
+          )}
         </>
       )}
 
