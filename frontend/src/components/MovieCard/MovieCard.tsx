@@ -2,6 +2,7 @@ import React from "react";
 import { Link } from "react-router-dom";
 import "./MovieCard.css";
 import type { Movie } from "../../types/movie";
+import RatingBadge from "../common/RatingBadge";
 
 interface MovieCardProps {
   movie: Movie;
@@ -16,6 +17,11 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie }) => {
     >
       <div className="movie-card-image">
         <img src={movie.poster} alt={movie.title} loading="lazy" />
+        {movie.rating && (
+          <div className="movie-card-rating">
+            <RatingBadge rating={movie.rating} size="small" />
+          </div>
+        )}
       </div>
 
       <div className="movie-card-info">

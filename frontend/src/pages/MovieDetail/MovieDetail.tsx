@@ -3,6 +3,7 @@ import { useParams } from "react-router-dom";
 import MovieGrid from "../../components/MovieGrid/MovieGrid";
 import { moviesFromDb } from "../../data/movies"; // adjust path if needed
 import type { Movie } from "../../types/movie";
+import RatingBadge from "../../components/common/RatingBadge";
 import "./MovieDetail.css";
 
 const MovieDetail: React.FC = () => {
@@ -49,7 +50,9 @@ const MovieDetail: React.FC = () => {
           <div className="movie-detail__poster">
             <img src={movie.poster} alt={movie.title} />
             {movie.rating && (
-              <span className="movie-detail__rating">⭐ {movie.rating}</span>
+              <div className="movie-detail__rating">
+                <RatingBadge rating={movie.rating} size="medium" />
+              </div>
             )}
           </div>
 

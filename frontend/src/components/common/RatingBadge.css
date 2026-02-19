@@ -1,0 +1,117 @@
+.rating-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Size variants */
+.rating-badge--small {
+  padding: 4px 8px;
+  font-size: 0.75rem;
+  gap: 4px;
+}
+
+.rating-badge--medium {
+  padding: 6px 10px;
+  font-size: 0.85rem;
+  gap: 6px;
+}
+
+.rating-badge--large {
+  padding: 8px 14px;
+  font-size: 0.95rem;
+  gap: 8px;
+}
+
+/* Icon styling */
+.rating-badge__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2em;
+  line-height: 1;
+}
+
+.rating-badge--small .rating-badge__icon {
+  font-size: 1em;
+}
+
+.rating-badge--large .rating-badge__icon {
+  font-size: 1.4em;
+}
+
+/* Severity color variants */
+.rating-badge--hazardous {
+  background: linear-gradient(135deg, rgba(220, 38, 38, 0.15), rgba(220, 38, 38, 0.1));
+  color: #fca5a5;
+  border-color: rgba(220, 38, 38, 0.4);
+}
+
+.rating-badge--hazardous .rating-badge__icon {
+  color: #ff4757;
+  text-shadow: 0 0 8px rgba(255, 71, 87, 0.6);
+}
+
+.rating-badge--toxic {
+  background: linear-gradient(135deg, rgba(251, 146, 60, 0.15), rgba(251, 146, 60, 0.1));
+  color: #fed7aa;
+  border-color: rgba(251, 146, 60, 0.4);
+}
+
+.rating-badge--toxic .rating-badge__icon {
+  color: #ff9800;
+  text-shadow: 0 0 8px rgba(255, 152, 0, 0.6);
+}
+
+.rating-badge--caution {
+  background: linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(234, 179, 8, 0.1));
+  color: #fef08a;
+  border-color: rgba(234, 179, 8, 0.4);
+}
+
+.rating-badge--caution .rating-badge__icon {
+  color: #fbbf24;
+  text-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+}
+
+.rating-badge--safe {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(34, 197, 94, 0.1));
+  color: #bbf7d0;
+  border-color: rgba(34, 197, 94, 0.4);
+}
+
+.rating-badge--safe .rating-badge__icon {
+  color: #22c55e;
+  text-shadow: 0 0 8px rgba(34, 197, 94, 0.6);
+}
+
+/* Label styling */
+.rating-badge__label {
+  font-size: 0.65em;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: none;
+}
+
+.rating-badge--large .rating-badge__label {
+  display: inline;
+}
+
+/* Number styling */
+.rating-badge__number {
+  font-weight: 700;
+  font-size: 1em;
+}
+
+/* Hover effect */
+.rating-badge:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import SeasonSelector from "../../components/SeasonSelector/SeasonSelector";
 import EpisodeList from "../../components/EpisodeList/EpisodeList";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
+import RatingBadge from "../../components/common/RatingBadge";
 import "./SeriesDetail.css";
 
 const SeriesDetail = () => {
@@ -42,7 +43,7 @@ const SeriesDetail = () => {
           </div>
           <div className="series-info-main">
             <div className="series-meta">
-              <span className="rating-badge">★ {series.rating}</span>
+              {series.rating && <RatingBadge rating={series.rating} size="medium" />}
               {series.first_air_date && (
                 <>
                   <span>{new Date(series.first_air_date).getFullYear()}</span>
