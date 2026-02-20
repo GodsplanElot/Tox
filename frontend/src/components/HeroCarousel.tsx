@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from "react"
+import { useState, useCallback } from "react"
 import { Link } from "react-router-dom"
+import { Carousel } from "react-bootstrap"
 
 const slides = [
   {
@@ -25,105 +26,61 @@ const slides = [
     rating: "6.2",
     ratingClass: "red",
     text:
-      "An archaeologist’s daughter journeys into the Amazon to uncover a hidden city.",
+      "An archaeologist's daughter journeys into the Amazon to uncover a hidden city.",
     categories: ["Action", "Drama", "Thriller"],
     bg: "/img/covers/cover2.jpg",
   },
 ]
 
-const AUTOPLAY_MS = 6000
-
 const HeroCarousel = () => {
   const [index, setIndex] = useState(0)
-  const timerRef = useRef<number | null>(null)
-  const startX = useRef<number | null>(null)
 
-  const next = () => {
-    setIndex((i) => (i + 1) % slides.length)
-  }
-
-  const prev = () => {
-    setIndex((i) => (i - 1 + slides.length) % slides.length)
-  }
-
-  useEffect(() => {
-    timerRef.current = window.setInterval(next, AUTOPLAY_MS)
-
-    return () => {
-      if (timerRef.current !== null) {
-        clearInterval(timerRef.current)
-        timerRef.current = null
-      }
-    }
+  const handleSelect = useCallback((selectedIndex: number) => {
+    setIndex(selectedIndex)
   }, [])
 
-  const resetAutoplay = () => {
-    if (timerRef.current !== null) {
-      clearInterval(timerRef.current)
-    }
-
-    timerRef.current = window.setInterval(next, AUTOPLAY_MS)
-  }
-
-  const onTouchStart = (e: React.TouchEvent) => {
-    startX.current = e.touches[0].clientX
-  }
-
-  const onTouchEnd = (e: React.TouchEvent) => {
-    if (startX.current === null) return
-
-    const delta = e.changedTouches[0].clientX - startX.current
-
-    if (Math.abs(delta) > 50) {
-      if (delta > 0) {
-        prev()
-      } else {
-        next()
-      }
-      resetAutoplay()
-    }
-
-    startX.current = null
-  }
-
   return (
-    <section
-      className="hero-carousel"
-      onTouchStart={onTouchStart}
-      onTouchEnd={onTouchEnd}
-    >
-      <div
-        className="hero-track"
-        style={{ transform: `translateX(-${index * 100}%)` }}
+    <section className="hero-carousel">
+      <Carousel
+        activeIndex={index}
+        onSelect={handleSelect}
+        interval={6000}
+        pause="hover"
+        controls
+        indicators
       >
-        {slides.map((s) => (
-          <div
-            key={s.title}
-            className="hero-slide"
-            style={{ backgroundImage: `url(${s.bg})` }}
-          >
-            <div className="hero-overlay" />
-
+        {slides.map((slide) => (
+          <Carousel.Item key={slide.title}>
+            <div
+              className="hero-bg"
+              style={{ backgroundImage: `url(${slide.bg})` }}
+            />
+            <div className="hero-fade" />
             <div className="hero-content">
-              <h1>
-                {s.title} <sub className={s.ratingClass}>{s.rating}</sub>
+              <h1 className="hero-title">
+                {slide.title}
+                <sub className={`rating-${slide.ratingClass}`}>
+                  {slide.rating}
+                </sub>
               </h1>
 
-              <p>{s.text}</p>
+              <p className="hero-description">{slide.text}</p>
 
               <div className="hero-categories">
-                {s.categories.map((c) => (
-                  <span key={c}>{c}</span>
+                {slide.categories.map((cat) => (
+                  <span key={cat} className="category-badge">
+                    {cat}
+                  </span>
                 ))}
               </div>
 
-              <Link to="/details" className="hero-btn">
+              <Link to="/details" className="hero-cta btn btn-primary">
                 Watch Now
               </Link>
             </div>
-          </div>
+          </Carousel.Item>
         ))}
-      </div>
+      </Carousel>
     </section>
   )
 }
