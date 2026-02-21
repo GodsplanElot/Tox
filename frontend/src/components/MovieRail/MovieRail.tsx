@@ -1,4 +1,12 @@
 import { FaRadiation } from "react-icons/fa";
+import React from "react";
+import MovieCard from "../MovieCard/MovieCard";
+import type { Movie } from "../../types/movie";
+
+interface MovieRailProps {
+  title: string;
+  movies: Movie[];
+}
 
 const MovieRail: React.FC<MovieRailProps> = ({ title, movies }) => {
   return (
