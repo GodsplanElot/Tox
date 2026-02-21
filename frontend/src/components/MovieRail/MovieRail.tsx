@@ -1,16 +1,14 @@
-import React from "react";
-import MovieCard from "../MovieCard/MovieCard";
-import type { Movie } from "../../types/movie";
-
-interface MovieRailProps {
-  title: string;
-  movies: Movie[];
-}
+import { RiRadiationLine } from "react-icons/ri";
 
 const MovieRail: React.FC<MovieRailProps> = ({ title, movies }) => {
   return (
     <section className="content-section">
-      <h2 className="section-title">{title}</h2>
+      <div className="section-header">
+        <span className="title-icon">
+          <RiRadiationLine />
+        </span>
+        <h2 className="section-title">{title}</h2>
+      </div>
 
       <div className="movie-rail">
         {movies.map((movie) => (

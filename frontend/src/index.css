@@ -47,8 +47,18 @@ body {
   overflow-x: hidden;
   background-color: var(--bg-app);
   color: var(--text-primary);
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-    Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
 }
 
 /* ================= NAVBAR ================= */
@@ -87,7 +97,9 @@ body {
 
 .mobile-rail i {
   font-size: 20px;
-  transition: color 0.15s ease, transform 0.1s ease;
+  transition:
+    color 0.15s ease,
+    transform 0.1s ease;
 }
 
 .mobile-rail i:hover {
@@ -124,7 +136,9 @@ body {
   padding: 10px 12px;
   border-radius: 8px;
   font-weight: 500;
-  transition: background-color 0.15s ease, color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease;
 }
 
 .offcanvas-link:hover {
@@ -163,10 +177,30 @@ body {
   margin-bottom: 2rem;
 }
 
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1.5rem;
+  padding-left: 4px;
+  border-left: 3px solid var(--accent-primary);
+}
+
 .section-title {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 0;
+  color: #ffffff;
+}
+
+.title-icon {
+  font-size: 1.4rem;
+  color: var(--accent-primary);
+  display: flex;
+  align-items: center;
+  filter: drop-shadow(0 0 5px rgba(249, 171, 0, 0.4));
 }
 
 /* ================= HERO CAROUSEL ================= */
@@ -174,7 +208,7 @@ body {
   position: relative;
   height: 70vh;
   overflow: hidden;
-  border-radius: 16px;
+  /* Removed border-radius to blend into app background */
   background-color: var(--bg-app);
 }
 
@@ -235,13 +269,12 @@ body {
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(
-    180deg,
-    rgba(18, 18, 24, 0.2) 0%,
-    rgba(18, 18, 24, 0.4) 30%,
-    rgba(18, 18, 24, 0.7) 70%,
-    rgba(18, 18, 24, 0.95) 100%
-  );
+  background: 
+    /* Bottom fade */
+    linear-gradient(to top, var(--bg-app) 0%, transparent 40%),
+    /* Top fade */ linear-gradient(to bottom, var(--bg-app) 0%, transparent 15%),
+    /* Left fade */ linear-gradient(to right, var(--bg-app) 0%, transparent 15%),
+    /* Right fade */ linear-gradient(to left, var(--bg-app) 0%, transparent 15%);
   pointer-events: none;
 }
 
@@ -269,9 +302,15 @@ body {
   font-weight: 600;
 }
 
-.rating-green { color: var(--rating-green); }
-.rating-yellow { color: var(--rating-yellow); }
-.rating-red { color: var(--rating-red); }
+.rating-green {
+  color: var(--rating-green);
+}
+.rating-yellow {
+  color: var(--rating-yellow);
+}
+.rating-red {
+  color: var(--rating-red);
+}
 
 .hero-description {
   color: var(--text-muted);
@@ -346,7 +385,7 @@ body {
 
   .hero-carousel {
     height: 55vh;
-    border-radius: 12px;
+    border-radius: 0;
   }
 
   .hero-carousel .carousel-indicators {

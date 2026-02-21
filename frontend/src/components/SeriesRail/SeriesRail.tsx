@@ -1,15 +1,21 @@
-import SeriesCard from "../SeriesCard/SeriesCard"
-import type { Series } from "../../types/series"
+import { RiRadiationLine } from "react-icons/ri";
+import SeriesCard from "../SeriesCard/SeriesCard";
+import type { Series } from "../../types/series";
 
 interface Props {
-  title: string
-  series: Series[]
+  title: string;
+  series: Series[];
 }
 
 const SeriesRail = ({ title, series }: Props) => {
   return (
     <section className="content-section">
-      <h2 className="section-title">{title}</h2>
+      <div className="section-header">
+        <span className="title-icon">
+          <RiRadiationLine />
+        </span>
+        <h2 className="section-title">{title}</h2>
+      </div>
 
       <div className="movie-rail">
         {series.map((s) => (
@@ -17,7 +23,7 @@ const SeriesRail = ({ title, series }: Props) => {
         ))}
       </div>
     </section>
-  )
-}
+  );
+};
 
-export default SeriesRail
+export default SeriesRail;
