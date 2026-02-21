@@ -1,11 +1,11 @@
-import { RiRadiationLine } from "react-icons/ri";
+import { FaRadiation } from "react-icons/fa";
 
 const MovieRail: React.FC<MovieRailProps> = ({ title, movies }) => {
   return (
     <section className="content-section">
       <div className="section-header">
         <span className="title-icon">
-          <RiRadiationLine />
+          <FaRadiation />
         </span>
         <h2 className="section-title">{title}</h2>
       </div>
