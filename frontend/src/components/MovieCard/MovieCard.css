@@ -2,6 +2,7 @@
   width: 140px;
   flex-shrink: 0;
   cursor: pointer;
+  text-decoration: none;
 }
 
 .movie-grid .movie-card {
