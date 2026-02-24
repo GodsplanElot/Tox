@@ -1,9 +1,10 @@
 import React from "react";
 import { useParams } from "react-router-dom";
 import MovieGrid from "../../components/MovieGrid/MovieGrid";
-import { moviesFromDb } from "../../data/movies"; // adjust path if needed
+import { moviesFromDb } from "../../data/movies";
 import type { Movie } from "../../types/movie";
 import RatingBadge from "../../components/common/RatingBadge";
+import { FaDownload } from "react-icons/fa";
 import "./MovieDetail.css";
 
 const MovieDetail: React.FC = () => {
@@ -77,8 +78,9 @@ const MovieDetail: React.FC = () => {
             <p className="movie-detail__description">{movie.description}</p>
 
             <div className="movie-detail__actions">
-              {/* Play button/Link will be implemented later */}
-              <button className="movie-detail__play-btn">▶ Watch Now</button>
+              <button className="movie-detail__play-btn">
+                <FaDownload /> Download
+              </button>
             </div>
           </div>
         </div>

@@ -1,4 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
+import { FaDownload } from "react-icons/fa";
 import { seriesFromDb } from "../../data/series";
 import { useState } from "react";
 import SeasonSelector from "../../components/SeasonSelector/SeasonSelector";
@@ -43,7 +44,9 @@ const SeriesDetail = () => {
           </div>
           <div className="series-info-main">
             <div className="series-meta">
-              {series.rating && <RatingBadge rating={series.rating} size="medium" />}
+              {series.rating && (
+                <RatingBadge rating={series.rating} size="medium" />
+              )}
               {series.first_air_date && (
                 <>
                   <span>{new Date(series.first_air_date).getFullYear()}</span>
@@ -62,6 +65,11 @@ const SeriesDetail = () => {
               ))}
             </div>
             <p className="series-description-large">{series.description}</p>
+            <div className="series-actions">
+              <button className="download-btn-series">
+                <FaDownload /> Download
+              </button>
+            </div>
           </div>
         </div>
       </div>
