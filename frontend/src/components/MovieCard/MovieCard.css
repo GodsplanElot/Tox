@@ -45,7 +45,8 @@
 
 .movie-card-info span {
   font-size: 0.75rem;
-  color: #aaa;
+  color: var(--accent-primary);
+  font-weight: 600;
 }
 
 /* Mobile tweaks */
