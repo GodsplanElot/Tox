@@ -4,7 +4,7 @@ import MovieGrid from "../../components/MovieGrid/MovieGrid";
 import { moviesFromDb } from "../../data/movies";
 import type { Movie } from "../../types/movie";
 import RatingBadge from "../../components/common/RatingBadge";
-import { FaDownload, FaPlay, FaPlus } from "react-icons/fa";
+import { FaDownload, FaPlay, FaPlus, FaShareAlt } from "react-icons/fa";
 import "./MovieDetail.css";
 
 const MovieDetail: React.FC = () => {
@@ -99,6 +99,9 @@ const MovieDetail: React.FC = () => {
                   title="Add to Watchlist"
                 >
                   <FaPlus /> Watchlist
+                </button>
+                <button className="action-btn action-btn--share" title="Share">
+                  <FaShareAlt /> Share
                 </button>
               </div>
             </div>

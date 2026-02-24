@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { FaDownload, FaPlay, FaPlus } from "react-icons/fa";
+import { FaDownload, FaPlay, FaPlus, FaShareAlt } from "react-icons/fa";
 import { seriesFromDb } from "../../data/series";
 import { useState } from "react";
 import SeasonSelector from "../../components/SeasonSelector/SeasonSelector";
@@ -87,6 +87,9 @@ const SeriesDetail = () => {
                   title="Add to Watchlist"
                 >
                   <FaPlus /> Watchlist
+                </button>
+                <button className="action-btn action-btn--share" title="Share">
+                  <FaShareAlt /> Share
                 </button>
               </div>
             </div>

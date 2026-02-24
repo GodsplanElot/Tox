@@ -238,11 +238,11 @@
 .download-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  border-radius: 6px;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: 5px;
   font-weight: 700;
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
   border: none;
@@ -253,7 +253,7 @@
 .download-btn--1080p {
   background-color: var(--accent-primary);
   color: #000;
-  box-shadow: 0 4px 12px rgba(249, 171, 0, 0.2);
+  box-shadow: 0 4px 10px rgba(249, 171, 0, 0.2);
 }
 
 .download-btn--1080p:hover {
@@ -283,7 +283,7 @@
 
 .secondary-actions {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   align-items: center;
 }
 
@@ -291,13 +291,13 @@
   background: none;
   border: 1px solid rgba(255, 255, 255, 0.15);
   color: #fff;
-  padding: 6px 14px;
-  border-radius: 6px;
-  font-size: 0.85rem;
+  padding: 5px 12px;
+  border-radius: 5px;
+  font-size: 0.78rem;
   font-weight: 600;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   cursor: pointer;
   transition: all 0.2s ease;
 }
@@ -314,6 +314,16 @@
 
 .action-btn--watchlist:hover {
   background: rgba(249, 171, 0, 0.1);
+}
+
+.action-btn--share {
+  color: #3498db;
+  border-color: rgba(52, 152, 219, 0.3);
+}
+
+.action-btn--share:hover {
+  background: rgba(52, 152, 219, 0.1);
+  border-color: rgba(52, 152, 219, 0.5);
 }
 
 /* Mobile stacking */
