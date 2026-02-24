@@ -4,7 +4,7 @@ import MovieGrid from "../../components/MovieGrid/MovieGrid";
 import { moviesFromDb } from "../../data/movies";
 import type { Movie } from "../../types/movie";
 import RatingBadge from "../../components/common/RatingBadge";
-import { FaDownload } from "react-icons/fa";
+import { FaDownload, FaPlay, FaPlus } from "react-icons/fa";
 import "./MovieDetail.css";
 
 const MovieDetail: React.FC = () => {
@@ -78,9 +78,29 @@ const MovieDetail: React.FC = () => {
             <p className="movie-detail__description">{movie.description}</p>
 
             <div className="movie-detail__actions">
-              <button className="movie-detail__play-btn">
-                <FaDownload /> Download
-              </button>
+              <div className="download-group">
+                <button className="download-btn download-btn--1080p">
+                  <FaDownload /> 1080p
+                </button>
+                <button className="download-btn download-btn--720p">
+                  720p
+                </button>
+                <button className="download-btn download-btn--480p">
+                  480p
+                </button>
+              </div>
+
+              <div className="secondary-actions">
+                <button className="action-btn action-btn--trailer">
+                  <FaPlay /> Watch Trailer
+                </button>
+                <button
+                  className="action-btn action-btn--watchlist"
+                  title="Add to Watchlist"
+                >
+                  <FaPlus /> Watchlist
+                </button>
+              </div>
             </div>
           </div>
         </div>

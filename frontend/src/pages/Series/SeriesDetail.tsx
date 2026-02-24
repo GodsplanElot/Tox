@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { FaDownload } from "react-icons/fa";
+import { FaDownload, FaPlay, FaPlus } from "react-icons/fa";
 import { seriesFromDb } from "../../data/series";
 import { useState } from "react";
 import SeasonSelector from "../../components/SeasonSelector/SeasonSelector";
@@ -66,9 +66,29 @@ const SeriesDetail = () => {
             </div>
             <p className="series-description-large">{series.description}</p>
             <div className="series-actions">
-              <button className="download-btn-series">
-                <FaDownload /> Download
-              </button>
+              <div className="download-group">
+                <button className="download-btn download-btn--1080p">
+                  <FaDownload /> 1080p
+                </button>
+                <button className="download-btn download-btn--720p">
+                  720p
+                </button>
+                <button className="download-btn download-btn--480p">
+                  480p
+                </button>
+              </div>
+
+              <div className="secondary-actions">
+                <button className="action-btn action-btn--trailer">
+                  <FaPlay /> Watch Trailer
+                </button>
+                <button
+                  className="action-btn action-btn--watchlist"
+                  title="Add to Watchlist"
+                >
+                  <FaPlus /> Watchlist
+                </button>
+              </div>
             </div>
           </div>
         </div>

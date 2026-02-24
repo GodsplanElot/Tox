@@ -221,41 +221,120 @@
 /* ACTION BUTTONS */
 /* ============================= */
 
+/* ---------- ACTIONS ---------- */
 .movie-detail__actions {
   display: flex;
-  gap: 12px;
-  margin-top: 16px;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2rem;
+}
+
+.download-group {
+  display: flex;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
-/* DOWNLOAD BUTTON */
-.movie-detail__download-btn {
-  padding: 10px 18px;
+.download-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  text-decoration: none;
-  font-weight: 600;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border: none;
+  cursor: pointer;
   transition: all 0.2s ease;
 }
 
-.movie-detail__download-btn:hover {
-  background: rgba(255, 255, 255, 0.22);
+.download-btn--1080p {
+  background-color: var(--accent-primary);
+  color: #000;
+  box-shadow: 0 4px 12px rgba(249, 171, 0, 0.2);
+}
+
+.download-btn--1080p:hover {
+  background-color: #ffb700;
   transform: translateY(-1px);
+}
+
+.download-btn--720p {
+  background-color: #2a2931;
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.download-btn--720p:hover {
+  background-color: #35343d;
+}
+
+.download-btn--480p {
+  background-color: #1a191f;
+  color: #aaa;
+  font-weight: 600;
+}
+
+.download-btn--480p:hover {
+  color: #fff;
+}
+
+.secondary-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.action-btn {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: #fff;
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.action-btn--watchlist {
+  color: var(--accent-primary);
+  border-color: rgba(249, 171, 0, 0.3);
+}
+
+.action-btn--watchlist:hover {
+  background: rgba(249, 171, 0, 0.1);
 }
 
 /* Mobile stacking */
 @media (max-width: 768px) {
   .movie-detail__actions {
-    flex-direction: column;
-    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .download-btn {
+    flex: 1;
+    justify-content: center;
+    min-width: 80px;
   }
 
-  .movie-detail__download-btn,
-  .movie-detail__play-btn {
+  .secondary-actions {
     width: 100%;
-    text-align: center;
+  }
+
+  .action-btn {
+    flex: 1;
+    justify-content: center;
   }
 }
 
