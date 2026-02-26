@@ -1,19 +1,48 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { FaDownload, FaPlay, FaPlus, FaShareAlt } from "react-icons/fa";
-import { seriesFromDb } from "../../data/series";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import SeasonSelector from "../../components/SeasonSelector/SeasonSelector";
 import EpisodeList from "../../components/EpisodeList/EpisodeList";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
 import RatingBadge from "../../components/common/RatingBadge";
+import { api } from "../../services/api";
+import type { Series } from "../../types/series";
+import { Spinner, Container } from "react-bootstrap";
 import "./SeriesDetail.css";
 
 const SeriesDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
-  const series = seriesFromDb.find((s) => String(s.id) === id);
-
+  const [series, setSeries] = useState<Series | null>(null);
+  const [loading, setLoading] = useState(true);
   const [activeSeason, setActiveSeason] = useState(0);
+
+  useEffect(() => {
+    const fetchSeries = async () => {
+      if (!slug) return;
+      try {
+        const data = await api.getSeriesDetail(slug);
+        setSeries(data);
+      } catch (error) {
+        console.error("Error fetching series detail:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSeries();
+  }, [slug]);
+
+  const handleBack = () => {
+    navigate(-1);
+  };
+
+  if (loading) {
+    return (
+      <Container className="d-flex justify-content-center align-items-center min-vh-100">
+        <Spinner animation="border" variant="primary" />
+      </Container>
+    );
+  }
 
   if (!series)
     return (
@@ -22,10 +51,6 @@ const SeriesDetail = () => {
       </div>
     );
 
-  const handleBack = () => {
-    navigate(-1);
-  };
-
   return (
     <div className="series-detail-container">
       {/* Hero Section */}
@@ -33,14 +58,14 @@ const SeriesDetail = () => {
         <div
           className="detail-hero-backdrop"
           style={{
-            backgroundImage: `url(${series.poster})`,
+            backgroundImage: `url(${api.getMediaUrl(series.poster)})`,
           }}
         />
         <div className="detail-hero-overlay" />
 
         <div className="detail-hero-content">
           <div className="series-poster-main">
-            <img src={series.poster} alt={series.title} />
+            <img src={api.getMediaUrl(series.poster)} alt={series.title} />
           </div>
           <div className="series-info-main">
             <div className="series-meta">
@@ -105,23 +130,30 @@ const SeriesDetail = () => {
         <Breadcrumbs
           items={[
             { label: "Series", path: "/series" },
-            { label: series.title, path: `/series/${series.id}` },
+            { label: series.title, path: `/series/${series.slug}` },
           ]}
         />
       </div>
 
       {/* Seasons & Episodes Section */}
       <div className="series-body">
-        <div className="section-head">
-          <h2>Seasons-({series.seasons.length})</h2>
-          <SeasonSelector
-            seasons={series.seasons}
-            activeSeason={activeSeason}
-            onSelect={setActiveSeason}
-          />
-        </div>
-
-        <EpisodeList episodes={series.seasons[activeSeason].episodes} />
+        {series.seasons && series.seasons.length > 0 ? (
+          <>
+            <div className="section-head">
+              <h2>Seasons-({series.seasons.length})</h2>
+              <SeasonSelector
+                seasons={series.seasons}
+                activeSeason={activeSeason}
+                onSelect={setActiveSeason}
+              />
+            </div>
+            <EpisodeList episodes={series.seasons[activeSeason].episodes} />
+          </>
+        ) : (
+          <div className="p-5 text-center text-muted">
+            <h3>No seasons available yet.</h3>
+          </div>
+        )}
       </div>
     </div>
   );

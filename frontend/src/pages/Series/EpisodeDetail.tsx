@@ -1,19 +1,47 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { seriesFromDb } from "../../data/series";
+import { useEffect, useState } from "react";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
+import { api } from "../../services/api";
+import type { Series } from "../../types/series";
+import { Spinner, Container } from "react-bootstrap";
 import "./EpisodeDetail.css";
 
 const EpisodeDetail = () => {
-  const { seriesId, episodeId } = useParams();
+  const { seriesSlug, episodeSlug } = useParams<{
+    seriesSlug: string;
+    episodeSlug: string;
+  }>();
   const navigate = useNavigate();
+  const [series, setSeries] = useState<Series | null>(null);
+  const [loading, setLoading] = useState(true);
 
-  const series = seriesFromDb.find((s) => String(s.id) === seriesId);
-  const currentSeason = series?.seasons.find((s) =>
-    s.episodes.some((e) => String(e.id) === episodeId),
+  useEffect(() => {
+    const fetchEpisodeData = async () => {
+      if (!seriesSlug) return;
+      try {
+        const data = await api.getSeriesDetail(seriesSlug);
+        setSeries(data);
+      } catch (error) {
+        console.error("Error fetching episode data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchEpisodeData();
+  }, [seriesSlug]);
+
+  if (loading) {
+    return (
+      <Container className="d-flex justify-content-center align-items-center min-vh-100">
+        <Spinner animation="border" variant="primary" />
+      </Container>
+    );
+  }
+
+  const currentSeason = series?.seasons?.find((s) =>
+    s.episodes?.some((e) => e.slug === episodeSlug),
   );
-  const episode = currentSeason?.episodes.find(
-    (e) => String(e.id) === episodeId,
-  );
+  const episode = currentSeason?.episodes?.find((e) => e.slug === episodeSlug);
 
   if (!episode)
     return (
@@ -31,7 +59,7 @@ const EpisodeDetail = () => {
       {/* Hero Poster Section (Replacing Video) */}
       <div className="video-player-section">
         <img
-          src={episode.thumbnail || series?.poster}
+          src={api.getMediaUrl(episode.thumbnail || series?.poster)}
           alt={episode.title}
           style={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
@@ -47,14 +75,17 @@ const EpisodeDetail = () => {
           <Breadcrumbs
             items={[
               { label: "Series", path: "/series" },
-              { label: series?.title || "Series", path: `/series/${seriesId}` },
+              {
+                label: series?.title || "Series",
+                path: `/series/${seriesSlug}`,
+              },
               {
                 label: `Season ${currentSeason?.season_number}`,
-                path: `/series/${seriesId}`,
+                path: `/series/${seriesSlug}`,
               },
               {
                 label: episode.title,
-                path: `/series/${seriesId}/episode/${episodeId}`,
+                path: `/series/${seriesSlug}/episode/${episodeSlug}`,
               },
             ]}
           />

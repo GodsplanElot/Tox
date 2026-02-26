@@ -1,19 +1,56 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import MovieGrid from "../../components/MovieGrid/MovieGrid";
-import { moviesFromDb } from "../../data/movies";
+import { api } from "../../services/api";
 import type { Movie } from "../../types/movie";
 import RatingBadge from "../../components/common/RatingBadge";
 import { FaDownload, FaPlay, FaPlus, FaShareAlt } from "react-icons/fa";
+import { Spinner, Container } from "react-bootstrap";
 import "./MovieDetail.css";
 
 const MovieDetail: React.FC = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
+  const [movie, setMovie] = useState<Movie | null>(null);
+  const [relatedMovies, setRelatedMovies] = useState<Movie[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Find movie by ID (mock DB)
-  const movie: Movie | undefined = moviesFromDb.find(
-    (m) => String(m.id) === id,
-  );
+  useEffect(() => {
+    const fetchMovieData = async () => {
+      if (!slug) return;
+      try {
+        const [movieData, allMovies] = await Promise.all([
+          api.getMovie(slug),
+          api.getMovies(),
+        ]);
+        setMovie(movieData);
+
+        // Simple related movies logic (same categories, exclude current)
+        const related = allMovies
+          .filter(
+            (m) =>
+              m.id !== movieData.id &&
+              m.categories?.some((cat) =>
+                movieData.categories?.some((c) => c.id === cat.id),
+              ),
+          )
+          .slice(0, 12);
+        setRelatedMovies(related);
+      } catch (error) {
+        console.error("Error fetching movie detail:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchMovieData();
+  }, [slug]);
+
+  if (loading) {
+    return (
+      <Container className="d-flex justify-content-center align-items-center min-vh-100">
+        <Spinner animation="border" variant="primary" />
+      </Container>
+    );
+  }
 
   if (!movie) {
     return (
@@ -22,17 +59,6 @@ const MovieDetail: React.FC = () => {
       </div>
     );
   }
-
-  // Simple related movies logic (same categories, exclude current)
-  const relatedMovies = moviesFromDb
-    .filter(
-      (m) =>
-        m.id !== movie.id &&
-        m.categories?.some((cat) =>
-          movie.categories?.some((c) => c.id === cat.id),
-        ),
-    )
-    .slice(0, 12);
 
   return (
     <div className="movie-detail">
@@ -44,12 +70,12 @@ const MovieDetail: React.FC = () => {
             to bottom,
             rgba(0,0,0,0.4),
             rgba(0,0,0,0.95)
-          ), url(${movie.poster})`,
+          ), url(${api.getMediaUrl(movie.poster)})`,
         }}
       >
         <div className="movie-detail__hero-content">
           <div className="movie-detail__poster">
-            <img src={movie.poster} alt={movie.title} />
+            <img src={api.getMediaUrl(movie.poster)} alt={movie.title} />
             {movie.rating && (
               <div className="movie-detail__rating">
                 <RatingBadge rating={movie.rating} size="medium" />
@@ -107,8 +133,6 @@ const MovieDetail: React.FC = () => {
             </div>
           </div>
         </div>
-
-        {/* Mini video screen removed per user request */}
       </section>
 
       {/* RECOMMENDATIONS */}

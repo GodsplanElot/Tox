@@ -1,40 +1,24 @@
 import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Carousel } from "react-bootstrap";
+import { api } from "../services/api";
+import type { Movie } from "../types/movie";
 
-const slides = [
-  {
-    title: "Savage maryfavour",
-    rating: "9.8",
-    ratingClass: "green",
-    text: "A brilliant scientist discovers a way to harness the power of the ocean's currents to create a new, renewable energy source.",
-    categories: ["Action", "Drama", "Comedy"],
-    bg: "/img/bg/home__bg.jpg",
-  },
-  {
-    title: "From the Other Side",
-    rating: "6.9",
-    ratingClass: "yellow",
-    text: "In a world where magic is outlawed and hunted, a young witch must fight back.",
-    categories: ["Adventure", "Thriller"],
-    bg: "/img/covers/cover1.jpg",
-  },
-  {
-    title: "Endless Horizon",
-    rating: "6.2",
-    ratingClass: "red",
-    text: "An archaeologist's daughter journeys into the Amazon to uncover a hidden city.",
-    categories: ["Action", "Drama", "Thriller"],
-    bg: "/img/covers/cover2.jpg",
-  },
-];
+interface HeroCarouselProps {
+  movies: Movie[];
+}
 
-const HeroCarousel = () => {
+const HeroCarousel = ({ movies }: HeroCarouselProps) => {
   const [index, setIndex] = useState(0);
 
   const handleSelect = useCallback((selectedIndex: number) => {
     setIndex(selectedIndex);
   }, []);
+
+  if (!movies || movies.length === 0) return null;
+
+  // Take top 5 movies for the carousel
+  const carouselMovies = movies.slice(0, 5);
 
   return (
     <section className="hero-carousel">
@@ -46,34 +30,43 @@ const HeroCarousel = () => {
         controls
         indicators
       >
-        {slides.map((slide) => (
-          <Carousel.Item key={slide.title}>
+        {carouselMovies.map((movie) => (
+          <Carousel.Item key={movie.id}>
             <div
               className="hero-bg"
-              style={{ backgroundImage: `url(${slide.bg})` }}
+              style={{
+                backgroundImage: `url(${api.getMediaUrl(movie.poster)})`,
+              }}
             />
             <div className="hero-fade" />
             <div className="hero-content">
               <h1 className="hero-title">
-                {slide.title}
-                <span
-                  className={`hero-rating hero-rating--${slide.ratingClass}`}
-                >
-                  {slide.rating}
-                </span>
+                {movie.title}
+                {movie.rating && (
+                  <span
+                    className={`hero-rating hero-rating--${movie.rating >= 8 ? "green" : movie.rating >= 6 ? "yellow" : "red"}`}
+                  >
+                    {movie.rating.toFixed(1)}
+                  </span>
+                )}
               </h1>
 
-              <p className="hero-description">{slide.text}</p>
+              <p className="hero-description line-clamp-3">
+                {movie.description}
+              </p>
 
               <div className="hero-categories">
-                {slide.categories.map((cat) => (
-                  <span key={cat} className="category-badge">
-                    {cat}
+                {movie.categories?.map((cat) => (
+                  <span key={cat.id} className="category-badge">
+                    {cat.name}
                   </span>
                 ))}
               </div>
 
-              <Link to="/details" className="hero-cta btn btn-primary">
+              <Link
+                to={`/movies/${movie.slug}`}
+                className="hero-cta btn btn-primary"
+              >
                 Watch Now
               </Link>
             </div>

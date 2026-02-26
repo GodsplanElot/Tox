@@ -5,9 +5,10 @@ import MovieRail from "../components/MovieRail/MovieRail";
 import MovieGrid from "../components/MovieGrid/MovieGrid";
 import SeriesRail from "../components/SeriesRail/SeriesRail";
 import SearchSuggestions from "../components/SearchSuggestions";
-
-import { moviesFromDb } from "../data/movies";
-import { seriesFromDb } from "../data/series";
+import { api } from "../services/api";
+import type { Movie, Series } from "../services/api";
+import { Spinner, Container } from "react-bootstrap";
+import EmptyState from "../components/common/EmptyState";
 
 import "../styles/Search.css";
 
@@ -16,8 +17,30 @@ const Search = () => {
   const [isSuggestionsVisible, setIsSuggestionsVisible] = useState(false);
   const mobileWrapperRef = useRef<HTMLDivElement>(null);
 
+  const [movies, setMovies] = useState<Movie[]>([]);
+  const [series, setSeries] = useState<Series[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const initialQuery = params.get("q") || "";
   const [query, setQuery] = useState(initialQuery);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [moviesData, seriesData] = await Promise.all([
+          api.getMovies(),
+          api.getSeries(),
+        ]);
+        setMovies(moviesData);
+        setSeries(seriesData);
+      } catch (error) {
+        console.error("Error fetching search data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
 
   // Close suggestions when clicking outside
   useEffect(() => {
@@ -40,10 +63,10 @@ const Search = () => {
   const movieResults = useMemo(() => {
     if (!initialQuery) return [];
 
-    return moviesFromDb.filter((movie) =>
+    return movies.filter((movie) =>
       movie.title.toLowerCase().includes(initialQuery.toLowerCase()),
     );
-  }, [initialQuery]);
+  }, [initialQuery, movies]);
 
   /**
    * SERIES RESULTS
@@ -51,10 +74,10 @@ const Search = () => {
   const seriesResults = useMemo(() => {
     if (!initialQuery) return [];
 
-    return seriesFromDb.filter((series) =>
-      series.title.toLowerCase().includes(initialQuery.toLowerCase()),
+    return series.filter((s) =>
+      s.title.toLowerCase().includes(initialQuery.toLowerCase()),
     );
-  }, [initialQuery]);
+  }, [initialQuery, series]);
 
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,8 +85,16 @@ const Search = () => {
     setIsSuggestionsVisible(false);
   };
 
-  const recommended = moviesFromDb.slice(0, 12);
-  const latest = moviesFromDb.slice(-12);
+  const recommended = useMemo(() => movies.slice(0, 12), [movies]);
+  const latest = useMemo(() => movies.slice(-12), [movies]);
+
+  if (loading) {
+    return (
+      <Container className="d-flex justify-content-center align-items-center min-vh-100">
+        <Spinner animation="border" variant="primary" />
+      </Container>
+    );
+  }
 
   return (
     <section className="search-page">
@@ -104,14 +135,21 @@ const Search = () => {
 
           {/* EMPTY STATE */}
           {movieResults.length === 0 && seriesResults.length === 0 && (
-            <p className="no-results">No movies or TV series found.</p>
+            <EmptyState
+              title="No Results Found"
+              message={`We couldn't find any matches for "${initialQuery}". Try searching for something else!`}
+            />
           )}
         </>
       )}
 
       {/* RAILS (ALWAYS SHOWN) */}
-      <MovieRail title="Recommended" movies={recommended} />
-      <MovieRail title="Latest" movies={latest} />
+      {!initialQuery && (
+        <>
+          <MovieRail title="Recommended" movies={recommended} />
+          <MovieRail title="Latest" movies={latest} />
+        </>
+      )}
     </section>
   );
 };

@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import type { Series } from "../../types/series";
 import RatingBadge from "../common/RatingBadge";
+import { api } from "../../services/api";
 import "./SeriesCard.css";
 
 interface Props {
@@ -9,9 +10,9 @@ interface Props {
 
 const SeriesCard = ({ series }: Props) => {
   return (
-    <Link to={`/series/${series.id}`} className="series-card">
+    <Link to={`/series/${series.slug}`} className="series-card">
       <div className="series-card-image">
-        <img src={series.poster} alt={series.title} />
+        <img src={api.getMediaUrl(series.poster)} alt={series.title} />
         {series.rating && (
           <div className="series-card-rating">
             <RatingBadge rating={series.rating} size="small" />

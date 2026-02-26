@@ -19,10 +19,10 @@ const AppRoutes = () => {
         <Route path="/categories/:slug" element={<CategoryDetail />} />
         <Route path="/series" element={<SeriesList />} />
         <Route path="/search" element={<Search />} />
-        <Route path="/movies/:id" element={<MovieDetail />} />
-        <Route path="/series/:id" element={<SeriesDetail />} />
+        <Route path="/movies/:slug" element={<MovieDetail />} />
+        <Route path="/series/:slug" element={<SeriesDetail />} />
         <Route
-          path="/series/:seriesId/episode/:episodeId"
+          path="/series/:seriesSlug/episode/:episodeSlug"
           element={<EpisodeDetail />}
         />
         <Route path="*" element={<NotFound />} />
