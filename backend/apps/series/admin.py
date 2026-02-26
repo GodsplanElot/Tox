@@ -14,7 +14,7 @@ class EpisodeAdmin(admin.ModelAdmin):
 
     fieldsets = (
         ("Episode Information", {
-            'fields': (('episode_number', 'title', 'slug'), 'plot', 'thumbnail'),
+            'fields': ('season', ('episode_number', 'title', 'slug'), 'plot', 'thumbnail'),
         }),
         ("Video Source", {
             'fields': ('source_type', 'video_file', 'external_url'),
