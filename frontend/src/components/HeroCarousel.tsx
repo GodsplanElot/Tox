@@ -2,23 +2,32 @@ import { useState, useCallback } from "react";
 import { Link } from "react-router-dom";
 import { Carousel } from "react-bootstrap";
 import { api } from "../services/api";
-import type { Movie } from "../types/movie";
 
-interface HeroCarouselProps {
-  movies: Movie[];
+export interface CarouselItem {
+  id: number | string;
+  title: string;
+  description: string;
+  poster: string;
+  link: string;
+  rating?: number;
+  categories?: { id: number; name: string }[];
 }
 
-const HeroCarousel = ({ movies }: HeroCarouselProps) => {
+interface HeroCarouselProps {
+  items: CarouselItem[];
+}
+
+const HeroCarousel = ({ items }: HeroCarouselProps) => {
   const [index, setIndex] = useState(0);
 
   const handleSelect = useCallback((selectedIndex: number) => {
     setIndex(selectedIndex);
   }, []);
 
-  if (!movies || movies.length === 0) return null;
+  if (!items || items.length === 0) return null;
 
-  // Take top 5 movies for the carousel
-  const carouselMovies = movies.slice(0, 5);
+  // Take top 5 items for the carousel
+  const carouselItems = items.slice(0, 5);
 
   return (
     <section className="hero-carousel">
@@ -30,43 +39,40 @@ const HeroCarousel = ({ movies }: HeroCarouselProps) => {
         controls
         indicators
       >
-        {carouselMovies.map((movie) => (
-          <Carousel.Item key={movie.id}>
+        {carouselItems.map((item) => (
+          <Carousel.Item key={`${item.id}-${item.link}`}>
             <div
               className="hero-bg"
               style={{
-                backgroundImage: `url(${api.getMediaUrl(movie.poster)})`,
+                backgroundImage: `url(${api.getMediaUrl(item.poster)})`,
               }}
             />
             <div className="hero-fade" />
             <div className="hero-content">
               <h1 className="hero-title">
-                {movie.title}
-                {movie.rating && (
+                {item.title}
+                {item.rating !== undefined && (
                   <span
-                    className={`hero-rating hero-rating--${movie.rating >= 8 ? "green" : movie.rating >= 6 ? "yellow" : "red"}`}
+                    className={`hero-rating hero-rating--${item.rating >= 8 ? "green" : item.rating >= 6 ? "yellow" : "red"}`}
                   >
-                    {movie.rating.toFixed(1)}
+                    {item.rating.toFixed(1)}
                   </span>
                 )}
               </h1>
 
               <p className="hero-description line-clamp-3">
-                {movie.description}
+                {item.description}
               </p>
 
               <div className="hero-categories">
-                {movie.categories?.map((cat) => (
+                {item.categories?.map((cat) => (
                   <span key={cat.id} className="category-badge">
                     {cat.name}
                   </span>
                 ))}
               </div>
 
-              <Link
-                to={`/movies/${movie.slug}`}
-                className="hero-cta btn btn-primary"
-              >
+              <Link to={item.link} className="hero-cta btn btn-primary">
                 Watch Now
               </Link>
             </div>

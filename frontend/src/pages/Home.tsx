@@ -51,6 +51,33 @@ const Home = () => {
     return [...series].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
   }, [series]);
 
+  // Combining top movies and series for the Hero Carousel
+  const carouselItems = useMemo(() => {
+    const movieItems = trendingMovies.slice(0, 3).map((movie) => ({
+      id: movie.id,
+      title: movie.title,
+      description: movie.description,
+      poster: movie.poster,
+      link: `/movies/${movie.slug}`,
+      rating: movie.rating,
+      categories: movie.categories,
+    }));
+
+    const seriesItems = trendingSeries.slice(0, 2).map((item) => ({
+      id: item.id,
+      title: item.title,
+      description: item.description,
+      poster: item.poster,
+      link: `/series/${item.slug}`,
+      rating: item.rating,
+      categories: item.categories,
+    }));
+
+    return [...movieItems, ...seriesItems].sort(
+      (a, b) => (b.rating ?? 0) - (a.rating ?? 0),
+    );
+  }, [trendingMovies, trendingSeries]);
+
   if (loading) {
     return (
       <Container className="d-flex justify-content-center align-items-center min-vh-100">
@@ -72,7 +99,7 @@ const Home = () => {
 
   return (
     <>
-      <HeroCarousel movies={movies} />
+      <HeroCarousel items={carouselItems} />
 
       {trendingMovies.length > 0 && (
         <MovieRail title="Trending Now" movies={trendingMovies} />

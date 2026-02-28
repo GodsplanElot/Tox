@@ -33,6 +33,7 @@ export const api = {
   getMediaUrl: (path: string | null | undefined) => {
     if (!path) return '';
     if (path.startsWith('http')) return path;
-    return `${MEDIA_BASE_URL}${path}`;
+    const cleanPath = path.startsWith('/') ? path : `/${path}`;
+    return `${MEDIA_BASE_URL}${cleanPath}`;
   }
 };
