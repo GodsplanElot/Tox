@@ -100,9 +100,16 @@ const SeriesDetail = () => {
               </div>
 
               <div className="secondary-actions">
-                <button className="action-btn action-btn--trailer">
-                  <FaPlay /> Watch Trailer
-                </button>
+                {series.trailer_url && (
+                  <a
+                    href={series.trailer_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="action-btn action-btn--trailer"
+                  >
+                    <FaPlay /> Watch Trailer
+                  </a>
+                )}
                 <button
                   className="action-btn action-btn--watchlist"
                   title="Add to Watchlist"

@@ -117,21 +117,37 @@ const MovieDetail: React.FC = () => {
 
             <div className="movie-detail__actions">
               <div className="download-group">
-                <button className="download-btn download-btn--1080p">
-                  <FaDownload /> 1080p
-                </button>
-                <button className="download-btn download-btn--720p">
-                  720p
-                </button>
-                <button className="download-btn download-btn--480p">
-                  480p
-                </button>
+                {api.getVideoUrl(movie) ? (
+                  <a
+                    href={api.getVideoUrl(movie)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="download-btn download-btn--1080p"
+                    download
+                  >
+                    <FaDownload /> Download
+                  </a>
+                ) : (
+                  <button
+                    className="download-btn download-btn--1080p disabled"
+                    disabled
+                  >
+                    <FaDownload /> No Link
+                  </button>
+                )}
               </div>
 
               <div className="secondary-actions">
-                <button className="action-btn action-btn--trailer">
-                  <FaPlay /> Watch Trailer
-                </button>
+                {api.getVideoUrl(movie) && (
+                  <a
+                    href={api.getVideoUrl(movie)}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="action-btn action-btn--trailer"
+                  >
+                    <FaPlay /> Watch Now
+                  </a>
+                )}
                 <button
                   className="action-btn action-btn--watchlist"
                   title="Add to Watchlist"
