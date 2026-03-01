@@ -35,5 +35,11 @@ export const api = {
     if (path.startsWith('http')) return path;
     const cleanPath = path.startsWith('/') ? path : `/${path}`;
     return `${MEDIA_BASE_URL}${cleanPath}`;
+  },
+
+  getVideoUrl: (item: { source_type?: string; video_file?: string; external_url?: string } | null | undefined) => {
+    if (!item) return '';
+    if (item.source_type === 'external') return item.external_url || '';
+    return api.getMediaUrl(item.video_file);
   }
 };
