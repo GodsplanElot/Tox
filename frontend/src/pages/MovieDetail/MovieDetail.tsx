@@ -5,7 +5,8 @@ import { api } from "../../services/api";
 import type { Movie } from "../../types/movie";
 import RatingBadge from "../../components/common/RatingBadge";
 import { FaDownload, FaPlay, FaPlus, FaShareAlt } from "react-icons/fa";
-import { Spinner, Container } from "react-bootstrap";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
+import { moviesFromDb } from "../../data/movies";
 import "./MovieDetail.css";
 
 const MovieDetail: React.FC = () => {
@@ -19,22 +20,37 @@ const MovieDetail: React.FC = () => {
       if (!slug) return;
       try {
         const [movieData, allMovies] = await Promise.all([
-          api.getMovie(slug),
-          api.getMovies(),
+          api.getMovie(slug).catch(() => null),
+          api.getMovies().catch(() => []),
         ]);
-        setMovie(movieData);
+
+        let finalMovie = movieData;
+        let finalAllMovies = allMovies;
+
+        // Fallback to mock data if API fails or returns nothing
+        if (!finalMovie) {
+          finalMovie = moviesFromDb.find((m) => m.slug === slug) || null;
+        }
+
+        if (!finalAllMovies || finalAllMovies.length === 0) {
+          finalAllMovies = moviesFromDb;
+        }
+
+        setMovie(finalMovie);
 
         // Simple related movies logic (same categories, exclude current)
-        const related = allMovies
-          .filter(
-            (m) =>
-              m.id !== movieData.id &&
-              m.categories?.some((cat) =>
-                movieData.categories?.some((c) => c.id === cat.id),
-              ),
-          )
-          .slice(0, 12);
-        setRelatedMovies(related);
+        if (finalMovie) {
+          const related = finalAllMovies
+            .filter(
+              (m) =>
+                m.id !== finalMovie!.id &&
+                m.categories?.some((cat) =>
+                  finalMovie!.categories?.some((c) => c.id === cat.id),
+                ),
+            )
+            .slice(0, 12);
+          setRelatedMovies(related);
+        }
       } catch (error) {
         console.error("Error fetching movie detail:", error);
       } finally {
@@ -45,11 +61,7 @@ const MovieDetail: React.FC = () => {
   }, [slug]);
 
   if (loading) {
-    return (
-      <Container className="d-flex justify-content-center align-items-center min-vh-100">
-        <Spinner animation="border" variant="primary" />
-      </Container>
-    );
+    return <LoadingSpinner />;
   }
 
   if (!movie) {

@@ -9,7 +9,7 @@ const EpisodeList = ({ episodes }: Props) => {
   return (
     <div className="episode-list">
       {episodes.map((ep) => (
-        <Link key={ep.id} to={`episode/${ep.id}`} className="episode-item">
+        <Link key={ep.id} to={`episode/${ep.slug}`} className="episode-item">
           <div className="episode-thumb">
             {ep.thumbnail && <img src={ep.thumbnail} alt={ep.title} />}
             <div className="episode-number-badge">E{ep.episode_number}</div>

@@ -7,8 +7,8 @@ import SeriesRail from "../components/SeriesRail/SeriesRail";
 import SearchSuggestions from "../components/SearchSuggestions";
 import { api } from "../services/api";
 import type { Movie, Series } from "../services/api";
-import { Spinner, Container } from "react-bootstrap";
 import EmptyState from "../components/common/EmptyState";
+import LoadingSpinner from "../components/common/LoadingSpinner";
 
 import "../styles/Search.css";
 
@@ -89,11 +89,7 @@ const Search = () => {
   const latest = useMemo(() => movies.slice(-12), [movies]);
 
   if (loading) {
-    return (
-      <Container className="d-flex justify-content-center align-items-center min-vh-100">
-        <Spinner animation="border" variant="primary" />
-      </Container>
-    );
+    return <LoadingSpinner />;
   }
 
   return (

@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import SeriesRail from "../../components/SeriesRail/SeriesRail";
 import { api } from "../../services/api";
 import type { Category, Series } from "../../services/api";
-import { Spinner, Container } from "react-bootstrap";
 import EmptyState from "../../components/common/EmptyState";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 import "./SeriesList.css";
 
 const SeriesList = () => {
@@ -30,11 +30,7 @@ const SeriesList = () => {
   }, []);
 
   if (loading) {
-    return (
-      <Container className="d-flex justify-content-center align-items-center min-vh-100">
-        <Spinner animation="border" variant="primary" />
-      </Container>
-    );
+    return <LoadingSpinner />;
   }
 
   const categorizedSeries = categories

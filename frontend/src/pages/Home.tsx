@@ -7,7 +7,7 @@ import { api } from "../services/api";
 import type { Movie } from "../types/movie";
 import type { Series } from "../types/series";
 import EmptyState from "../components/common/EmptyState";
-import { Spinner, Container } from "react-bootstrap";
+import LoadingSpinner from "../components/common/LoadingSpinner";
 
 const Home = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -79,11 +79,7 @@ const Home = () => {
   }, [trendingMovies, trendingSeries]);
 
   if (loading) {
-    return (
-      <Container className="d-flex justify-content-center align-items-center min-vh-100">
-        <Spinner animation="border" variant="primary" />
-      </Container>
-    );
+    return <LoadingSpinner />;
   }
 
   const hasContent = movies.length > 0 || series.length > 0;

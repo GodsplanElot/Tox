@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { api } from "../services/api";
 import type { Category } from "../services/api";
 import EmptyState from "../components/common/EmptyState";
-import { Spinner, Container } from "react-bootstrap";
+import LoadingSpinner from "../components/common/LoadingSpinner";
 import "../styles/Categories.css";
 
 const Categories = () => {
@@ -25,11 +25,7 @@ const Categories = () => {
   }, []);
 
   if (loading) {
-    return (
-      <Container className="d-flex justify-content-center align-items-center min-vh-100">
-        <Spinner animation="border" variant="primary" />
-      </Container>
-    );
+    return <LoadingSpinner />;
   }
 
   if (categories.length === 0) {

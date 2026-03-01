@@ -3,7 +3,8 @@ import { useEffect, useState } from "react";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
 import { api } from "../../services/api";
 import type { Series } from "../../types/series";
-import { Spinner, Container } from "react-bootstrap";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
+import { seriesFromDb } from "../../data/series";
 import "./EpisodeDetail.css";
 
 const EpisodeDetail = () => {
@@ -19,8 +20,14 @@ const EpisodeDetail = () => {
     const fetchEpisodeData = async () => {
       if (!seriesSlug) return;
       try {
-        const data = await api.getSeriesDetail(seriesSlug);
-        setSeries(data);
+        const data = await api.getSeriesDetail(seriesSlug).catch(() => null);
+
+        let finalSeries = data;
+        if (!finalSeries) {
+          finalSeries = seriesFromDb.find((s) => s.slug === seriesSlug) || null;
+        }
+
+        setSeries(finalSeries);
       } catch (error) {
         console.error("Error fetching episode data:", error);
       } finally {
@@ -31,11 +38,7 @@ const EpisodeDetail = () => {
   }, [seriesSlug]);
 
   if (loading) {
-    return (
-      <Container className="d-flex justify-content-center align-items-center min-vh-100">
-        <Spinner animation="border" variant="primary" />
-      </Container>
-    );
+    return <LoadingSpinner />;
   }
 
   const currentSeason = series?.seasons?.find((s) =>

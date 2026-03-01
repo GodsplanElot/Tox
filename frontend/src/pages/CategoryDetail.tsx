@@ -1,9 +1,12 @@
 import { useParams } from "react-router-dom";
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 
-import { categories } from "../data/categories";
+import { categories as mockCategories } from "../data/categories";
 import { moviesFromDb } from "../data/movies";
 import { seriesFromDb } from "../data/series";
+import { api } from "../services/api";
+import type { Movie, Series, Category } from "../services/api";
+import LoadingSpinner from "../components/common/LoadingSpinner";
 
 import MovieGrid from "../components/MovieGrid/MovieGrid";
 import SeriesRail from "../components/SeriesRail/SeriesRail";
@@ -15,8 +18,46 @@ type SortOption = "az" | "newest" | "oldest" | "rating";
 const CategoryDetail = () => {
   const { slug } = useParams();
   const [sortBy, setSortBy] = useState<SortOption>("az");
+  const [category, setCategory] = useState<Category | null>(null);
+  const [moviesList, setMoviesList] = useState<Movie[]>([]);
+  const [seriesList, setSeriesList] = useState<Series[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const category = categories.find((c) => c.slug === slug);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [catData, allMovies, allSeries] = await Promise.all([
+          api.getCategories().catch(() => []),
+          api.getMovies().catch(() => []),
+          api.getSeries().catch(() => []),
+        ]);
+
+        const currentCat =
+          catData.find((c) => c.slug === slug) ||
+          mockCategories.find((c) => c.slug === slug) ||
+          null;
+
+        setCategory(currentCat);
+
+        if (allMovies.length === 0) {
+          setMoviesList(moviesFromDb);
+        } else {
+          setMoviesList(allMovies);
+        }
+
+        if (allSeries.length === 0) {
+          setSeriesList(seriesFromDb);
+        } else {
+          setSeriesList(allSeries);
+        }
+      } catch (error) {
+        console.error("Error fetching category detail data:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [slug]);
 
   /**
    * MOVIES
@@ -24,7 +65,7 @@ const CategoryDetail = () => {
   const movies = useMemo(() => {
     if (!category) return [];
 
-    const filtered = moviesFromDb.filter((movie) =>
+    const filtered = moviesList.filter((movie) =>
       movie.categories.some((c) => c.id === category.id),
     );
 
@@ -52,7 +93,7 @@ const CategoryDetail = () => {
           return 0;
       }
     });
-  }, [category, sortBy]);
+  }, [category, sortBy, moviesList]);
 
   /**
    * SERIES
@@ -60,7 +101,7 @@ const CategoryDetail = () => {
   const series = useMemo(() => {
     if (!category) return [];
 
-    const filtered = seriesFromDb.filter((show) =>
+    const filtered = seriesList.filter((show) =>
       show.categories.some((c) => c.id === category.id),
     );
 
@@ -88,7 +129,11 @@ const CategoryDetail = () => {
           return 0;
       }
     });
-  }, [category, sortBy]);
+  }, [category, sortBy, seriesList]);
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
 
   if (!category) {
     return <p>Category not found</p>;

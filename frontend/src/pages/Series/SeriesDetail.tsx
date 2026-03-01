@@ -7,7 +7,7 @@ import Breadcrumbs from "../../components/common/Breadcrumbs";
 import RatingBadge from "../../components/common/RatingBadge";
 import { api } from "../../services/api";
 import type { Series } from "../../types/series";
-import { Spinner, Container } from "react-bootstrap";
+import LoadingSpinner from "../../components/common/LoadingSpinner";
 import "./SeriesDetail.css";
 
 const SeriesDetail = () => {
@@ -37,11 +37,7 @@ const SeriesDetail = () => {
   };
 
   if (loading) {
-    return (
-      <Container className="d-flex justify-content-center align-items-center min-vh-100">
-        <Spinner animation="border" variant="primary" />
-      </Container>
-    );
+    return <LoadingSpinner />;
   }
 
   if (!series)
