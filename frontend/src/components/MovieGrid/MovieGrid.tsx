@@ -24,9 +24,8 @@ const MovieGrid: React.FC<MovieGridProps> = ({
     <section className="movie-grid-section w-full">
       {title && <h2 className="movie-grid-title">{title}</h2>}
       <p className="movie-count">
-       Showing 100 of {movies.length} movies
+        Showing {visibleMovies.length} of {movies.length} movies
       </p>
-
 
       <div className="movie-grid">
         {visibleMovies.map((movie) => (
@@ -37,7 +36,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({
       {shouldLimit && (
         <div className="movie-grid-cta">
           <Link to="/categories" className="movie-grid-link">
-           View all {movies.length} movies →
+            View all {movies.length} movies →
           </Link>
         </div>
       )}
