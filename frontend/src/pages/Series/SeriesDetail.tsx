@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { FaDownload, FaPlay, FaPlus, FaShareAlt } from "react-icons/fa";
+import { FaPlay, FaShareAlt } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import SeasonSelector from "../../components/SeasonSelector/SeasonSelector";
 import EpisodeList from "../../components/EpisodeList/EpisodeList";
@@ -87,18 +87,6 @@ const SeriesDetail = () => {
             </div>
             <p className="series-description-large">{series.description}</p>
             <div className="series-actions">
-              <div className="download-group">
-                <button className="download-btn download-btn--1080p">
-                  <FaDownload /> 1080p
-                </button>
-                <button className="download-btn download-btn--720p">
-                  720p
-                </button>
-                <button className="download-btn download-btn--480p">
-                  480p
-                </button>
-              </div>
-
               <div className="secondary-actions">
                 {series.trailer_url && (
                   <a
@@ -110,12 +98,6 @@ const SeriesDetail = () => {
                     <FaPlay /> Watch Trailer
                   </a>
                 )}
-                <button
-                  className="action-btn action-btn--watchlist"
-                  title="Add to Watchlist"
-                >
-                  <FaPlus /> Watchlist
-                </button>
                 <button className="action-btn action-btn--share" title="Share">
                   <FaShareAlt /> Share
                 </button>
