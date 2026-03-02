@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
-import {  NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import SearchForm from "../components/SearchForm";
 import MobileSidebar from "./MobileSidebar";
 import logo from "../assets/icons/nav_logo.png";
@@ -41,13 +41,31 @@ const Header = () => {
             </Nav.Link>
 
             <Nav.Link as={NavLink} to="/series">
-            Tv Series
+              Tv Series
             </Nav.Link>
           </Nav>
 
-          {/* DESKTOP SEARCH */}
-          <div className="d-none d-lg-block">
+          {/* DESKTOP SEARCH AND AUTH */}
+          <div className="d-none d-lg-flex align-items-center gap-3">
             <SearchForm />
+            <div className="d-flex align-items-center gap-2 border-start border-secondary ps-3 ms-1">
+              <button
+                className="btn btn-outline-light rounded-pill px-3"
+                style={{ fontWeight: 600 }}
+              >
+                Login
+              </button>
+              <button
+                className="btn btn-primary rounded-pill px-3"
+                style={{
+                  fontWeight: 600,
+                  backgroundColor: "var(--accent-primary)",
+                  borderColor: "var(--accent-primary)",
+                }}
+              >
+                Sign Up
+              </button>
+            </div>
           </div>
         </Container>
       </Navbar>
