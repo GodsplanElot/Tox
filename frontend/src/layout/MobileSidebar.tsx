@@ -79,9 +79,33 @@ const MobileSidebar = ({ show, onOpen, onClose }: Props) => {
             </NavLink>
 
             <NavLink to="/profile" className="offcanvas-link" onClick={onClose}>
+              <i className="bi bi-person me-2"></i>
               Profile
             </NavLink>
           </Nav>
+
+          <div className="mt-4 pt-4 border-top border-secondary d-flex flex-column gap-3">
+            <button
+              className="btn btn-outline-light w-100 rounded-pill py-2"
+              style={{ fontWeight: 500, letterSpacing: "0.5px" }}
+              onClick={onClose}
+            >
+              Login
+            </button>
+            <button
+              className="btn btn-primary w-100 rounded-pill py-2"
+              style={{
+                fontWeight: 600,
+                letterSpacing: "0.5px",
+                backgroundColor: "var(--accent-primary)",
+                borderColor: "var(--accent-primary)",
+                boxShadow: "0 4px 15px rgba(249, 171, 0, 0.2)",
+              }}
+              onClick={onClose}
+            >
+              Sign Up
+            </button>
+          </div>
         </Offcanvas.Body>
       </Offcanvas>
     </>

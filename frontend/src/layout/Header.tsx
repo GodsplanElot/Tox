@@ -50,15 +50,16 @@ const Header = () => {
             <SearchForm />
             <div className="d-flex align-items-center gap-2 border-start border-secondary ps-3 ms-1">
               <button
-                className="btn btn-outline-light rounded-pill px-3"
-                style={{ fontWeight: 600 }}
+                className="btn btn-sm btn-outline-light rounded-pill px-3 py-1"
+                style={{ fontWeight: 500, letterSpacing: "0.5px" }}
               >
                 Login
               </button>
               <button
-                className="btn btn-primary rounded-pill px-3"
+                className="btn btn-sm btn-primary rounded-pill px-3 py-1"
                 style={{
                   fontWeight: 600,
+                  letterSpacing: "0.5px",
                   backgroundColor: "var(--accent-primary)",
                   borderColor: "var(--accent-primary)",
                 }}
