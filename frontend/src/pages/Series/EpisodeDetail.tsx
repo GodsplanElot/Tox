@@ -104,7 +104,8 @@ const EpisodeDetail = () => {
         {/* Navigation */}
         <div className="detail-controls" style={{ padding: "1rem 0" }}>
           <button className="back-btn" onClick={handleBack}>
-            <i className="bi bi-arrow-left"></i> Back to Series
+            <i className="bi bi-arrow-left"></i>{" "}
+            <span className="back-btn-label">Back to Series</span>
           </button>
           <Breadcrumbs
             items={[
@@ -150,7 +151,8 @@ const EpisodeDetail = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <FaDownload /> Download Episode
+                  <FaDownload />{" "}
+                  <span className="action-btn-label">Download Episode</span>
                 </a>
               )}
             </div>
