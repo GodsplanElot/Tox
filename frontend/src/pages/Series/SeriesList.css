@@ -50,3 +50,42 @@
 .series-list-page .section-title {
   display: none; /* We use our own custom title */
 }
+
+/* ================= MOBILE ================= */
+@media (max-width: 991.98px) {
+  .series-list-page {
+    padding-left: 0.5rem !important;
+    padding-right: 0.5rem !important;
+    padding-top: 1rem !important;
+  }
+
+  .series-list-page header.mb-5 {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .series-list-page header h1 {
+    font-size: clamp(1.3rem, 5vw, 1.8rem);
+  }
+
+  .series-list-page header p {
+    font-size: 0.85rem;
+  }
+
+  .category-section.mb-5 {
+    margin-bottom: 2rem !important;
+  }
+
+  .category-section h2.h4 {
+    font-size: 0.9rem !important;
+  }
+
+  .category-section .badge {
+    font-size: 0.65rem;
+    padding: 0.3rem 0.5rem !important;
+  }
+
+  .category-section hr.my-5 {
+    margin-top: 1.5rem !important;
+    margin-bottom: 1.5rem !important;
+  }
+}

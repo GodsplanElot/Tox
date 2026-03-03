@@ -65,12 +65,16 @@
   max-width: 200px;
 }
 
-@media (max-width: 767px) {
+@media (max-width: 991.98px) {
   .breadcrumb {
-    font-size: 0.75rem;
+    font-size: 0.7rem;
   }
   
   .breadcrumb-item {
+    max-width: 80px;
+  }
+
+  .breadcrumb-item.active {
     max-width: 100px;
   }
 }
