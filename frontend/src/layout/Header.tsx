@@ -2,14 +2,24 @@ import { useState } from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import SearchForm from "../components/SearchForm";
+import AuthModal from "../components/AuthModal";
 import MobileSidebar from "./MobileSidebar";
 import logo from "../assets/icons/nav_logo.png";
 
+type AuthTab = "login" | "signup";
+
 const Header = () => {
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [showAuth, setShowAuth] = useState(false);
+  const [authTab, setAuthTab] = useState<AuthTab>("login");
 
   const openSidebar = () => setMobileSidebarOpen(true);
   const closeSidebar = () => setMobileSidebarOpen(false);
+
+  const openAuth = (tab: AuthTab) => {
+    setAuthTab(tab);
+    setShowAuth(true);
+  };
 
   return (
     <>
@@ -52,6 +62,7 @@ const Header = () => {
               <button
                 className="btn btn-sm btn-outline-light rounded-pill px-3 py-1"
                 style={{ fontWeight: 500, letterSpacing: "0.5px" }}
+                onClick={() => openAuth("login")}
               >
                 Login
               </button>
@@ -63,6 +74,7 @@ const Header = () => {
                   backgroundColor: "var(--accent-primary)",
                   borderColor: "var(--accent-primary)",
                 }}
+                onClick={() => openAuth("signup")}
               >
                 Sign Up
               </button>
@@ -76,6 +88,21 @@ const Header = () => {
         show={mobileSidebarOpen}
         onOpen={openSidebar}
         onClose={closeSidebar}
+        onLoginClick={() => {
+          closeSidebar();
+          openAuth("login");
+        }}
+        onSignUpClick={() => {
+          closeSidebar();
+          openAuth("signup");
+        }}
+      />
+
+      {/* AUTH MODAL */}
+      <AuthModal
+        show={showAuth}
+        onHide={() => setShowAuth(false)}
+        defaultTab={authTab}
       />
     </>
   );

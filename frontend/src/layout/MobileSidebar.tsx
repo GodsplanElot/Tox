@@ -5,9 +5,17 @@ type Props = {
   show: boolean;
   onOpen: () => void;
   onClose: () => void;
+  onLoginClick: () => void;
+  onSignUpClick: () => void;
 };
 
-const MobileSidebar = ({ show, onOpen, onClose }: Props) => {
+const MobileSidebar = ({
+  show,
+  onOpen,
+  onClose,
+  onLoginClick,
+  onSignUpClick,
+}: Props) => {
   return (
     <>
       {/* MOBILE ICON RAIL */}
@@ -88,7 +96,7 @@ const MobileSidebar = ({ show, onOpen, onClose }: Props) => {
             <button
               className="btn btn-outline-light w-100 rounded-pill py-2"
               style={{ fontWeight: 500, letterSpacing: "0.5px" }}
-              onClick={onClose}
+              onClick={onLoginClick}
             >
               Login
             </button>
@@ -101,7 +109,7 @@ const MobileSidebar = ({ show, onOpen, onClose }: Props) => {
                 borderColor: "var(--accent-primary)",
                 boxShadow: "0 4px 15px rgba(249, 171, 0, 0.2)",
               }}
-              onClick={onClose}
+              onClick={onSignUpClick}
             >
               Sign Up
             </button>
