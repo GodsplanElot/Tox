@@ -95,11 +95,12 @@ const SeriesDetail = () => {
                     rel="noopener noreferrer"
                     className="action-btn action-btn--trailer"
                   >
-                    <FaPlay /> Watch Trailer
+                    <FaPlay />{" "}
+                    <span className="action-btn-label">Watch Trailer</span>
                   </a>
                 )}
                 <button className="action-btn action-btn--share" title="Share">
-                  <FaShareAlt /> Share
+                  <FaShareAlt /> <span className="action-btn-label">Share</span>
                 </button>
               </div>
             </div>
@@ -110,7 +111,8 @@ const SeriesDetail = () => {
       {/* Navigation Controls */}
       <div className="detail-controls">
         <button className="back-btn" onClick={handleBack}>
-          <i className="bi bi-arrow-left"></i> Back
+          <i className="bi bi-arrow-left"></i>
+          <span className="back-btn-label">Back</span>
         </button>
         <Breadcrumbs
           items={[

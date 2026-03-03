@@ -125,14 +125,16 @@ const MovieDetail: React.FC = () => {
                     className="download-btn download-btn--1080p"
                     download
                   >
-                    <FaDownload /> Download
+                    <FaDownload />{" "}
+                    <span className="action-btn-label">Download</span>
                   </a>
                 ) : (
                   <button
                     className="download-btn download-btn--1080p disabled"
                     disabled
                   >
-                    <FaDownload /> No Link
+                    <FaDownload />{" "}
+                    <span className="action-btn-label">No Link</span>
                   </button>
                 )}
               </div>
@@ -145,17 +147,18 @@ const MovieDetail: React.FC = () => {
                     rel="noopener noreferrer"
                     className="action-btn action-btn--trailer"
                   >
-                    <FaPlay /> Watch Now
+                    <FaPlay />{" "}
+                    <span className="action-btn-label">Watch Now</span>
                   </a>
                 )}
                 <button
                   className="action-btn action-btn--watchlist"
                   title="Add to Watchlist"
                 >
-                  <FaPlus /> Watchlist
+                  <FaPlus /> <span className="action-btn-label">Watchlist</span>
                 </button>
                 <button className="action-btn action-btn--share" title="Share">
-                  <FaShareAlt /> Share
+                  <FaShareAlt /> <span className="action-btn-label">Share</span>
                 </button>
               </div>
             </div>

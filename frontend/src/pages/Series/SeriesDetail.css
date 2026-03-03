@@ -295,39 +295,124 @@
   color: var(--text-muted);
 }
 
-/* Mobile responsive text sizing */
-@media (max-width: 767px) {
+/* ================= MOBILE (below lg breakpoint) ================= */
+@media (max-width: 991.98px) {
+
+  /* --- Hero --- */
+  .series-hero {
+    height: auto;
+    min-height: 280px;
+  }
+
+  .detail-hero-content {
+    padding: 1rem 0.75rem;
+    gap: 1rem;
+  }
+
+  /* --- Title & Text --- */
   .series-title-large {
-    font-size: clamp(1.5rem, 6vw, 2.5rem);
+    font-size: clamp(1.2rem, 5vw, 1.8rem);
+    margin-bottom: 0.5rem;
   }
-  
+
+  .series-meta {
+    font-size: 0.78rem;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+  }
+
   .series-description-large {
-    font-size: 0.95rem;
+    font-size: 0.85rem;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
   }
-  
-  .episode-list {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 0.75rem;
+
+  /* --- Genre Tags --- */
+  .genre-tag {
+    font-size: 0.7rem;
+    padding: 3px 8px;
   }
-  
-  .episode-info strong {
+
+  .series-genres {
+    gap: 0.35rem;
+    margin-bottom: 0.5rem;
+  }
+
+  /* --- Navigation Controls --- */
+  .detail-controls {
+    padding: 0.75rem;
+  }
+
+  .back-btn {
+    padding: 6px 10px;
     font-size: 0.85rem;
   }
-  
-  .episode-runtime {
-    font-size: 0.7rem;
-  }
-}
 
-@media (max-width: 767px) {
-  .series-hero {
-    height: 50vh;
+  .back-btn-label {
+    display: none;
   }
-  .detail-hero-content {
-    padding: 1.5rem;
+
+  /* --- Action Buttons: icon-only --- */
+  .action-btn-label {
+    display: none;
   }
+
+  .action-btn {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+
+  .series-actions {
+    margin-top: 0.75rem;
+    gap: 0.75rem;
+  }
+
+  /* --- Seasons / Episodes --- */
   .series-body {
-    padding: 1.5rem;
+    padding: 1rem 0.75rem;
+  }
+
+  .section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+  }
+
+  .section-head h2 {
+    font-size: 1.1rem;
+  }
+
+  .season-selector button {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+  }
+
+  .episode-list {
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .episode-info {
+    padding: 0.5rem;
+  }
+
+  .episode-info strong {
+    font-size: 0.78rem;
+  }
+
+  .episode-runtime {
+    font-size: 0.65rem;
+  }
+
+  .episode-number-badge {
+    font-size: 0.6rem;
+    padding: 2px 6px;
   }
 }
 
