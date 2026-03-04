@@ -4,7 +4,7 @@ import MovieGrid from "../../components/MovieGrid/MovieGrid";
 import { api } from "../../services/api";
 import type { Movie } from "../../types/movie";
 import RatingBadge from "../../components/common/RatingBadge";
-import { FaDownload, FaPlay, FaPlus, FaShareAlt } from "react-icons/fa";
+import { FaDownload, FaPlus, FaShareAlt } from "react-icons/fa";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { moviesFromDb } from "../../data/movies";
 import "./MovieDetail.css";
@@ -140,17 +140,6 @@ const MovieDetail: React.FC = () => {
               </div>
 
               <div className="secondary-actions">
-                {api.getVideoUrl(movie) && (
-                  <a
-                    href={api.getVideoUrl(movie)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="action-btn action-btn--trailer"
-                  >
-                    <FaPlay />{" "}
-                    <span className="action-btn-label">Watch Now</span>
-                  </a>
-                )}
                 <button
                   className="action-btn action-btn--watchlist"
                   title="Add to Watchlist"

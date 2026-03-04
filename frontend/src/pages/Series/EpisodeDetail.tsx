@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FaDownload, FaPlay } from "react-icons/fa";
+import { FaDownload } from "react-icons/fa";
 import Breadcrumbs from "../../components/common/Breadcrumbs";
 import { api } from "../../services/api";
 import type { Series } from "../../types/series";
@@ -60,44 +60,24 @@ const EpisodeDetail = () => {
 
   return (
     <div className="episode-detail-container">
-      {/* Video Player Section */}
-      <div className="video-player-section">
-        {episode.source_type === "upload" && episode.video_file ? (
-          <video
-            src={api.getMediaUrl(episode.video_file)}
-            controls
-            className="w-full h-full"
-            poster={api.getMediaUrl(episode.thumbnail || series?.poster)}
-          />
-        ) : episode.source_type === "external" && episode.external_url ? (
-          <div className="external-video-placeholder">
+      {/* Thumbnail Hero Section */}
+      <div className="episode-hero-section">
+        <div
+          className="episode-hero-backdrop"
+          style={{
+            backgroundImage: `url(${api.getMediaUrl(episode.thumbnail || series?.poster)})`,
+          }}
+        />
+        <div className="detail-hero-overlay" />
+
+        <div className="episode-hero-content">
+          <div className="episode-thumbnail-main">
             <img
               src={api.getMediaUrl(episode.thumbnail || series?.poster)}
               alt={episode.title}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
-            <div className="detail-hero-overlay" />
-            <a
-              href={episode.external_url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="play-overlay-btn"
-            >
-              <FaPlay size={40} />
-              <span>Watch External Stream</span>
-            </a>
           </div>
-        ) : (
-          <div className="no-video-placeholder">
-            <img
-              src={api.getMediaUrl(episode.thumbnail || series?.poster)}
-              alt={episode.title}
-              style={{ width: "100%", height: "100%", objectFit: "cover" }}
-            />
-            <div className="detail-hero-overlay" />
-            <div className="no-video-text">Video Not Available</div>
-          </div>
-        )}
+        </div>
       </div>
 
       <div className="episode-content-body">
