@@ -132,7 +132,9 @@ const EpisodeDetail = () => {
                   rel="noopener noreferrer"
                 >
                   <FaDownload />{" "}
-                  <span className="action-btn-label">Download Episode</span>
+                  <span className="action-btn-label">
+                    Download E{episode.episode_number}: {episode.title}
+                  </span>
                 </a>
               )}
             </div>
