@@ -1,6 +1,7 @@
 import type { Movie } from "../types/movie";
 import type { Series } from "../types/series";
 import type { Category } from "../types/category";
+import type { WatchlistItem } from "../types/watchlist";
 
 const API_BASE_URL = 'http://localhost:8000/api';
 const MEDIA_BASE_URL = 'http://localhost:8000';
@@ -43,17 +44,13 @@ export const api = {
     return api.getMediaUrl(item.video_file);
   },
 
-  getWatchlist: (): Promise<any[]> => 
+  getWatchlist: (): Promise<WatchlistItem[]> => 
     fetch(`${API_BASE_URL}/watchlist/`).then(handleResponse),
 
-  checkWatchlistStatus: (contentType: string, objectId: number): Promise<any[]> =>
+  checkWatchlistStatus: (contentType: string, objectId: number): Promise<WatchlistItem[]> =>
     fetch(`${API_BASE_URL}/watchlist/?content_type=${contentType}&object_id=${objectId}`).then(handleResponse),
 
-  addToWatchlist: (contentType: string, objectId: number): Promise<any> => {
-    // We need to get the ContentType ID first, or the backend should handle model names.
-    // For now, let's assume we can POST the model name if we adapt the serializer or fetch it.
-    // Actually, I'll update the serializer to accept model name.
-    console.warn("addToWatchlist needs ContentType ID or model name support");
+  addToWatchlist: (contentType: string, objectId: number): Promise<WatchlistItem> => {
     return fetch(`${API_BASE_URL}/watchlist/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },

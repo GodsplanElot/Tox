@@ -511,6 +511,17 @@
   background: rgba(249, 171, 0, 0.1);
 }
 
+.action-btn--watchlist.active {
+  background: var(--accent-primary);
+  color: #000;
+  border-color: var(--accent-primary);
+}
+
+.action-btn--watchlist.active:hover {
+  background: #ffb700;
+  transform: translateY(-2px);
+}
+
 .action-btn--share {
   color: #3498db;
   border-color: rgba(52, 152, 219, 0.3);

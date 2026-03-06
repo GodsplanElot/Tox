@@ -1,5 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { FaPlay, FaShareAlt } from "react-icons/fa";
+import { FaPlay, FaShareAlt, FaPlus, FaCheck } from "react-icons/fa";
 import { useEffect, useState } from "react";
 import SeasonSelector from "../../components/SeasonSelector/SeasonSelector";
 import EpisodeList from "../../components/EpisodeList/EpisodeList";
@@ -16,6 +16,8 @@ const SeriesDetail = () => {
   const [series, setSeries] = useState<Series | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeSeason, setActiveSeason] = useState(0);
+  const [isInWatchlist, setIsInWatchlist] = useState(false);
+  const [watchlistItemId, setWatchlistItemId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchSeries = async () => {
@@ -31,6 +33,43 @@ const SeriesDetail = () => {
     };
     fetchSeries();
   }, [slug]);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      if (!series) return;
+      try {
+        const items = await api.checkWatchlistStatus("series", series.id);
+        if (items.length > 0) {
+          setIsInWatchlist(true);
+          setWatchlistItemId(items[0].id);
+        } else {
+          setIsInWatchlist(false);
+          setWatchlistItemId(null);
+        }
+      } catch (error) {
+        console.error("Error checking watchlist status:", error);
+      }
+    };
+    checkStatus();
+  }, [series]);
+
+  const toggleWatchlist = async () => {
+    if (!series) return;
+    try {
+      if (isInWatchlist && watchlistItemId) {
+        await api.removeFromWatchlist(watchlistItemId);
+        setIsInWatchlist(false);
+        setWatchlistItemId(null);
+      } else {
+        const newItem = await api.addToWatchlist("series", series.id);
+        setIsInWatchlist(true);
+        setWatchlistItemId(newItem.id);
+      }
+    } catch (error) {
+      console.error("Error toggling watchlist:", error);
+      alert("Failed to update watchlist. Are you logged in?");
+    }
+  };
 
   const handleBack = () => {
     navigate(-1);
@@ -99,6 +138,18 @@ const SeriesDetail = () => {
                     <span className="action-btn-label">Watch Trailer</span>
                   </a>
                 )}
+                <button
+                  className={`action-btn action-btn--watchlist ${isInWatchlist ? "active" : ""}`}
+                  title={
+                    isInWatchlist ? "Remove from Watchlist" : "Add to Watchlist"
+                  }
+                  onClick={toggleWatchlist}
+                >
+                  {isInWatchlist ? <FaCheck /> : <FaPlus />}{" "}
+                  <span className="action-btn-label">
+                    {isInWatchlist ? "In Watchlist" : "Watchlist"}
+                  </span>
+                </button>
                 <button className="action-btn action-btn--share" title="Share">
                   <FaShareAlt /> <span className="action-btn-label">Share</span>
                 </button>

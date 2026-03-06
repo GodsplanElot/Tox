@@ -4,7 +4,7 @@ import MovieGrid from "../../components/MovieGrid/MovieGrid";
 import { api } from "../../services/api";
 import type { Movie } from "../../types/movie";
 import RatingBadge from "../../components/common/RatingBadge";
-import { FaDownload, FaPlus, FaShareAlt } from "react-icons/fa";
+import { FaDownload, FaPlus, FaCheck, FaShareAlt } from "react-icons/fa";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import { moviesFromDb } from "../../data/movies";
 import "./MovieDetail.css";
@@ -14,6 +14,8 @@ const MovieDetail: React.FC = () => {
   const [movie, setMovie] = useState<Movie | null>(null);
   const [relatedMovies, setRelatedMovies] = useState<Movie[]>([]);
   const [loading, setLoading] = useState(true);
+  const [isInWatchlist, setIsInWatchlist] = useState(false);
+  const [watchlistItemId, setWatchlistItemId] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchMovieData = async () => {
@@ -59,6 +61,43 @@ const MovieDetail: React.FC = () => {
     };
     fetchMovieData();
   }, [slug]);
+
+  useEffect(() => {
+    const checkStatus = async () => {
+      if (!movie) return;
+      try {
+        const items = await api.checkWatchlistStatus("movie", movie.id);
+        if (items.length > 0) {
+          setIsInWatchlist(true);
+          setWatchlistItemId(items[0].id);
+        } else {
+          setIsInWatchlist(false);
+          setWatchlistItemId(null);
+        }
+      } catch (error) {
+        console.error("Error checking watchlist status:", error);
+      }
+    };
+    checkStatus();
+  }, [movie]);
+
+  const toggleWatchlist = async () => {
+    if (!movie) return;
+    try {
+      if (isInWatchlist && watchlistItemId) {
+        await api.removeFromWatchlist(watchlistItemId);
+        setIsInWatchlist(false);
+        setWatchlistItemId(null);
+      } else {
+        const newItem = await api.addToWatchlist("movie", movie.id);
+        setIsInWatchlist(true);
+        setWatchlistItemId(newItem.id);
+      }
+    } catch (error) {
+      console.error("Error toggling watchlist:", error);
+      alert("Failed to update watchlist. Are you logged in?");
+    }
+  };
 
   if (loading) {
     return <LoadingSpinner />;
@@ -141,10 +180,16 @@ const MovieDetail: React.FC = () => {
 
               <div className="secondary-actions">
                 <button
-                  className="action-btn action-btn--watchlist"
-                  title="Add to Watchlist"
+                  className={`action-btn action-btn--watchlist ${isInWatchlist ? "active" : ""}`}
+                  title={
+                    isInWatchlist ? "Remove from Watchlist" : "Add to Watchlist"
+                  }
+                  onClick={toggleWatchlist}
                 >
-                  <FaPlus /> <span className="action-btn-label">Watchlist</span>
+                  {isInWatchlist ? <FaCheck /> : <FaPlus />}{" "}
+                  <span className="action-btn-label">
+                    {isInWatchlist ? "In Watchlist" : "Watchlist"}
+                  </span>
                 </button>
                 <button className="action-btn action-btn--share" title="Share">
                   <FaShareAlt /> <span className="action-btn-label">Share</span>
