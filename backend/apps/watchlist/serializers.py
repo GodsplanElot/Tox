@@ -36,13 +36,20 @@ class WatchlistItemSerializer(serializers.ModelSerializer):
         return None
 
 class WatchlistCreateSerializer(serializers.ModelSerializer):
+    content_type_model = serializers.CharField(write_only=True)
+
     class Meta:
         model = WatchlistItem
-        fields = ['content_type', 'object_id']
+        fields = ['content_type_model', 'object_id']
 
     def validate(self, data):
-        # Ensure the object exists
-        content_type = data['content_type']
+        content_type_model = data.pop('content_type_model')
+        try:
+            content_type = ContentType.objects.get(model=content_type_model)
+        except ContentType.DoesNotExist:
+            raise serializers.ValidationError("Invalid content type.")
+            
+        data['content_type'] = content_type
         object_id = data['object_id']
         model_class = content_type.model_class()
         

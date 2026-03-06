@@ -27,12 +27,12 @@ class WatchlistViewSet(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         queryset = self.get_queryset()
         
-        # Optional filtering by content_type and object_id to check status
-        content_type_id = request.query_params.get('content_type')
+        # Optional filtering by content_type model name and object_id to check status
+        content_type_model = request.query_params.get('content_type')
         object_id = request.query_params.get('object_id')
         
-        if content_type_id and object_id:
-            queryset = queryset.filter(content_type_id=content_type_id, object_id=object_id)
+        if content_type_model and object_id:
+            queryset = queryset.filter(content_type__model=content_type_model, object_id=object_id)
             
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

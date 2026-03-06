@@ -41,5 +41,28 @@ export const api = {
     if (!item) return '';
     if (item.source_type === 'external') return item.external_url || '';
     return api.getMediaUrl(item.video_file);
-  }
+  },
+
+  getWatchlist: (): Promise<any[]> => 
+    fetch(`${API_BASE_URL}/watchlist/`).then(handleResponse),
+
+  checkWatchlistStatus: (contentType: string, objectId: number): Promise<any[]> =>
+    fetch(`${API_BASE_URL}/watchlist/?content_type=${contentType}&object_id=${objectId}`).then(handleResponse),
+
+  addToWatchlist: (contentType: string, objectId: number): Promise<any> => {
+    // We need to get the ContentType ID first, or the backend should handle model names.
+    // For now, let's assume we can POST the model name if we adapt the serializer or fetch it.
+    // Actually, I'll update the serializer to accept model name.
+    console.warn("addToWatchlist needs ContentType ID or model name support");
+    return fetch(`${API_BASE_URL}/watchlist/`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ content_type_model: contentType, object_id: objectId })
+    }).then(handleResponse);
+  },
+
+  removeFromWatchlist: (itemId: number): Promise<void> => 
+    fetch(`${API_BASE_URL}/watchlist/${itemId}/`, { method: 'DELETE' }).then(res => {
+      if (!res.ok) throw new Error("Failed to remove from watchlist");
+    })
 };
