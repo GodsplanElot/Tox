@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     "apps.categories",
     "apps.users",
     "apps.common",
+    "apps.watchlist",
 ]
 
 MIDDLEWARE = [

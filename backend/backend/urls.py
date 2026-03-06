@@ -11,6 +11,7 @@ urlpatterns = [
     path("api/categories/", include("apps.categories.urls")),
     path("api/users/", include("apps.users.urls")),
     path("api/common/", include("apps.common.urls")),
+    path("api/watchlist/", include("apps.watchlist.urls")),
 ]
 
 if settings.DEBUG:
