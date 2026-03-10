@@ -27,7 +27,7 @@ const Header = () => {
         <Container fluid>
           {/* LOGO */}
           <Navbar.Brand as={NavLink} to="/">
-            <img src={logo} alt="TOX" height={32} />
+            <img src={logo} alt="TOXin" height={32} />
           </Navbar.Brand>
 
           {/* MOBILE TOGGLE */}
