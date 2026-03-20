@@ -68,8 +68,10 @@ cd backend
 python -m venv venv
 
 # Activate virtual environment
-# Windows:
-venv\Scripts\activate
+# Windows (PowerShell):
+.\venv\Scripts\Activate.ps1
+# If you get an execution policy error, run:
+# Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 # macOS/Linux:
 source venv/bin/activate
 
@@ -87,6 +89,8 @@ python manage.py runserver
 ```
 
 **Backend will be running at:** `http://localhost:8000` ✅
+
+Nested admin will be available at: `http://localhost:8000/_nested_admin/`
 
 ---
 
@@ -284,8 +288,11 @@ git clone <your-repo-url>
 cd TOX
 
 # Setup backend
-cd backend && python -m venv venv && venv\Scripts\activate
-pip install -r requirements.txt && python manage.py migrate
+cd backend
+python -m venv venv
+.\venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+python manage.py migrate
 
 # Setup frontend (in new terminal)
 cd frontend && npm install && npm run dev

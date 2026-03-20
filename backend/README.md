@@ -179,6 +179,14 @@ backend/apps/
 
 ## 🚀 Quick Start
 
+### ✅ Current Setup (This Repo)
+
+This backend now includes:
+
+- `requirements.txt` for reproducible installs
+- `django-nested-admin` configured at `/_nested_admin/`
+- `.env.example` for environment-based settings
+
 ### 1️⃣ Setup Virtual Environment
 
 ```bash
@@ -187,9 +195,15 @@ python -m venv venv
 
 # Activate it
 # Windows:
-venv\Scripts\activate
+.\venv\Scripts\Activate.ps1
 # macOS/Linux:
 source venv/bin/activate
+```
+
+If PowerShell blocks activation, run this once:
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
 ```
 
 ### 2️⃣ Install Dependencies
@@ -226,6 +240,14 @@ python manage.py runserver
 **🎉 Server running at:** `http://localhost:8000`
 
 **Admin panel:** `http://localhost:8000/admin`
+
+**Nested admin assets URL:** `http://localhost:8000/_nested_admin/`
+
+### 5️⃣ Deactivate Virtual Environment
+
+```bash
+deactivate
+```
 
 ---
 
