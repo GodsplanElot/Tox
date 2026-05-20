@@ -1,9 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useMemo, useState, useEffect } from "react";
 
-import { categories as mockCategories } from "../data/categories";
-import { moviesFromDb } from "../data/movies";
-import { seriesFromDb } from "../data/series";
 import { api } from "../services/api";
 import type { Movie, Series, Category } from "../services/api";
 import LoadingSpinner from "../components/common/LoadingSpinner";
@@ -32,24 +29,11 @@ const CategoryDetail = () => {
           api.getSeries().catch(() => []),
         ]);
 
-        const currentCat =
-          catData.find((c) => c.slug === slug) ||
-          mockCategories.find((c) => c.slug === slug) ||
-          null;
+        const currentCat = catData.find((c) => c.slug === slug) || null;
 
         setCategory(currentCat);
-
-        if (allMovies.length === 0) {
-          setMoviesList(moviesFromDb);
-        } else {
-          setMoviesList(allMovies);
-        }
-
-        if (allSeries.length === 0) {
-          setSeriesList(seriesFromDb);
-        } else {
-          setSeriesList(allSeries);
-        }
+        setMoviesList(allMovies);
+        setSeriesList(allSeries);
       } catch (error) {
         console.error("Error fetching category detail data:", error);
       } finally {

@@ -1,13 +1,17 @@
 import { useMemo, useEffect, useState } from "react";
 import HeroCarousel from "../components/HeroCarousel";
 import MovieRail from "../components/MovieRail/MovieRail";
-import MovieGrid from "../components/MovieGrid/MovieGrid";
-import SeriesRail from "../components/SeriesRail/SeriesRail";
 import { api } from "../services/api";
 import type { Movie } from "../types/movie";
 import type { Series } from "../types/series";
 import EmptyState from "../components/common/EmptyState";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+
+const getDateTime = (value?: string) => {
+  if (!value) return 0;
+  const time = new Date(value).getTime();
+  return Number.isNaN(time) ? 0 : time;
+};
 
 const Home = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
@@ -32,26 +36,34 @@ const Home = () => {
     fetchData();
   }, []);
 
-  // Trending: Newest movies first
   const trendingMovies = useMemo(() => {
     return [...movies].sort((a, b) => {
-      const dateA = new Date(a.release_date ?? "").getTime();
-      const dateB = new Date(b.release_date ?? "").getTime();
-      return dateB - dateA;
+      const ratingDelta = (b.rating ?? 0) - (a.rating ?? 0);
+      if (ratingDelta !== 0) return ratingDelta;
+      return getDateTime(b.release_date) - getDateTime(a.release_date);
     });
   }, [movies]);
 
-  // Popular: Highest rating first
   const popularMovies = useMemo(() => {
     return [...movies].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
   }, [movies]);
 
-  // Trending Series: Highest rating first
+  const newReleases = useMemo(() => {
+    return [...movies].sort((a, b) => {
+      return getDateTime(b.release_date) - getDateTime(a.release_date);
+    });
+  }, [movies]);
+
+  const topRatedMovies = useMemo(() => {
+    return [...movies]
+      .filter((movie) => movie.rating !== undefined && movie.rating !== null)
+      .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
+  }, [movies]);
+
   const trendingSeries = useMemo(() => {
     return [...series].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
   }, [series]);
 
-  // Combining top movies and series for the Hero Carousel
   const carouselItems = useMemo(() => {
     const movieItems = trendingMovies.slice(0, 3).map((movie) => ({
       id: movie.id,
@@ -98,16 +110,17 @@ const Home = () => {
       <HeroCarousel items={carouselItems} />
 
       {trendingMovies.length > 0 && (
-        <MovieRail title="Trending Now" movies={trendingMovies} />
-      )}
-      {trendingSeries.length > 0 && (
-        <SeriesRail title="Trending Series" series={trendingSeries} />
+        <MovieRail title="Trending Now" movies={trendingMovies.slice(0, 18)} />
       )}
       {popularMovies.length > 0 && (
-        <MovieRail title="Popular Movies" movies={popularMovies} />
+        <MovieRail title="Popular Movies" movies={popularMovies.slice(0, 18)} />
       )}
-
-      {movies.length > 0 && <MovieGrid title="All Movies" movies={movies} />}
+      {newReleases.length > 0 && (
+        <MovieRail title="New Releases" movies={newReleases.slice(0, 18)} />
+      )}
+      {topRatedMovies.length > 0 && (
+        <MovieRail title="Top Rated" movies={topRatedMovies.slice(0, 18)} />
+      )}
     </>
   );
 };

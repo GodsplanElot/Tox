@@ -5,7 +5,6 @@ import Breadcrumbs from "../../components/common/Breadcrumbs";
 import { api } from "../../services/api";
 import type { Series } from "../../types/series";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
-import { seriesFromDb } from "../../data/series";
 import "./EpisodeDetail.css";
 
 const EpisodeDetail = () => {
@@ -22,13 +21,7 @@ const EpisodeDetail = () => {
       if (!seriesSlug) return;
       try {
         const data = await api.getSeriesDetail(seriesSlug).catch(() => null);
-
-        let finalSeries = data;
-        if (!finalSeries) {
-          finalSeries = seriesFromDb.find((s) => s.slug === seriesSlug) || null;
-        }
-
-        setSeries(finalSeries);
+        setSeries(data);
       } catch (error) {
         console.error("Error fetching episode data:", error);
       } finally {
