@@ -2,7 +2,6 @@ from rest_framework import viewsets, permissions, status
 from rest_framework.response import Response
 from .models import WatchlistItem
 from .serializers import WatchlistItemSerializer, WatchlistCreateSerializer
-from django.contrib.contenttypes.models import ContentType
 
 class WatchlistViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
@@ -17,6 +16,17 @@ class WatchlistViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        item, created = WatchlistItem.objects.get_or_create(
+            user=request.user,
+            content_type=serializer.validated_data["content_type"],
+            object_id=serializer.validated_data["object_id"],
+        )
+        status_code = status.HTTP_201_CREATED if created else status.HTTP_200_OK
+        return Response(WatchlistItemSerializer(item).data, status=status_code)
 
     def destroy(self, request, *args, **kwargs):
         instance = self.get_object()
