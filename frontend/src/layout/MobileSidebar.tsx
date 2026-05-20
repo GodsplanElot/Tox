@@ -7,6 +7,9 @@ type Props = {
   onClose: () => void;
   onLoginClick: () => void;
   onSignUpClick: () => void;
+  isAuthenticated: boolean;
+  username?: string;
+  onLogout: () => void;
 };
 
 const MobileSidebar = ({
@@ -15,6 +18,9 @@ const MobileSidebar = ({
   onClose,
   onLoginClick,
   onSignUpClick,
+  isAuthenticated,
+  username,
+  onLogout,
 }: Props) => {
   return (
     <>
@@ -45,9 +51,14 @@ const MobileSidebar = ({
           <i className="bi bi-search"></i>
         </NavLink>
 
-        <NavLink to="/profile" className="rail-icon">
+        <button
+          type="button"
+          className="rail-icon"
+          aria-label={isAuthenticated ? "Account" : "Log in"}
+          onClick={isAuthenticated ? onOpen : onLoginClick}
+        >
           <i className="bi bi-person"></i>
-        </NavLink>
+        </button>
       </div>
 
       {/* OFFCANVAS MENU */}
@@ -86,33 +97,51 @@ const MobileSidebar = ({
               Search
             </NavLink>
 
-            <NavLink to="/profile" className="offcanvas-link" onClick={onClose}>
-              <i className="bi bi-person me-2"></i>
-              Profile
-            </NavLink>
+            <button
+              type="button"
+              className="offcanvas-link"
+              onClick={isAuthenticated ? undefined : onLoginClick}
+            >
+              {isAuthenticated ? username ?? "Account" : "Account"}
+            </button>
           </Nav>
 
           <div className="mt-4 pt-4 border-top border-secondary d-flex flex-column gap-3">
-            <button
-              className="btn btn-outline-light w-100 rounded-pill py-2"
-              style={{ fontWeight: 500, letterSpacing: "0.5px" }}
-              onClick={onLoginClick}
-            >
-              Login
-            </button>
-            <button
-              className="btn btn-primary w-100 rounded-pill py-2"
-              style={{
-                fontWeight: 600,
-                letterSpacing: "0.5px",
-                backgroundColor: "var(--accent-primary)",
-                borderColor: "var(--accent-primary)",
-                boxShadow: "0 4px 15px rgba(249, 171, 0, 0.2)",
-              }}
-              onClick={onSignUpClick}
-            >
-              Sign Up
-            </button>
+            {isAuthenticated ? (
+              <button
+                className="btn btn-outline-light w-100 rounded-pill py-2"
+                style={{ fontWeight: 500, letterSpacing: "0.5px" }}
+                onClick={() => {
+                  onLogout();
+                  onClose();
+                }}
+              >
+                Logout
+              </button>
+            ) : (
+              <>
+                <button
+                  className="btn btn-outline-light w-100 rounded-pill py-2"
+                  style={{ fontWeight: 500, letterSpacing: "0.5px" }}
+                  onClick={onLoginClick}
+                >
+                  Login
+                </button>
+                <button
+                  className="btn btn-primary w-100 rounded-pill py-2"
+                  style={{
+                    fontWeight: 600,
+                    letterSpacing: "0.5px",
+                    backgroundColor: "var(--accent-primary)",
+                    borderColor: "var(--accent-primary)",
+                    boxShadow: "0 4px 15px rgba(249, 171, 0, 0.2)",
+                  }}
+                  onClick={onSignUpClick}
+                >
+                  Sign Up
+                </button>
+              </>
+            )}
           </div>
         </Offcanvas.Body>
       </Offcanvas>

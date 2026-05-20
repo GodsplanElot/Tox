@@ -1,0 +1,16 @@
+export type AuthUser = {
+  id: number;
+  username: string;
+  email: string;
+  first_name: string;
+  last_name: string;
+};
+
+export type AuthTokens = {
+  access: string;
+  refresh: string;
+};
+
+export type AuthResponse = AuthTokens & {
+  user?: AuthUser;
+};

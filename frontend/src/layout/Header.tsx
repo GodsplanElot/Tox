@@ -3,12 +3,14 @@ import { Navbar, Container, Nav } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import SearchForm from "../components/SearchForm";
 import AuthModal from "../components/AuthModal";
+import { useAuth } from "../context/useAuth";
 import MobileSidebar from "./MobileSidebar";
 import logo from "../assets/icons/nav_logo.png";
 
 type AuthTab = "login" | "signup";
 
 const Header = () => {
+  const { isAuthenticated, logout, user } = useAuth();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [authTab, setAuthTab] = useState<AuthTab>("login");
@@ -58,27 +60,42 @@ const Header = () => {
           {/* DESKTOP SEARCH AND AUTH */}
           <div className="d-none d-lg-flex align-items-center gap-3">
             <SearchForm />
-            <div className="d-flex align-items-center gap-2 border-start border-secondary ps-3 ms-1">
-              <button
-                className="btn btn-sm btn-outline-light rounded-pill px-3 py-1"
-                style={{ fontWeight: 500, letterSpacing: "0.5px" }}
-                onClick={() => openAuth("login")}
-              >
-                Login
-              </button>
-              <button
-                className="btn btn-sm btn-primary rounded-pill px-3 py-1"
-                style={{
-                  fontWeight: 600,
-                  letterSpacing: "0.5px",
-                  backgroundColor: "var(--accent-primary)",
-                  borderColor: "var(--accent-primary)",
-                }}
-                onClick={() => openAuth("signup")}
-              >
-                Sign Up
-              </button>
-            </div>
+            {isAuthenticated ? (
+              <div className="d-flex align-items-center gap-2 border-start border-secondary ps-3 ms-1">
+                <span className="text-light small">
+                  {user?.username}
+                </span>
+                <button
+                  className="btn btn-sm btn-outline-light rounded-pill px-3 py-1"
+                  style={{ fontWeight: 500, letterSpacing: "0.5px" }}
+                  onClick={logout}
+                >
+                  Logout
+                </button>
+              </div>
+            ) : (
+              <div className="d-flex align-items-center gap-2 border-start border-secondary ps-3 ms-1">
+                <button
+                  className="btn btn-sm btn-outline-light rounded-pill px-3 py-1"
+                  style={{ fontWeight: 500, letterSpacing: "0.5px" }}
+                  onClick={() => openAuth("login")}
+                >
+                  Login
+                </button>
+                <button
+                  className="btn btn-sm btn-primary rounded-pill px-3 py-1"
+                  style={{
+                    fontWeight: 600,
+                    letterSpacing: "0.5px",
+                    backgroundColor: "var(--accent-primary)",
+                    borderColor: "var(--accent-primary)",
+                  }}
+                  onClick={() => openAuth("signup")}
+                >
+                  Sign Up
+                </button>
+              </div>
+            )}
           </div>
         </Container>
       </Navbar>
@@ -96,6 +113,9 @@ const Header = () => {
           closeSidebar();
           openAuth("signup");
         }}
+        isAuthenticated={isAuthenticated}
+        username={user?.username}
+        onLogout={logout}
       />
 
       {/* AUTH MODAL */}

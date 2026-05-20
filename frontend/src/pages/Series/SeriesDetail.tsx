@@ -67,7 +67,11 @@ const SeriesDetail = () => {
       }
     } catch (error) {
       console.error("Error toggling watchlist:", error);
-      alert("Failed to update watchlist. Are you logged in?");
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Failed to update watchlist. Are you logged in?",
+      );
     }
   };
 

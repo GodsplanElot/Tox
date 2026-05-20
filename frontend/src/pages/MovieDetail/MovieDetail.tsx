@@ -6,7 +6,6 @@ import type { Movie } from "../../types/movie";
 import RatingBadge from "../../components/common/RatingBadge";
 import { FaDownload, FaPlus, FaCheck, FaShareAlt } from "react-icons/fa";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
-import { moviesFromDb } from "../../data/movies";
 import "./MovieDetail.css";
 
 const MovieDetail: React.FC = () => {
@@ -26,28 +25,16 @@ const MovieDetail: React.FC = () => {
           api.getMovies().catch(() => []),
         ]);
 
-        let finalMovie = movieData;
-        let finalAllMovies = allMovies;
-
-        // Fallback to mock data if API fails or returns nothing
-        if (!finalMovie) {
-          finalMovie = moviesFromDb.find((m) => m.slug === slug) || null;
-        }
-
-        if (!finalAllMovies || finalAllMovies.length === 0) {
-          finalAllMovies = moviesFromDb;
-        }
-
-        setMovie(finalMovie);
+        setMovie(movieData);
 
         // Simple related movies logic (same categories, exclude current)
-        if (finalMovie) {
-          const related = finalAllMovies
+        if (movieData) {
+          const related = allMovies
             .filter(
               (m) =>
-                m.id !== finalMovie!.id &&
+                m.id !== movieData.id &&
                 m.categories?.some((cat) =>
-                  finalMovie!.categories?.some((c) => c.id === cat.id),
+                  movieData.categories?.some((c) => c.id === cat.id),
                 ),
             )
             .slice(0, 12);
@@ -95,7 +82,11 @@ const MovieDetail: React.FC = () => {
       }
     } catch (error) {
       console.error("Error toggling watchlist:", error);
-      alert("Failed to update watchlist. Are you logged in?");
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Failed to update watchlist. Are you logged in?",
+      );
     }
   };
 

@@ -1,5 +1,6 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { Modal } from "react-bootstrap";
+import { useAuth } from "../context/useAuth";
 import "./AuthModal.css";
 
 type AuthTab = "login" | "signup";
@@ -10,7 +11,6 @@ type Props = {
   defaultTab?: AuthTab;
 };
 
-/* ─── SVG Icons for OAuth providers ─── */
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" width="20" height="20">
     <path
@@ -44,11 +44,9 @@ const AppleIcon = () => (
   </svg>
 );
 
-/* ─── Component ─── */
 const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
   const [activeTab, setActiveTab] = useState<AuthTab>(defaultTab);
 
-  // Sync tab when defaultTab prop changes
   useEffect(() => {
     setActiveTab(defaultTab);
   }, [defaultTab, show]);
@@ -70,15 +68,16 @@ const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
       </Modal.Header>
 
       <Modal.Body>
-        {/* Tab toggle */}
         <div className="auth-tab-nav">
           <button
+            type="button"
             className={`auth-tab-btn ${activeTab === "login" ? "auth-tab-btn--active" : ""}`}
             onClick={() => switchTab("login")}
           >
             Log In
           </button>
           <button
+            type="button"
             className={`auth-tab-btn ${activeTab === "signup" ? "auth-tab-btn--active" : ""}`}
             onClick={() => switchTab("signup")}
           >
@@ -86,23 +85,22 @@ const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
           </button>
         </div>
 
-        {/* OAuth buttons (shared) */}
         <div className="auth-oauth-section">
-          <button className="auth-oauth-btn auth-oauth-btn--google">
+          <button type="button" className="auth-oauth-btn auth-oauth-btn--google" disabled>
             <span className="auth-oauth-icon">
               <GoogleIcon />
             </span>
             Continue with Google
           </button>
 
-          <button className="auth-oauth-btn auth-oauth-btn--github">
+          <button type="button" className="auth-oauth-btn auth-oauth-btn--github" disabled>
             <span className="auth-oauth-icon">
               <GitHubIcon />
             </span>
             Continue with GitHub
           </button>
 
-          <button className="auth-oauth-btn auth-oauth-btn--apple">
+          <button type="button" className="auth-oauth-btn auth-oauth-btn--apple" disabled>
             <span className="auth-oauth-icon">
               <AppleIcon />
             </span>
@@ -110,17 +108,21 @@ const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
           </button>
         </div>
 
-        {/* Divider */}
         <div className="auth-divider">
           <span>or continue with email</span>
         </div>
 
-        {/* Tab content */}
         <div key={activeTab} className="auth-tab-content">
           {activeTab === "login" ? (
-            <LoginForm onSwitchTab={() => switchTab("signup")} />
+            <LoginForm
+              onSuccess={onHide}
+              onSwitchTab={() => switchTab("signup")}
+            />
           ) : (
-            <SignUpForm onSwitchTab={() => switchTab("login")} />
+            <SignUpForm
+              onSuccess={onHide}
+              onSwitchTab={() => switchTab("login")}
+            />
           )}
         </div>
       </Modal.Body>
@@ -128,129 +130,237 @@ const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
   );
 };
 
-/* ─── Login Form ─── */
-const LoginForm = ({ onSwitchTab }: { onSwitchTab: () => void }) => (
-  <form onSubmit={(e) => e.preventDefault()}>
-    <div className="auth-form-group">
-      <label className="auth-form-label" htmlFor="login-email">
-        Email
-      </label>
-      <input
-        id="login-email"
-        type="email"
-        className="auth-form-input"
-        placeholder="you@example.com"
-        autoComplete="email"
-      />
-    </div>
+const LoginForm = ({
+  onSuccess,
+  onSwitchTab,
+}: {
+  onSuccess: () => void;
+  onSwitchTab: () => void;
+}) => {
+  const { login } = useAuth();
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-    <div className="auth-form-group">
-      <label className="auth-form-label" htmlFor="login-password">
-        Password
-      </label>
-      <input
-        id="login-password"
-        type="password"
-        className="auth-form-input"
-        placeholder="••••••••"
-        autoComplete="current-password"
-      />
-    </div>
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError("");
+    setIsSubmitting(true);
 
-    <div className="auth-extras">
-      <div />
-      <button type="button" className="auth-forgot-link">
-        Forgot password?
+    try {
+      await login({ email, password });
+      onSuccess();
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : "Unable to log in.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {error && <div className="auth-error">{error}</div>}
+
+      <div className="auth-form-group">
+        <label className="auth-form-label" htmlFor="login-email">
+          Email
+        </label>
+        <input
+          id="login-email"
+          type="email"
+          className="auth-form-input"
+          placeholder="you@example.com"
+          autoComplete="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+        />
+      </div>
+
+      <div className="auth-form-group">
+        <label className="auth-form-label" htmlFor="login-password">
+          Password
+        </label>
+        <input
+          id="login-password"
+          type="password"
+          className="auth-form-input"
+          placeholder="Password"
+          autoComplete="current-password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          required
+        />
+      </div>
+
+      <div className="auth-extras">
+        <div />
+        <button type="button" className="auth-forgot-link">
+          Forgot password?
+        </button>
+      </div>
+
+      <button type="submit" className="auth-submit-btn" disabled={isSubmitting}>
+        {isSubmitting ? "Logging in..." : "Log In"}
       </button>
-    </div>
 
-    <button type="submit" className="auth-submit-btn">
-      Log In
-    </button>
+      <div className="auth-footer">
+        <span>Don't have an account? </span>
+        <button type="button" className="auth-footer-link" onClick={onSwitchTab}>
+          Sign Up
+        </button>
+      </div>
+    </form>
+  );
+};
 
-    <div className="auth-footer">
-      <span>Don't have an account? </span>
-      <button type="button" className="auth-footer-link" onClick={onSwitchTab}>
-        Sign Up
+const SignUpForm = ({
+  onSuccess,
+  onSwitchTab,
+}: {
+  onSuccess: () => void;
+  onSwitchTab: () => void;
+}) => {
+  const { register } = useAuth();
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError("");
+
+    if (!acceptedTerms) {
+      setError("Accept the terms to create an account.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      await register({
+        username,
+        email,
+        password,
+        password_confirm: passwordConfirm,
+      });
+      onSuccess();
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : "Unable to create account.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      {error && <div className="auth-error">{error}</div>}
+
+      <div className="auth-form-group">
+        <label className="auth-form-label" htmlFor="signup-username">
+          Username
+        </label>
+        <input
+          id="signup-username"
+          type="text"
+          className="auth-form-input"
+          placeholder="Choose a username"
+          autoComplete="username"
+          value={username}
+          onChange={(event) => setUsername(event.target.value)}
+          required
+        />
+      </div>
+
+      <div className="auth-form-group">
+        <label className="auth-form-label" htmlFor="signup-email">
+          Email
+        </label>
+        <input
+          id="signup-email"
+          type="email"
+          className="auth-form-input"
+          placeholder="you@example.com"
+          autoComplete="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+        />
+      </div>
+
+      <div className="auth-form-group">
+        <label className="auth-form-label" htmlFor="signup-password">
+          Password
+        </label>
+        <input
+          id="signup-password"
+          type="password"
+          className="auth-form-input"
+          placeholder="Create a password"
+          autoComplete="new-password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          minLength={8}
+          required
+        />
+      </div>
+
+      <div className="auth-form-group">
+        <label className="auth-form-label" htmlFor="signup-confirm">
+          Confirm Password
+        </label>
+        <input
+          id="signup-confirm"
+          type="password"
+          className="auth-form-input"
+          placeholder="Confirm your password"
+          autoComplete="new-password"
+          value={passwordConfirm}
+          onChange={(event) => setPasswordConfirm(event.target.value)}
+          minLength={8}
+          required
+        />
+      </div>
+
+      <div className="auth-checkbox-wrapper">
+        <input
+          id="terms"
+          type="checkbox"
+          className="auth-checkbox"
+          checked={acceptedTerms}
+          onChange={(event) => setAcceptedTerms(event.target.checked)}
+        />
+        <label htmlFor="terms" className="auth-checkbox-label">
+          I agree to the <a href="#">Terms of Service</a> and{" "}
+          <a href="#">Privacy Policy</a>
+        </label>
+      </div>
+
+      <button type="submit" className="auth-submit-btn" disabled={isSubmitting}>
+        {isSubmitting ? "Creating..." : "Create Account"}
       </button>
-    </div>
-  </form>
-);
 
-/* ─── Sign Up Form ─── */
-const SignUpForm = ({ onSwitchTab }: { onSwitchTab: () => void }) => (
-  <form onSubmit={(e) => e.preventDefault()}>
-    <div className="auth-form-group">
-      <label className="auth-form-label" htmlFor="signup-username">
-        Username
-      </label>
-      <input
-        id="signup-username"
-        type="text"
-        className="auth-form-input"
-        placeholder="Choose a username"
-        autoComplete="username"
-      />
-    </div>
-
-    <div className="auth-form-group">
-      <label className="auth-form-label" htmlFor="signup-email">
-        Email
-      </label>
-      <input
-        id="signup-email"
-        type="email"
-        className="auth-form-input"
-        placeholder="you@example.com"
-        autoComplete="email"
-      />
-    </div>
-
-    <div className="auth-form-group">
-      <label className="auth-form-label" htmlFor="signup-password">
-        Password
-      </label>
-      <input
-        id="signup-password"
-        type="password"
-        className="auth-form-input"
-        placeholder="Create a password"
-        autoComplete="new-password"
-      />
-    </div>
-
-    <div className="auth-form-group">
-      <label className="auth-form-label" htmlFor="signup-confirm">
-        Confirm Password
-      </label>
-      <input
-        id="signup-confirm"
-        type="password"
-        className="auth-form-input"
-        placeholder="Confirm your password"
-        autoComplete="new-password"
-      />
-    </div>
-
-    <div className="auth-checkbox-wrapper">
-      <input id="terms" type="checkbox" className="auth-checkbox" />
-      <label htmlFor="terms" className="auth-checkbox-label">
-        I agree to the <a href="#">Terms of Service</a> and{" "}
-        <a href="#">Privacy Policy</a>
-      </label>
-    </div>
-
-    <button type="submit" className="auth-submit-btn">
-      Create Account
-    </button>
-
-    <div className="auth-footer">
-      <span>Already have an account? </span>
-      <button type="button" className="auth-footer-link" onClick={onSwitchTab}>
-        Log In
-      </button>
-    </div>
-  </form>
-);
+      <div className="auth-footer">
+        <span>Already have an account? </span>
+        <button type="button" className="auth-footer-link" onClick={onSwitchTab}>
+          Log In
+        </button>
+      </div>
+    </form>
+  );
+};
 
 export default AuthModal;
