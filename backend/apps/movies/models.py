@@ -1,8 +1,10 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from apps.categories.models import Category
+from apps.common.models import PublishableModel
 
-class Movie(models.Model):
+class Movie(PublishableModel):
     SOURCE_TYPE_CHOICES = (
         ("upload", "Uploaded File"),
         ("external", "External Link"),
@@ -29,12 +31,13 @@ class Movie(models.Model):
         upload_to="videos/movies/",
         blank=True,
         null=True,
-        help_text="Upload raw MP4 file here"
+        help_text="Optional fallback. Prefer an external download/source link to reduce storage costs."
     )
     external_url = models.URLField(
         blank=True,
         null=True,
-        help_text="Link to external stream if source_type is External"
+        verbose_name="External download/source URL",
+        help_text="Recommended. Link to the legal download or source page for this movie."
     )
 
     rating = models.FloatField(
@@ -61,6 +64,11 @@ class Movie(models.Model):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        if self.status == self.STATUS_PUBLISHED and not (self.external_url or self.video_file):
+            raise ValidationError("A published movie needs an external source URL or uploaded video file.")
 
     def __str__(self):
         return self.title

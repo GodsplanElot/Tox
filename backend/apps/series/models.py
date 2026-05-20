@@ -1,8 +1,10 @@
 from django.db import models
+from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from apps.categories.models import Category
+from apps.common.models import PublishableModel
 
-class Series(models.Model):
+class Series(PublishableModel):
     title = models.CharField(max_length=255)
     slug = models.SlugField(max_length=255, unique=True, blank=True)
     tmdb_id = models.IntegerField(null=True, blank=True, help_text="TMDB ID for metadata sync")
@@ -29,16 +31,28 @@ class Series(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
+    def has_ready_children(self):
+        return self.seasons.filter(
+            status__in=[self.STATUS_PENDING_REVIEW, self.STATUS_PUBLISHED],
+            episodes__status__in=[self.STATUS_PENDING_REVIEW, self.STATUS_PUBLISHED],
+        ).distinct().exists()
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
 
+    def clean(self):
+        super().clean()
+        if self.status == self.STATUS_PUBLISHED:
+            if not self.pk or not self.has_ready_children():
+                raise ValidationError("A published series needs at least one ready season with one ready episode.")
+
     def __str__(self):
         return self.title
 
 
-class Season(models.Model):
+class Season(PublishableModel):
     series = models.ForeignKey(
         Series,
         related_name="seasons",
@@ -60,16 +74,27 @@ class Season(models.Model):
         unique_together = ("series", "season_number")
         ordering = ["season_number"]
 
+    def has_ready_episodes(self):
+        return self.episodes.filter(
+            status__in=[self.STATUS_PENDING_REVIEW, self.STATUS_PUBLISHED],
+        ).exists()
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(f"{self.series.title}-season-{self.season_number}")
         super().save(*args, **kwargs)
 
+    def clean(self):
+        super().clean()
+        if self.status == self.STATUS_PUBLISHED:
+            if not self.pk or not self.has_ready_episodes():
+                raise ValidationError("A published season needs at least one ready episode.")
+
     def __str__(self):
         return f"{self.series.title} - Season {self.season_number}"
 
 
-class Episode(models.Model):
+class Episode(PublishableModel):
     SOURCE_TYPE_CHOICES = (
         ("upload", "Uploaded File"),
         ("external", "External Link"),
@@ -102,12 +127,13 @@ class Episode(models.Model):
         upload_to="videos/episodes/",
         blank=True,
         null=True,
-        help_text="Upload raw MP4 file here"
+        help_text="Optional fallback. Prefer an external download/source link to reduce storage costs."
     )
     external_url = models.URLField(
         blank=True,
         null=True,
-        help_text="Link to external stream if source_type is External"
+        verbose_name="External download/source URL",
+        help_text="Recommended. Link to the legal download or source page for this episode."
     )
 
     runtime = models.PositiveIntegerField(
@@ -125,6 +151,11 @@ class Episode(models.Model):
         if not self.slug:
             self.slug = slugify(f"{self.season.series.title}-s{self.season.season_number}e{self.episode_number}")
         super().save(*args, **kwargs)
+
+    def clean(self):
+        super().clean()
+        if self.status == self.STATUS_PUBLISHED and not (self.external_url or self.video_file):
+            raise ValidationError("A published episode needs an external source URL or uploaded video file.")
 
     def __str__(self):
         return f"{self.season} - Episode {self.episode_number}"

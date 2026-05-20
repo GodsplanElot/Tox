@@ -1,0 +1,260 @@
+:root {
+  --primary: #f9ab00;
+  --secondary: #1a191f;
+  --accent: #f9ab00;
+  --primary-fg: #121218;
+
+  --body-bg: #121218;
+  --body-fg: #e5e5e5;
+  --body-quiet-color: #cfcfd4;
+  --body-loud-color: #ffffff;
+
+  --header-color: #e5e5e5;
+  --header-branding-color: #ffffff;
+  --header-bg: #1a191f;
+  --header-link-color: #cfcfd4;
+
+  --breadcrumbs-bg: #16161d;
+  --breadcrumbs-fg: #cfcfd4;
+  --breadcrumbs-link-fg: #f9ab00;
+
+  --link-fg: #f9ab00;
+  --link-hover-color: #ffbe33;
+  --link-selected-fg: #ffbe33;
+
+  --hairline-color: #222028;
+  --border-color: #222028;
+  --error-fg: #ff6b6b;
+
+  --message-success-bg: rgba(76, 175, 80, 0.16);
+  --message-warning-bg: rgba(249, 171, 0, 0.16);
+  --message-error-bg: rgba(229, 57, 53, 0.16);
+
+  --darkened-bg: #16161d;
+  --selected-bg: #222028;
+  --selected-row: rgba(249, 171, 0, 0.12);
+
+  --button-fg: #121218;
+  --button-bg: #f9ab00;
+  --button-hover-bg: #ffbe33;
+  --default-button-bg: #f9ab00;
+  --default-button-hover-bg: #ffbe33;
+  --close-button-bg: #2a2931;
+  --close-button-hover-bg: #3a3942;
+  --delete-button-bg: #e53935;
+  --delete-button-hover-bg: #ff5a55;
+
+  color-scheme: dark;
+}
+
+html,
+body {
+  background: var(--body-bg);
+}
+
+body {
+  color: var(--body-fg);
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+#header {
+  min-height: 64px;
+  padding: 0 28px;
+  border-bottom: 1px solid var(--border-color);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.22);
+}
+
+#user-tools {
+  color: var(--body-quiet-color);
+  font-size: 0.78rem;
+  letter-spacing: 0;
+}
+
+#user-tools a,
+#logout-form button {
+  color: var(--header-link-color);
+  border-bottom: 0;
+}
+
+#user-tools a:hover,
+#logout-form button:hover {
+  color: var(--accent);
+}
+
+.tox-admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 64px;
+}
+
+.tox-admin-brand__mark {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 32px;
+  border: 1px solid rgba(249, 171, 0, 0.35);
+  border-radius: 8px;
+  background: rgba(249, 171, 0, 0.1);
+  color: var(--accent);
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}
+
+.tox-admin-brand__text {
+  color: var(--body-loud-color);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+div.breadcrumbs {
+  padding: 13px 28px;
+  border-bottom: 1px solid var(--border-color);
+  background: var(--breadcrumbs-bg);
+  color: var(--breadcrumbs-fg);
+}
+
+#content {
+  padding: 28px;
+}
+
+#content h1 {
+  color: var(--body-loud-color);
+  font-size: 1.6rem;
+  font-weight: 750;
+  margin: 0 0 22px;
+}
+
+.module {
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--darkened-bg);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.22);
+}
+
+.module h2,
+.module caption,
+.inline-group h2 {
+  padding: 12px 16px;
+  background: #1a191f;
+  color: var(--body-loud-color);
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+thead th {
+  background: #1a191f;
+  color: var(--body-loud-color);
+  border-bottom: 1px solid var(--border-color);
+}
+
+tbody tr {
+  background: var(--darkened-bg);
+}
+
+tbody tr:nth-child(odd) {
+  background: #181820;
+}
+
+tbody tr:hover {
+  background: var(--selected-row);
+}
+
+td,
+th {
+  border-bottom: 1px solid var(--border-color);
+}
+
+.object-tools a,
+.object-tools a:link,
+.object-tools a:visited,
+input[type="submit"],
+button,
+.button {
+  border: 0;
+  border-radius: 8px;
+  background: var(--button-bg);
+  color: var(--button-fg);
+  font-weight: 700;
+}
+
+.object-tools a:hover,
+input[type="submit"]:hover,
+button:hover,
+.button:hover {
+  background: var(--button-hover-bg);
+}
+
+input[type="text"],
+input[type="password"],
+input[type="email"],
+input[type="url"],
+input[type="number"],
+input[type="search"],
+textarea,
+select,
+.vTextField {
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  background: #101016;
+  color: var(--body-fg);
+}
+
+input:focus,
+textarea:focus,
+select:focus,
+.vTextField:focus {
+  border-color: var(--accent);
+  outline: 2px solid rgba(249, 171, 0, 0.18);
+}
+
+.submit-row {
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  background: var(--darkened-bg);
+}
+
+.selector-chosen h2 {
+  background: var(--accent) !important;
+  color: #121218 !important;
+}
+
+.messagelist li {
+  border-radius: 8px;
+  color: var(--body-fg);
+}
+
+.messagelist li.success {
+  background: var(--message-success-bg);
+}
+
+.messagelist li.warning {
+  background: var(--message-warning-bg);
+}
+
+.messagelist li.error {
+  background: var(--message-error-bg);
+}
+
+@media (max-width: 767px) {
+  #header {
+    padding: 0 16px;
+  }
+
+  #content {
+    padding: 18px 14px;
+  }
+
+  .tox-admin-brand__text {
+    display: none;
+  }
+}

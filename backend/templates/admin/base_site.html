@@ -1,0 +1,14 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block extrahead %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'admin/css/tox_admin.css' %}">
+{% endblock %}
+
+{% block branding %}
+<div class="tox-admin-brand">
+  <span class="tox-admin-brand__mark">TOX</span>
+  <span class="tox-admin-brand__text">Content Studio</span>
+</div>
+{% endblock %}
