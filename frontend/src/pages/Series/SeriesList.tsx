@@ -52,23 +52,18 @@ const SeriesList = () => {
   }
 
   return (
-    <div className="series-list-page container-fluid py-4">
-      <header className="mb-5 border-bottom pb-3">
-        <h1 className="display-5 fw-bold text-white">TV Series</h1>
-        <p className="text-muted">Explore the best shows by category</p>
+    <div className="series-list-page">
+      <header className="series-list-hero">
+        <span>Serial Picks</span>
+        <h1>TV Series</h1>
+        <p>Browse shows by genre, from new obsessions to long-running favorites.</p>
       </header>
 
       {categorizedSeries.map(({ cat, filteredSeries }, index) => (
-        <div key={cat.id} className="category-section mb-5 animate-in">
-          {index > 0 && <hr className="my-5 opacity-25 border-light" />}
-          <div className="d-flex align-items-center gap-3 mb-4">
-            <div className="category-accent" />
-            <h2 className="h4 fw-bold mb-0 text-uppercase tracking-wider">
-              {cat.name}
-            </h2>
-            <span className="badge rounded-pill bg-dark text-muted border border-secondary py-2 px-3 ms-auto">
-              {filteredSeries.length} SHOWS
-            </span>
+        <div key={cat.id} className="category-section animate-in" style={{ animationDelay: `${index * 70}ms` }}>
+          <div className="category-section__header">
+            <h2>{cat.name}</h2>
+            <span>{filteredSeries.length} shows</span>
           </div>
           <SeriesRail title="" series={filteredSeries} />
         </div>
