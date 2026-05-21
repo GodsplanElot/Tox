@@ -18,6 +18,16 @@ User = get_user_model()
 GOOGLE_TOKENINFO_URL = "https://oauth2.googleapis.com/tokeninfo"
 
 
+def fetch_google_tokeninfo(credential):
+    session = requests.Session()
+    session.trust_env = False
+    return session.get(
+        GOOGLE_TOKENINFO_URL,
+        params={"id_token": credential},
+        timeout=8,
+    )
+
+
 def token_response_for_user(user):
     refresh = RefreshToken.for_user(user)
     return {
@@ -83,16 +93,23 @@ class GoogleLoginView(APIView):
             )
 
         try:
-            google_response = requests.get(
-                GOOGLE_TOKENINFO_URL,
-                params={"id_token": credential},
-                timeout=8,
-            )
-            google_response.raise_for_status()
+            google_response = fetch_google_tokeninfo(credential)
             payload = google_response.json()
+            google_response.raise_for_status()
+        except requests.HTTPError:
+            message = payload.get("error_description") or payload.get("error") or "Google credential is invalid."
+            return Response(
+                {"detail": f"Google credential verification failed: {message}"},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
         except requests.RequestException:
             return Response(
-                {"detail": "Unable to verify Google credential."},
+                {"detail": "Unable to reach Google to verify the credential."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+        except ValueError:
+            return Response(
+                {"detail": "Google returned an invalid verification response."},
                 status=status.HTTP_400_BAD_REQUEST,
             )
 

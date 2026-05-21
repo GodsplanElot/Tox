@@ -1,6 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.test import override_settings
 from unittest.mock import Mock, patch
+import requests
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -70,8 +71,8 @@ class AuthApiTests(APITestCase):
         self.assertEqual(me_response.data["username"], "toxuser")
 
     @override_settings(GOOGLE_OAUTH_CLIENT_ID="google-client-id")
-    @patch("apps.users.views.requests.get")
-    def test_google_login_creates_user_and_returns_tokens(self, mock_get):
+    @patch("apps.users.views.fetch_google_tokeninfo")
+    def test_google_login_creates_user_and_returns_tokens(self, mock_tokeninfo):
         google_response = Mock()
         google_response.json.return_value = {
             "aud": "google-client-id",
@@ -81,7 +82,7 @@ class AuthApiTests(APITestCase):
             "family_name": "User",
         }
         google_response.raise_for_status.return_value = None
-        mock_get.return_value = google_response
+        mock_tokeninfo.return_value = google_response
 
         response = self.client.post(
             "/api/users/google/",
@@ -98,8 +99,8 @@ class AuthApiTests(APITestCase):
         )
 
     @override_settings(GOOGLE_OAUTH_CLIENT_ID="google-client-id")
-    @patch("apps.users.views.requests.get")
-    def test_google_login_reuses_existing_user(self, mock_get):
+    @patch("apps.users.views.fetch_google_tokeninfo")
+    def test_google_login_reuses_existing_user(self, mock_tokeninfo):
         existing_user = User.objects.create_user(
             username="existing",
             email="googleuser@example.com",
@@ -112,7 +113,7 @@ class AuthApiTests(APITestCase):
             "email_verified": "true",
         }
         google_response.raise_for_status.return_value = None
-        mock_get.return_value = google_response
+        mock_tokeninfo.return_value = google_response
 
         response = self.client.post(
             "/api/users/google/",
@@ -125,8 +126,8 @@ class AuthApiTests(APITestCase):
         self.assertEqual(User.objects.filter(email="googleuser@example.com").count(), 1)
 
     @override_settings(GOOGLE_OAUTH_CLIENT_ID="google-client-id")
-    @patch("apps.users.views.requests.get")
-    def test_google_login_rejects_invalid_audience(self, mock_get):
+    @patch("apps.users.views.fetch_google_tokeninfo")
+    def test_google_login_rejects_invalid_audience(self, mock_tokeninfo):
         google_response = Mock()
         google_response.json.return_value = {
             "aud": "wrong-client-id",
@@ -134,7 +135,7 @@ class AuthApiTests(APITestCase):
             "email_verified": "true",
         }
         google_response.raise_for_status.return_value = None
-        mock_get.return_value = google_response
+        mock_tokeninfo.return_value = google_response
 
         response = self.client.post(
             "/api/users/google/",
@@ -144,3 +145,23 @@ class AuthApiTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertFalse(User.objects.filter(email="googleuser@example.com").exists())
+
+    @override_settings(GOOGLE_OAUTH_CLIENT_ID="google-client-id")
+    @patch("apps.users.views.fetch_google_tokeninfo")
+    def test_google_login_surfaces_invalid_google_token(self, mock_tokeninfo):
+        google_response = Mock()
+        google_response.json.return_value = {
+            "error": "invalid_token",
+            "error_description": "Invalid Value",
+        }
+        google_response.raise_for_status.side_effect = requests.HTTPError()
+        mock_tokeninfo.return_value = google_response
+
+        response = self.client.post(
+            "/api/users/google/",
+            {"credential": "bad-google-id-token"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertIn("Invalid Value", response.data["detail"])
