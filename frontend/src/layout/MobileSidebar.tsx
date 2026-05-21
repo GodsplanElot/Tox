@@ -9,6 +9,7 @@ type Props = {
   onSignUpClick: () => void;
   isAuthenticated: boolean;
   username?: string;
+  email?: string;
   onLogout: () => void;
 };
 
@@ -20,8 +21,19 @@ const MobileSidebar = ({
   onSignUpClick,
   isAuthenticated,
   username,
+  email,
   onLogout,
 }: Props) => {
+  const displayName = username || email || "Account";
+  const accountLabel = email || "Signed in";
+  const initials =
+    displayName
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase())
+      .join("") || "U";
+
   return (
     <>
       {/* MOBILE ICON RAIL */}
@@ -82,6 +94,18 @@ const MobileSidebar = ({
         </Offcanvas.Header>
 
         <Offcanvas.Body>
+          {isAuthenticated && (
+            <NavLink to="/profile" className="mobile-account-card" onClick={onClose}>
+              <span className="account-avatar account-avatar--large" aria-hidden="true">
+                {initials}
+              </span>
+              <div className="mobile-account-copy">
+                <span>{displayName}</span>
+                <small>{accountLabel}</small>
+              </div>
+            </NavLink>
+          )}
+
           <Nav className="flex-column gap-2">
             <NavLink to="/" className="offcanvas-link" onClick={onClose}>
               Home
@@ -105,6 +129,16 @@ const MobileSidebar = ({
 
             {isAuthenticated && (
               <NavLink
+                to="/profile"
+                className="offcanvas-link"
+                onClick={onClose}
+              >
+                Profile
+              </NavLink>
+            )}
+
+            {isAuthenticated && (
+              <NavLink
                 to="/watchlist"
                 className="offcanvas-link"
                 onClick={onClose}
@@ -113,13 +147,11 @@ const MobileSidebar = ({
               </NavLink>
             )}
 
-            <button
-              type="button"
-              className="offcanvas-link"
-              onClick={isAuthenticated ? undefined : onLoginClick}
-            >
-              {isAuthenticated ? username ?? "Account" : "Account"}
-            </button>
+            {!isAuthenticated && (
+              <button type="button" className="offcanvas-link" onClick={onLoginClick}>
+                Account
+              </button>
+            )}
           </Nav>
 
           <div className="mt-4 pt-4 border-top border-secondary d-flex flex-column gap-3">

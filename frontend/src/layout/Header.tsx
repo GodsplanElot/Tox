@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navbar, Container, Nav } from "react-bootstrap";
+import { Container, Dropdown, Nav, Navbar } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 import SearchForm from "../components/SearchForm";
 import AuthModal from "../components/AuthModal";
@@ -22,6 +22,15 @@ const Header = () => {
     setAuthTab(tab);
     setShowAuth(true);
   };
+
+  const displayName = user?.first_name || user?.username || user?.email || "Account";
+  const accountLabel = user?.email || user?.username || "Signed in";
+  const initials = displayName
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((part) => part[0]?.toUpperCase())
+    .join("") || "U";
 
   return (
     <>
@@ -67,18 +76,33 @@ const Header = () => {
           <div className="d-none d-lg-flex align-items-center gap-3">
             <SearchForm />
             {isAuthenticated ? (
-              <div className="d-flex align-items-center gap-2 border-start border-secondary ps-3 ms-1">
-                <span className="text-light small">
-                  {user?.username}
-                </span>
-                <button
-                  className="btn btn-sm btn-outline-light rounded-pill px-3 py-1"
-                  style={{ fontWeight: 500, letterSpacing: "0.5px" }}
-                  onClick={logout}
-                >
-                  Logout
-                </button>
-              </div>
+              <Dropdown align="end" className="account-menu">
+                <Dropdown.Toggle className="account-toggle" id="account-menu-toggle">
+                  <span className="account-avatar" aria-hidden="true">
+                    {initials}
+                  </span>
+                  <span className="account-copy">
+                    <span className="account-name">{displayName}</span>
+                    <span className="account-meta">{accountLabel}</span>
+                  </span>
+                </Dropdown.Toggle>
+
+                <Dropdown.Menu className="account-dropdown">
+                  <Dropdown.Item as={NavLink} to="/profile">
+                    <i className="bi bi-person-circle" aria-hidden="true"></i>
+                    Profile
+                  </Dropdown.Item>
+                  <Dropdown.Item as={NavLink} to="/watchlist">
+                    <i className="bi bi-bookmark-check" aria-hidden="true"></i>
+                    Watchlist
+                  </Dropdown.Item>
+                  <Dropdown.Divider />
+                  <Dropdown.Item as="button" onClick={logout}>
+                    <i className="bi bi-box-arrow-right" aria-hidden="true"></i>
+                    Logout
+                  </Dropdown.Item>
+                </Dropdown.Menu>
+              </Dropdown>
             ) : (
               <div className="d-flex align-items-center gap-2 border-start border-secondary ps-3 ms-1">
                 <button
@@ -121,6 +145,7 @@ const Header = () => {
         }}
         isAuthenticated={isAuthenticated}
         username={user?.username}
+        email={user?.email}
         onLogout={logout}
       />
 

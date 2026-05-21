@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Sora:wght@500;600;700;800&display=swap");
+
 /* ================= CSS VARIABLES ================= */
 :root {
   /* Backgrounds */
@@ -27,6 +29,9 @@
 
   /* Accent */
   --accent-primary: #f9ab00;
+  --accent-secondary: #ff4d2d;
+  --font-body: "Manrope", "Segoe UI", sans-serif;
+  --font-display: "Sora", "Manrope", sans-serif;
 
   /* Ratings */
   --rating-green: #4caf50;
@@ -55,24 +60,162 @@ body {
   overflow-x: hidden;
   background-color: var(--bg-app);
   color: var(--text-primary);
-  font-family:
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    "Open Sans",
-    "Helvetica Neue",
-    sans-serif;
+  font-family: var(--font-body);
+  font-size: 15px;
+  letter-spacing: 0;
 }
 
 /* ================= NAVBAR ================= */
 .navbar {
   z-index: 1040;
-  background-color: var(--nav-bg) !important;
+  min-height: var(--navbar-height);
+  background: rgba(14, 14, 19, 0.92) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(18px);
+}
+
+.navbar .navbar-brand {
+  display: inline-flex;
+  align-items: center;
+  margin-right: 2rem;
+}
+
+.navbar .nav-link {
+  color: rgba(255, 255, 255, 0.72) !important;
+  font-size: 0.84rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  position: relative;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+  color: #ffffff !important;
+}
+
+.navbar .nav-link.active::after {
+  content: "";
+  position: absolute;
+  left: 0.5rem;
+  right: 0.5rem;
+  bottom: 0.1rem;
+  height: 2px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+}
+
+.account-menu {
+  border-left: 1px solid rgba(255, 255, 255, 0.14);
+  padding-left: 1rem;
+}
+
+.account-toggle {
+  display: inline-flex !important;
+  align-items: center;
+  gap: 0.65rem;
+  max-width: 230px;
+  min-height: 42px;
+  padding: 0.25rem 0.45rem 0.25rem 0.25rem !important;
+  background: rgba(255, 255, 255, 0.06) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 999px !important;
+  box-shadow: none !important;
+}
+
+.account-toggle:hover,
+.account-toggle.show {
+  background: rgba(255, 255, 255, 0.11) !important;
+  border-color: rgba(249, 171, 0, 0.42) !important;
+}
+
+.account-toggle::after {
+  margin-left: 0.1rem;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.account-avatar {
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
+  display: inline-grid;
+  place-items: center;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 25%, rgba(255, 255, 255, 0.65), transparent 24%),
+    linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+  color: #14100b;
+  font-family: var(--font-display);
+  font-size: 0.74rem;
+  font-weight: 800;
+  box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.08);
+}
+
+.account-avatar--large {
+  width: 44px;
+  height: 44px;
+  flex-basis: 44px;
+  font-size: 0.86rem;
+}
+
+.account-copy,
+.mobile-account-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.1;
+}
+
+.account-name,
+.account-meta,
+.mobile-account-copy span,
+.mobile-account-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-name {
+  max-width: 132px;
+  color: #ffffff;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.account-meta {
+  max-width: 132px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.68rem;
+  font-weight: 600;
+}
+
+.account-dropdown {
+  min-width: 210px;
+  padding: 0.45rem;
+  margin-top: 0.55rem !important;
+  background: rgba(22, 22, 29, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.42);
+}
+
+.account-dropdown .dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  border-radius: 8px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.account-dropdown .dropdown-item:hover,
+.account-dropdown .dropdown-item:focus {
+  background: rgba(249, 171, 0, 0.16);
+  color: #ffffff;
+}
+
+.account-dropdown .dropdown-divider {
+  border-color: rgba(255, 255, 255, 0.1);
 }
 
 /* ================= MOBILE ICON RAIL ================= */
@@ -82,8 +225,8 @@ body {
   left: 0;
   width: 56px;
   height: calc(100vh - var(--navbar-height));
-  background-color: var(--nav-bg);
-  border-right: 1px solid var(--border-dark);
+  background: rgba(14, 14, 19, 0.96);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
 
   display: flex;
   flex-direction: column;
@@ -128,9 +271,9 @@ body {
 /* ================= OFFCANVAS ================= */
 .mobile-offcanvas {
   width: 280px !important;
-  background-color: var(--nav-bg);
+  background: #101016;
   color: #ffffff;
-  border-right: 1px solid var(--border-dark);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
   z-index: 1050 !important;
 }
 
@@ -159,8 +302,42 @@ body {
 }
 
 .offcanvas-link.active {
-  background-color: var(--accent);
-  color: #000000;
+  background: rgba(249, 171, 0, 0.14);
+  color: #ffffff;
+  box-shadow: inset 3px 0 0 var(--accent-primary);
+}
+
+.mobile-account-card {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  margin-bottom: 1.25rem;
+  padding: 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  text-decoration: none;
+  transition:
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.mobile-account-card:hover,
+.mobile-account-card.active {
+  border-color: rgba(249, 171, 0, 0.35);
+  background: linear-gradient(135deg, rgba(249, 171, 0, 0.14), rgba(255, 255, 255, 0.04));
+}
+
+.mobile-account-copy span {
+  max-width: 160px;
+  color: #ffffff;
+  font-weight: 800;
+}
+
+.mobile-account-copy small {
+  max-width: 160px;
+  color: rgba(255, 255, 255, 0.58);
+  font-size: 0.76rem;
 }
 
 /* ================= APP LAYOUT ================= */
@@ -193,27 +370,34 @@ body {
 .section-header {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 1.5rem;
-  padding-left: 4px;
-  border-left: 3px solid var(--accent-primary);
+  gap: 14px;
+  margin-bottom: 1.35rem;
+  padding-left: 0;
+  border-left: 0;
+}
+
+.section-header::before {
+  content: "";
+  width: 34px;
+  height: 2px;
+  flex: 0 0 34px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
+  box-shadow: 0 0 18px rgba(249, 171, 0, 0.24);
 }
 
 .section-title {
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
   text-transform: uppercase;
-  letter-spacing: 1.5px;
+  letter-spacing: 0.04em;
   margin-bottom: 0;
   color: #ffffff;
 }
 
 .title-icon {
-  font-size: 1.4rem;
-  color: var(--accent-primary);
-  display: flex;
-  align-items: center;
-  filter: drop-shadow(0 0 5px rgba(249, 171, 0, 0.4));
+  display: none;
 }
 
 /* ================= HERO CAROUSEL ================= */
@@ -388,16 +572,22 @@ body {
 /* ================= MOVIE RAIL ================= */
 .movie-rail {
   display: flex;
-  gap: 20px;
+  gap: 12px;
   overflow-x: auto;
   padding-bottom: 10px;
+  padding-inline: 0.1rem;
 
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
 }
 
 .movie-rail::-webkit-scrollbar {
   display: none;
+}
+
+.movie-rail > * {
+  scroll-snap-align: start;
 }
 
 /* ================= MOBILE OFFSET ================= */
@@ -450,5 +640,9 @@ body {
 
   .app-content {
     margin-left: 0;
+  }
+
+  .movie-rail {
+    gap: 18px;
   }
 }

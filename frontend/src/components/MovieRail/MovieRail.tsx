@@ -1,4 +1,3 @@
-import { FaRadiation } from "react-icons/fa";
 import React from "react";
 import MovieCard from "../MovieCard/MovieCard";
 import type { Movie } from "../../types/movie";
@@ -11,12 +10,11 @@ interface MovieRailProps {
 const MovieRail: React.FC<MovieRailProps> = ({ title, movies }) => {
   return (
     <section className="content-section">
-      <div className="section-header">
-        <span className="title-icon">
-          <FaRadiation />
-        </span>
-        <h2 className="section-title">{title}</h2>
-      </div>
+      {title && (
+        <div className="section-header">
+          <h2 className="section-title">{title}</h2>
+        </div>
+      )}
 
       <div className="movie-rail">
         {movies.map((movie) => (
