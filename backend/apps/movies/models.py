@@ -73,3 +73,23 @@ class Movie(PublishableModel):
     def __str__(self):
         return self.title
 
+
+class DraftMovie(Movie):
+    class Meta:
+        proxy = True
+        verbose_name = "Draft Movie"
+        verbose_name_plural = "Draft Movies"
+
+
+class PendingReviewMovie(Movie):
+    class Meta:
+        proxy = True
+        verbose_name = "Movie Pending Review"
+        verbose_name_plural = "Movies Pending Review"
+
+
+class PublishedMovie(Movie):
+    class Meta:
+        proxy = True
+        verbose_name = "Published Movie"
+        verbose_name_plural = "Published Movies"

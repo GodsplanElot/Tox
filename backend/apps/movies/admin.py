@@ -1,10 +1,10 @@
 from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
-from .models import Movie
+from .models import DraftMovie, Movie, PendingReviewMovie, PublishedMovie
 from apps.common.tmdb import TMDBService
 
-@admin.register(Movie)
-class MovieAdmin(admin.ModelAdmin):
+
+class MovieWorkflowAdmin(admin.ModelAdmin):
     list_display = ('title', 'status', 'release_date', 'rating', 'source_type')
     list_filter = ('status', 'source_type', 'categories', 'release_date')
     list_per_page = 50
@@ -87,3 +87,39 @@ class MovieAdmin(admin.ModelAdmin):
                     success_count += 1
         self.message_user(request, f"Successfully synced {success_count} movies.", messages.SUCCESS)
 
+
+@admin.register(Movie)
+class MovieAdmin(MovieWorkflowAdmin):
+    pass
+
+
+class StatusMovieAdmin(MovieWorkflowAdmin):
+    status_filter = None
+    list_filter = ('source_type', 'categories', 'release_date')
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if self.status_filter is None:
+            return queryset
+        return queryset.filter(status=self.status_filter)
+
+    def has_add_permission(self, request):
+        return False
+
+
+@admin.register(DraftMovie)
+class DraftMovieAdmin(StatusMovieAdmin):
+    status_filter = Movie.STATUS_DRAFT
+    actions = ['submit_for_review', 'approve_selected']
+
+
+@admin.register(PendingReviewMovie)
+class PendingReviewMovieAdmin(StatusMovieAdmin):
+    status_filter = Movie.STATUS_PENDING_REVIEW
+    actions = ['approve_selected', 'reject_selected', 'move_to_draft']
+
+
+@admin.register(PublishedMovie)
+class PublishedMovieAdmin(StatusMovieAdmin):
+    status_filter = Movie.STATUS_PUBLISHED
+    actions = ['move_to_draft', 'reject_selected']
