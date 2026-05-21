@@ -55,6 +55,12 @@ const Header = () => {
             <Nav.Link as={NavLink} to="/series">
               Tv Series
             </Nav.Link>
+
+            {isAuthenticated && (
+              <Nav.Link as={NavLink} to="/watchlist">
+                Watchlist
+              </Nav.Link>
+            )}
           </Nav>
 
           {/* DESKTOP SEARCH AND AUTH */}

@@ -9,6 +9,7 @@ import MovieDetail from "../pages/MovieDetail/MovieDetail";
 import SeriesList from "../pages/Series/SeriesList";
 import SeriesDetail from "../pages/Series/SeriesDetail";
 import EpisodeDetail from "../pages/Series/EpisodeDetail";
+import Watchlist from "../pages/Watchlist";
 
 const AppRoutes = () => {
   return (
@@ -19,6 +20,7 @@ const AppRoutes = () => {
         <Route path="/categories/:slug" element={<CategoryDetail />} />
         <Route path="/series" element={<SeriesList />} />
         <Route path="/search" element={<Search />} />
+        <Route path="/watchlist" element={<Watchlist />} />
         <Route path="/movies/:slug" element={<MovieDetail />} />
         <Route path="/series/:slug" element={<SeriesDetail />} />
         <Route

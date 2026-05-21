@@ -51,6 +51,12 @@ const MobileSidebar = ({
           <i className="bi bi-search"></i>
         </NavLink>
 
+        {isAuthenticated && (
+          <NavLink to="/watchlist" className="rail-icon">
+            <i className="bi bi-bookmark"></i>
+          </NavLink>
+        )}
+
         <button
           type="button"
           className="rail-icon"
@@ -96,6 +102,16 @@ const MobileSidebar = ({
             <NavLink to="/search" className="offcanvas-link" onClick={onClose}>
               Search
             </NavLink>
+
+            {isAuthenticated && (
+              <NavLink
+                to="/watchlist"
+                className="offcanvas-link"
+                onClick={onClose}
+              >
+                Watchlist
+              </NavLink>
+            )}
 
             <button
               type="button"
