@@ -5,7 +5,7 @@ from django.urls import reverse
 from django.utils.html import format_html
 
 from apps.common.tmdb import TMDBService
-from .models import Episode, Season, Series
+from .models import DraftSeries, Episode, PendingReviewSeries, PublishedSeries, Season, Series
 
 
 @admin.register(Episode)
@@ -230,8 +230,7 @@ class SeasonInline(admin.TabularInline):
         return "-"
 
 
-@admin.register(Series)
-class SeriesAdmin(admin.ModelAdmin):
+class SeriesWorkflowAdmin(admin.ModelAdmin):
     list_display = ("title", "status", "view_seasons_link", "rating", "first_air_date")
     list_filter = ("status", "categories", "first_air_date")
     list_per_page = 50
@@ -359,3 +358,40 @@ class SeriesAdmin(admin.ModelAdmin):
         return format_html('<a href="{}">{} seasons</a>', url, count)
 
     view_seasons_link.short_description = "Seasons"
+
+
+@admin.register(Series)
+class SeriesAdmin(SeriesWorkflowAdmin):
+    pass
+
+
+class StatusSeriesAdmin(SeriesWorkflowAdmin):
+    status_filter = None
+    list_filter = ("categories", "first_air_date")
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        if self.status_filter is None:
+            return queryset
+        return queryset.filter(status=self.status_filter)
+
+    def has_add_permission(self, request):
+        return False
+
+
+@admin.register(DraftSeries)
+class DraftSeriesAdmin(StatusSeriesAdmin):
+    status_filter = Series.STATUS_DRAFT
+    actions = ["submit_for_review", "approve_selected"]
+
+
+@admin.register(PendingReviewSeries)
+class PendingReviewSeriesAdmin(StatusSeriesAdmin):
+    status_filter = Series.STATUS_PENDING_REVIEW
+    actions = ["approve_selected", "reject_selected", "move_to_draft"]
+
+
+@admin.register(PublishedSeries)
+class PublishedSeriesAdmin(StatusSeriesAdmin):
+    status_filter = Series.STATUS_PUBLISHED
+    actions = ["move_to_draft", "reject_selected"]

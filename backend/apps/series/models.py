@@ -52,6 +52,27 @@ class Series(PublishableModel):
         return self.title
 
 
+class DraftSeries(Series):
+    class Meta:
+        proxy = True
+        verbose_name = "Draft series"
+        verbose_name_plural = "Draft series"
+
+
+class PendingReviewSeries(Series):
+    class Meta:
+        proxy = True
+        verbose_name = "Series pending review"
+        verbose_name_plural = "Series pending review"
+
+
+class PublishedSeries(Series):
+    class Meta:
+        proxy = True
+        verbose_name = "Published series"
+        verbose_name_plural = "Published series"
+
+
 class Season(PublishableModel):
     series = models.ForeignKey(
         Series,
