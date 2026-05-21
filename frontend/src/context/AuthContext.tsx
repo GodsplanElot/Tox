@@ -57,6 +57,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(currentUser);
   }, []);
 
+  const googleLogin = useCallback(async (credential: string) => {
+    const response = await api.googleLogin(credential);
+    storeTokens(response);
+    setUser(response.user ?? (await api.getCurrentUser()));
+  }, []);
+
   const register = useCallback(async (payload: RegisterPayload) => {
     const response = await api.register(payload);
     storeTokens(response);
@@ -74,10 +80,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       isAuthenticated: Boolean(user),
       isLoading,
       login,
+      googleLogin,
       register,
       logout,
     }),
-    [isLoading, login, logout, register, user],
+    [googleLogin, isLoading, login, logout, register, user],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

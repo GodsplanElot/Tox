@@ -126,6 +126,13 @@ export const api = {
       body: JSON.stringify({ username: email, password }),
     }).then(handleResponse),
 
+  googleLogin: (credential: string): Promise<AuthResponse> =>
+    fetch(`${API_BASE_URL}/users/google/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ credential }),
+    }).then(handleResponse),
+
   getCurrentUser: (): Promise<AuthUser> =>
     authFetch(`${API_BASE_URL}/users/me/`).then(handleResponse),
 

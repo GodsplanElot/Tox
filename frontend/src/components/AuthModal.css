@@ -115,6 +115,27 @@
   margin-bottom: 1.25rem;
 }
 
+.auth-google-button {
+  min-height: 44px;
+  display: flex;
+  justify-content: center;
+}
+
+.auth-google-button > div,
+.auth-google-button iframe {
+  width: 100% !important;
+}
+
+.auth-oauth-error {
+  padding: 0.65rem 0.8rem;
+  border: 1px solid rgba(255, 77, 77, 0.28);
+  border-radius: 10px;
+  background: rgba(255, 77, 77, 0.1);
+  color: #ffb3b3;
+  font-size: 0.82rem;
+  font-weight: 500;
+}
+
 .auth-oauth-btn {
   display: flex;
   align-items: center;

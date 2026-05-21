@@ -1,6 +1,7 @@
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Modal } from "react-bootstrap";
 import { useAuth } from "../context/useAuth";
+import type { GoogleCredentialResponse } from "../types/auth";
 import "./AuthModal.css";
 
 type AuthTab = "login" | "signup";
@@ -10,6 +11,31 @@ type Props = {
   onHide: () => void;
   defaultTab?: AuthTab;
 };
+
+declare global {
+  interface Window {
+    google?: {
+      accounts: {
+        id: {
+          initialize: (options: {
+            client_id: string;
+            callback: (response: GoogleCredentialResponse) => void;
+          }) => void;
+          renderButton: (
+            element: HTMLElement,
+            options: {
+              theme: "outline" | "filled_blue" | "filled_black";
+              size: "large" | "medium" | "small";
+              shape: "rectangular" | "pill" | "circle" | "square";
+              text: "signin_with" | "signup_with" | "continue_with" | "signin";
+              width?: number;
+            },
+          ) => void;
+        };
+      };
+    };
+  }
+}
 
 const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" width="20" height="20">
@@ -46,6 +72,7 @@ const AppleIcon = () => (
 
 const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
   const [activeTab, setActiveTab] = useState<AuthTab>(defaultTab);
+  const [oauthError, setOauthError] = useState("");
 
   useEffect(() => {
     setActiveTab(defaultTab);
@@ -86,12 +113,11 @@ const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
         </div>
 
         <div className="auth-oauth-section">
-          <button type="button" className="auth-oauth-btn auth-oauth-btn--google" disabled>
-            <span className="auth-oauth-icon">
-              <GoogleIcon />
-            </span>
-            Continue with Google
-          </button>
+          <GoogleSignInButton
+            onSuccess={onHide}
+            onError={setOauthError}
+          />
+          {oauthError && <div className="auth-oauth-error">{oauthError}</div>}
 
           <button type="button" className="auth-oauth-btn auth-oauth-btn--github" disabled>
             <span className="auth-oauth-icon">
@@ -128,6 +154,91 @@ const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
       </Modal.Body>
     </Modal>
   );
+};
+
+const GoogleSignInButton = ({
+  onSuccess,
+  onError,
+}: {
+  onSuccess: () => void;
+  onError: (message: string) => void;
+}) => {
+  const buttonRef = useRef<HTMLDivElement | null>(null);
+  const { googleLogin } = useAuth();
+  const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID as string | undefined;
+
+  useEffect(() => {
+    if (!clientId || !buttonRef.current) return;
+
+    const renderGoogleButton = () => {
+      if (!window.google || !buttonRef.current) return;
+
+      buttonRef.current.innerHTML = "";
+      window.google.accounts.id.initialize({
+        client_id: clientId,
+        callback: async (response) => {
+          if (!response.credential) {
+            onError("Google did not return a sign-in credential.");
+            return;
+          }
+
+          try {
+            onError("");
+            await googleLogin(response.credential);
+            onSuccess();
+          } catch (error) {
+            onError(
+              error instanceof Error
+                ? error.message
+                : "Unable to sign in with Google.",
+            );
+          }
+        },
+      });
+
+      window.google.accounts.id.renderButton(buttonRef.current, {
+        theme: "outline",
+        size: "large",
+        shape: "rectangular",
+        text: "continue_with",
+        width: 360,
+      });
+    };
+
+    if (window.google) {
+      renderGoogleButton();
+      return;
+    }
+
+    const existingScript = document.querySelector<HTMLScriptElement>(
+      'script[src="https://accounts.google.com/gsi/client"]',
+    );
+    if (existingScript) {
+      existingScript.addEventListener("load", renderGoogleButton);
+      return () => existingScript.removeEventListener("load", renderGoogleButton);
+    }
+
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.defer = true;
+    script.onload = renderGoogleButton;
+    script.onerror = () => onError("Unable to load Google sign-in.");
+    document.head.appendChild(script);
+  }, [clientId, googleLogin, onError, onSuccess]);
+
+  if (!clientId) {
+    return (
+      <button type="button" className="auth-oauth-btn auth-oauth-btn--google" disabled>
+        <span className="auth-oauth-icon">
+          <GoogleIcon />
+        </span>
+        Google sign-in not configured
+      </button>
+    );
+  }
+
+  return <div ref={buttonRef} className="auth-google-button" />;
 };
 
 const LoginForm = ({

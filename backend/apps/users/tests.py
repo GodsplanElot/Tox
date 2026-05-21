@@ -1,4 +1,6 @@
 from django.contrib.auth import get_user_model
+from django.test import override_settings
+from unittest.mock import Mock, patch
 from rest_framework import status
 from rest_framework.test import APITestCase
 
@@ -66,3 +68,79 @@ class AuthApiTests(APITestCase):
 
         self.assertEqual(me_response.status_code, status.HTTP_200_OK)
         self.assertEqual(me_response.data["username"], "toxuser")
+
+    @override_settings(GOOGLE_OAUTH_CLIENT_ID="google-client-id")
+    @patch("apps.users.views.requests.get")
+    def test_google_login_creates_user_and_returns_tokens(self, mock_get):
+        google_response = Mock()
+        google_response.json.return_value = {
+            "aud": "google-client-id",
+            "email": "googleuser@example.com",
+            "email_verified": "true",
+            "given_name": "Google",
+            "family_name": "User",
+        }
+        google_response.raise_for_status.return_value = None
+        mock_get.return_value = google_response
+
+        response = self.client.post(
+            "/api/users/google/",
+            {"credential": "google-id-token"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("access", response.data)
+        self.assertIn("refresh", response.data)
+        self.assertEqual(response.data["user"]["email"], "googleuser@example.com")
+        self.assertTrue(
+            User.objects.filter(email="googleuser@example.com", first_name="Google").exists()
+        )
+
+    @override_settings(GOOGLE_OAUTH_CLIENT_ID="google-client-id")
+    @patch("apps.users.views.requests.get")
+    def test_google_login_reuses_existing_user(self, mock_get):
+        existing_user = User.objects.create_user(
+            username="existing",
+            email="googleuser@example.com",
+            password="StrongPass123",
+        )
+        google_response = Mock()
+        google_response.json.return_value = {
+            "aud": "google-client-id",
+            "email": "googleuser@example.com",
+            "email_verified": "true",
+        }
+        google_response.raise_for_status.return_value = None
+        mock_get.return_value = google_response
+
+        response = self.client.post(
+            "/api/users/google/",
+            {"credential": "google-id-token"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["user"]["id"], existing_user.id)
+        self.assertEqual(User.objects.filter(email="googleuser@example.com").count(), 1)
+
+    @override_settings(GOOGLE_OAUTH_CLIENT_ID="google-client-id")
+    @patch("apps.users.views.requests.get")
+    def test_google_login_rejects_invalid_audience(self, mock_get):
+        google_response = Mock()
+        google_response.json.return_value = {
+            "aud": "wrong-client-id",
+            "email": "googleuser@example.com",
+            "email_verified": "true",
+        }
+        google_response.raise_for_status.return_value = None
+        mock_get.return_value = google_response
+
+        response = self.client.post(
+            "/api/users/google/",
+            {"credential": "google-id-token"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(User.objects.filter(email="googleuser@example.com").exists())

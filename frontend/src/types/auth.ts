@@ -14,3 +14,7 @@ export type AuthTokens = {
 export type AuthResponse = AuthTokens & {
   user?: AuthUser;
 };
+
+export type GoogleCredentialResponse = {
+  credential?: string;
+};
