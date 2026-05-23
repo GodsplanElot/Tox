@@ -19,10 +19,15 @@
 .search-icon {
   position: absolute;
   left: 12px;
-  color: var(--accent-primary);
-  font-size: 0.9rem;
+  z-index: 2;
+  color: #ffd36a;
+  font-size: 0.95rem;
   pointer-events: none;
-  transition: transform 0.3s ease;
+  text-shadow: 0 0 14px rgba(249, 171, 0, 0.45);
+  transition:
+    color 0.2s ease,
+    transform 0.3s ease,
+    text-shadow 0.2s ease;
 }
 
 .navbar-search-input {
@@ -52,6 +57,8 @@
 
 .search-wrapper:focus-within .search-icon {
   transform: scale(1.1);
+  color: var(--accent-primary);
+  text-shadow: 0 0 18px rgba(249, 171, 0, 0.72);
 }
 
 /* MOBILE SEARCH INPUT */
