@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { api } from "../services/api";
 import type { Category, Movie } from "../services/api";
 import EmptyState from "../components/common/EmptyState";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+import MovieRail from "../components/MovieRail/MovieRail";
 import "../styles/Categories.css";
 
 const Categories = () => {
@@ -29,23 +30,28 @@ const Categories = () => {
     fetchData();
   }, []);
 
-  const getLatestMoviePoster = (categoryId: number) => {
-    // Find all movies that belong to this category
-    const categoryMovies = movies.filter((movie) =>
-      movie.categories?.some((c) => c.id === categoryId),
-    );
+  const genreSections = useMemo(() => {
+    return categories
+      .map((category) => {
+        const categoryMovies = movies
+          .filter((movie) => movie.categories?.some((c) => c.id === category.id))
+          .sort((a, b) => {
+            const dateA = new Date(a.created_at || a.release_date || 0).getTime();
+            const dateB = new Date(b.created_at || b.release_date || 0).getTime();
+            return dateB - dateA;
+          });
 
-    if (categoryMovies.length === 0) return null;
+        return {
+          category,
+          movies: categoryMovies,
+          poster: category.poster || categoryMovies[0]?.poster || null,
+          featuredCount: categoryMovies.length,
+        };
+      })
+      .filter((section) => section.featuredCount > 0 || section.category.is_active !== false);
+  }, [categories, movies]);
 
-    // Sort by created_at (descending) or release_date if created_at isn't reliable
-    categoryMovies.sort((a, b) => {
-      const dateA = new Date(a.created_at || a.release_date || 0).getTime();
-      const dateB = new Date(b.created_at || b.release_date || 0).getTime();
-      return dateB - dateA; // Latest first
-    });
-
-    return categoryMovies[0].poster;
-  };
+  const movieSections = genreSections.filter((section) => section.movies.length > 0);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -61,43 +67,79 @@ const Categories = () => {
   }
 
   return (
-    <div className="container-fluid categories-page py-5">
-      <header className="categories-hero mb-5 text-center">
-        <h1 className="display-4 fw-bold text-white mb-2">Explore Genres</h1>
-        <div className="d-flex justify-content-center">
-          <div className="category-header-line mb-3" />
-        </div>
-        <p className="lead text-muted">
-          Discover your next favorite story by category
+    <div className="categories-page">
+      <header className="categories-hero">
+        <span>Genre Atlas</span>
+        <h1>Choose the mood, then press play.</h1>
+        <p>
+          Drift through curated worlds of action, drama, suspense, comedy, and
+          everything in between.
         </p>
       </header>
 
-      <div className="categories-grid grid">
-        {categories.map((cat) => {
-          const poster = getLatestMoviePoster(cat.id);
-
+      <section className="categories-grid" aria-label="Movie genres">
+        {genreSections.map(({ category: cat, poster, featuredCount }, index) => {
           return (
             <Link
               key={cat.id}
               to={`/categories/${cat.slug}`}
-              className="category-card-premium animate-in"
+              className="category-card-premium"
+              style={{ animationDelay: `${index * 55}ms` }}
             >
               <div
                 className="card-bg"
-                style={{ backgroundImage: `url(${api.getMediaUrl(poster)})` }}
+                style={
+                  poster
+                    ? { backgroundImage: `url(${api.getMediaUrl(poster)})` }
+                    : undefined
+                }
               />
               <div className="card-overlay" />
               <div className="card-content">
-                <span className="card-accent" />
-                <h2 className="h4 fw-bold mb-1">{cat.name}</h2>
+                <span className="card-count">
+                  {featuredCount > 0 ? `${featuredCount} titles` : "Coming soon"}
+                </span>
+                <h2>{cat.name}</h2>
                 {cat.description && (
-                  <p className="small mb-0 opacity-100">{cat.description}</p>
+                  <p>{cat.description}</p>
                 )}
               </div>
             </Link>
           );
         })}
-      </div>
+      </section>
+
+      {movieSections.length > 0 && (
+        <section className="genre-movie-showcase" aria-label="Movies by genre">
+          <div className="genre-showcase-header">
+            <span>Curated shelves</span>
+            <h2>Movies by genre</h2>
+            <p>
+              Each row is pulled from your live catalog, sorted with the newest
+              uploads first.
+            </p>
+          </div>
+
+          <div className="genre-rails">
+            {movieSections.map(({ category, movies: categoryMovies }, index) => (
+              <div
+                key={category.id}
+                className="genre-rail-section"
+                style={{ animationDelay: `${index * 70}ms` }}
+              >
+                <div className="genre-rail-heading">
+                  <div>
+                    <span>{categoryMovies.length} movies</span>
+                    <h3>{category.name}</h3>
+                  </div>
+                  <Link to={`/categories/${category.slug}`}>View all</Link>
+                </div>
+                <MovieRail title="" movies={categoryMovies.slice(0, 18)} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 };
