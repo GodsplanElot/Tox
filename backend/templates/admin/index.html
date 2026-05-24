@@ -1,0 +1,112 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block content %}
+<div class="tox-admin-shell">
+  <aside class="tox-admin-sidebar" aria-label="Admin sections">
+    <div class="tox-admin-sidebar__label">Studio workflow</div>
+    {% for group in tox_workflow_groups %}
+      <section class="tox-admin-navgroup">
+        <h2>{{ group.title }}</h2>
+        <nav>
+          {% for link in group.links %}
+            <a href="{{ link.url }}">{{ link.label }}</a>
+          {% endfor %}
+        </nav>
+      </section>
+    {% endfor %}
+  </aside>
+
+  <main class="tox-admin-main">
+    <section class="tox-admin-hero">
+      <div>
+        <span class="tox-admin-kicker">TOX Content Studio</span>
+        <h1>{{ title }}</h1>
+        <p>Review titles, manage releases, and keep the library moving from draft to published.</p>
+      </div>
+      <div class="tox-admin-hero__signal" aria-hidden="true">
+        <span></span>
+        <strong>Live queue</strong>
+      </div>
+    </section>
+
+    <section class="tox-admin-stats" aria-label="Content status summary">
+      {% for card in tox_stat_cards %}
+        <a class="tox-admin-stat tox-admin-stat--{{ card.tone }}" href="{{ card.url }}">
+          <span>{{ card.label }}</span>
+          <strong>{{ card.value }}</strong>
+        </a>
+      {% endfor %}
+    </section>
+
+    <section class="tox-admin-actions" aria-label="Quick actions">
+      {% for action in tox_quick_actions %}
+        <a class="tox-admin-action" href="{{ action.url }}"{% if action.external %} target="_blank" rel="noopener noreferrer"{% endif %}>
+          <span class="tox-admin-action__icon tox-admin-action__icon--{{ action.icon }}"></span>
+          {{ action.label }}
+        </a>
+      {% endfor %}
+    </section>
+
+    <section class="tox-admin-grid">
+      <div class="tox-admin-panel">
+        <h2>Registered Models</h2>
+        {% if app_list %}
+          <div class="tox-admin-apps">
+            {% for app in app_list %}
+              <article class="tox-admin-app">
+                <h3>
+                  <a href="{{ app.app_url }}" class="section" title="{% blocktranslate with name=app.name %}Models in the {{ name }} application{% endblocktranslate %}">
+                    {{ app.name }}
+                  </a>
+                </h3>
+                <div class="tox-admin-models">
+                  {% for model in app.models %}
+                    <div class="tox-admin-model">
+                      {% if model.admin_url %}
+                        <a href="{{ model.admin_url }}">{{ model.name }}</a>
+                      {% else %}
+                        <span>{{ model.name }}</span>
+                      {% endif %}
+                      <div class="tox-admin-model__links">
+                        {% if model.add_url %}
+                          <a href="{{ model.add_url }}">{% translate "Add" %}</a>
+                        {% endif %}
+                        {% if model.admin_url and model.view_only %}
+                          <a href="{{ model.admin_url }}">{% translate "View" %}</a>
+                        {% elif model.admin_url %}
+                          <a href="{{ model.admin_url }}">{% translate "Change" %}</a>
+                        {% endif %}
+                      </div>
+                    </div>
+                  {% endfor %}
+                </div>
+              </article>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p>{% translate "You don't have permission to view or edit anything." %}</p>
+        {% endif %}
+      </div>
+
+      {% if recent_actions %}
+        <aside class="tox-admin-panel tox-admin-panel--recent">
+          <h2>{% translate "Recent actions" %}</h2>
+          <ul class="tox-admin-recent">
+            {% for entry in recent_actions %}
+              <li>
+                <span class="tox-admin-recent__type">{{ entry.content_type.name|capfirst }}</span>
+                {% if entry.is_deletion or not entry.get_admin_url %}
+                  <span>{{ entry.object_repr }}</span>
+                {% else %}
+                  <a href="{{ entry.get_admin_url }}">{{ entry.object_repr }}</a>
+                {% endif %}
+              </li>
+            {% endfor %}
+          </ul>
+        </aside>
+      {% endif %}
+    </section>
+  </main>
+</div>
+{% endblock %}
