@@ -27,7 +27,8 @@ declare global {
               theme: "outline" | "filled_blue" | "filled_black";
               size: "large" | "medium" | "small";
               shape: "rectangular" | "pill" | "circle" | "square";
-              text: "signin_with" | "signup_with" | "continue_with" | "signin";
+              text?: "signin_with" | "signup_with" | "continue_with" | "signin";
+              type?: "standard" | "icon";
               width?: number;
             },
           ) => void;
@@ -159,9 +160,11 @@ const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
 export const GoogleSignInButton = ({
   onSuccess,
   onError,
+  variant = "standard",
 }: {
   onSuccess: () => void;
   onError: (message: string) => void;
+  variant?: "standard" | "icon";
 }) => {
   const buttonRef = useRef<HTMLDivElement | null>(null);
   const { googleLogin } = useAuth();
@@ -199,9 +202,10 @@ export const GoogleSignInButton = ({
       window.google.accounts.id.renderButton(buttonRef.current, {
         theme: "outline",
         size: "large",
-        shape: "rectangular",
+        shape: variant === "icon" ? "circle" : "rectangular",
+        type: variant === "icon" ? "icon" : "standard",
         text: "continue_with",
-        width: 360,
+        width: variant === "icon" ? 44 : 360,
       });
     };
 
@@ -225,7 +229,7 @@ export const GoogleSignInButton = ({
     script.onload = renderGoogleButton;
     script.onerror = () => onError("Unable to load Google sign-in.");
     document.head.appendChild(script);
-  }, [clientId, googleLogin, onError, onSuccess]);
+  }, [clientId, googleLogin, onError, onSuccess, variant]);
 
   if (!clientId) {
     return (
@@ -238,7 +242,7 @@ export const GoogleSignInButton = ({
     );
   }
 
-  return <div ref={buttonRef} className="auth-google-button" />;
+  return <div ref={buttonRef} className={`auth-google-button auth-google-button--${variant}`} />;
 };
 
 const LoginForm = ({

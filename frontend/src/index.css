@@ -247,6 +247,49 @@ body {
   padding: 0;
 }
 
+.rail-icon {
+  transition:
+    opacity 0.22s ease,
+    transform 0.26s ease;
+}
+
+.rail-toggle {
+  transition:
+    color 0.2s ease,
+    transform 0.24s ease;
+}
+
+.mobile-rail--menu-open .rail-toggle {
+  color: var(--accent-primary);
+  transform: translateX(3px) rotate(90deg);
+}
+
+.mobile-rail--menu-open .rail-icon {
+  opacity: 0;
+  transform: translateX(-24px);
+  pointer-events: none;
+}
+
+.mobile-rail--menu-open .rail-icon:nth-of-type(1) {
+  transition-delay: 0ms;
+}
+
+.mobile-rail--menu-open .rail-icon:nth-of-type(2) {
+  transition-delay: 28ms;
+}
+
+.mobile-rail--menu-open .rail-icon:nth-of-type(3) {
+  transition-delay: 56ms;
+}
+
+.mobile-rail--menu-open .rail-icon:nth-of-type(4) {
+  transition-delay: 84ms;
+}
+
+.mobile-rail--menu-open .rail-icon:nth-of-type(5) {
+  transition-delay: 112ms;
+}
+
 .mobile-rail i {
   font-size: 20px;
   transition:
@@ -307,6 +350,9 @@ body {
 
 /* ================= OFFCANVAS LINKS ================= */
 .offcanvas-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
   color: var(--text-muted);
   text-decoration: none;
   padding: 10px 12px;
@@ -317,18 +363,37 @@ body {
   text-align: left;
   transition:
     background-color 0.15s ease,
-    color 0.15s ease;
+    color 0.15s ease,
+    transform 0.2s ease;
+}
+
+.offcanvas-link i {
+  width: 22px;
+  height: 22px;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 22px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.055);
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.9rem;
 }
 
 .offcanvas-link:hover {
   background-color: var(--hover-bg);
   color: #ffffff;
+  transform: translateX(2px);
 }
 
 .offcanvas-link.active {
   background: rgba(249, 171, 0, 0.14);
   color: #ffffff;
   box-shadow: inset 3px 0 0 var(--accent-primary);
+}
+
+.offcanvas-link.active i {
+  background: rgba(249, 171, 0, 0.18);
+  color: var(--accent-primary);
 }
 
 .mobile-account-card {
@@ -497,6 +562,57 @@ body {
   margin-top: 1.5rem;
   padding-top: 1.25rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mobile-auth-strip {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.mobile-auth-strip__copy {
+  display: grid;
+  gap: 0.15rem;
+}
+
+.mobile-auth-strip__copy span {
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 0.92rem;
+  font-weight: 800;
+}
+
+.mobile-auth-strip__copy small {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 0.76rem;
+  font-weight: 700;
+  line-height: 1.4;
+}
+
+.mobile-auth-strip__actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr auto;
+  gap: 0.55rem;
+  align-items: center;
+}
+
+.mobile-auth-google-icon {
+  width: 44px;
+  height: 44px;
+  overflow: hidden;
+  border-radius: 50%;
+}
+
+.mobile-auth-google-icon .auth-google-button {
+  width: 44px;
+  min-height: 44px;
+  justify-content: center;
+}
+
+.mobile-auth-google-icon .auth-google-button > div,
+.mobile-auth-google-icon .auth-google-button iframe {
+  width: 44px !important;
+  min-width: 44px !important;
+  max-width: 44px !important;
 }
 
 /* ================= APP LAYOUT ================= */
