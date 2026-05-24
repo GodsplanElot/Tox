@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Offcanvas, Nav } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
+import { GoogleSignInButton } from "../components/AuthModal";
 
 type Props = {
   show: boolean;
@@ -24,6 +26,7 @@ const MobileSidebar = ({
   email,
   onLogout,
 }: Props) => {
+  const [oauthError, setOauthError] = useState("");
   const displayName = username || email || "Account";
   const accountLabel = email || "Signed in";
   const initials =
@@ -88,8 +91,9 @@ const MobileSidebar = ({
         className="mobile-offcanvas"
       >
         <Offcanvas.Header closeButton>
-          <Offcanvas.Title className="text-white fw-semibold">
-            TOX
+          <Offcanvas.Title className="mobile-menu-title">
+            <span>TOX</span>
+            <small>Browse darker. Save smarter.</small>
           </Offcanvas.Title>
         </Offcanvas.Header>
 
@@ -104,6 +108,47 @@ const MobileSidebar = ({
                 <small>{accountLabel}</small>
               </div>
             </NavLink>
+          )}
+
+          {!isAuthenticated && (
+            <div className="mobile-auth-panel">
+              <div className="mobile-auth-panel__copy">
+                <span>Unlock your shelf</span>
+                <h2>Keep a private watchlist across movies and series.</h2>
+              </div>
+
+              <div className="mobile-auth-google">
+                <GoogleSignInButton
+                  onSuccess={() => {
+                    setOauthError("");
+                    onClose();
+                  }}
+                  onError={setOauthError}
+                />
+              </div>
+              {oauthError && <div className="mobile-auth-error">{oauthError}</div>}
+
+              <div className="mobile-auth-divider">
+                <span>or use email</span>
+              </div>
+
+              <div className="mobile-auth-actions">
+                <button
+                  type="button"
+                  className="mobile-auth-btn mobile-auth-btn--primary"
+                  onClick={onLoginClick}
+                >
+                  Login
+                </button>
+                <button
+                  type="button"
+                  className="mobile-auth-btn"
+                  onClick={onSignUpClick}
+                >
+                  Sign Up
+                </button>
+              </div>
+            </div>
           )}
 
           <Nav className="flex-column gap-2">
@@ -147,18 +192,12 @@ const MobileSidebar = ({
               </NavLink>
             )}
 
-            {!isAuthenticated && (
-              <button type="button" className="offcanvas-link" onClick={onLoginClick}>
-                Account
-              </button>
-            )}
           </Nav>
 
-          <div className="mt-4 pt-4 border-top border-secondary d-flex flex-column gap-3">
+          <div className="mobile-menu-footer">
             {isAuthenticated ? (
               <button
-                className="btn btn-outline-light w-100 rounded-pill py-2"
-                style={{ fontWeight: 500, letterSpacing: "0.5px" }}
+                className="mobile-auth-btn"
                 onClick={() => {
                   onLogout();
                   onClose();
@@ -166,30 +205,7 @@ const MobileSidebar = ({
               >
                 Logout
               </button>
-            ) : (
-              <>
-                <button
-                  className="btn btn-outline-light w-100 rounded-pill py-2"
-                  style={{ fontWeight: 500, letterSpacing: "0.5px" }}
-                  onClick={onLoginClick}
-                >
-                  Login
-                </button>
-                <button
-                  className="btn btn-primary w-100 rounded-pill py-2"
-                  style={{
-                    fontWeight: 600,
-                    letterSpacing: "0.5px",
-                    backgroundColor: "var(--accent-primary)",
-                    borderColor: "var(--accent-primary)",
-                    boxShadow: "0 4px 15px rgba(249, 171, 0, 0.2)",
-                  }}
-                  onClick={onSignUpClick}
-                >
-                  Sign Up
-                </button>
-              </>
-            )}
+            ) : null}
           </div>
         </Offcanvas.Body>
       </Offcanvas>

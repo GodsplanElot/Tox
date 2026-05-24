@@ -281,6 +281,30 @@ body {
   filter: invert(1);
 }
 
+.mobile-menu-title {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.mobile-menu-title span {
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.mobile-menu-title small {
+  max-width: 190px;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 /* ================= OFFCANVAS LINKS ================= */
 .offcanvas-link {
   color: var(--text-muted);
@@ -338,6 +362,141 @@ body {
   max-width: 160px;
   color: rgba(255, 255, 255, 0.58);
   font-size: 0.76rem;
+}
+
+.mobile-auth-panel {
+  position: relative;
+  display: grid;
+  gap: 0.85rem;
+  margin-bottom: 1.15rem;
+  padding: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  background:
+    radial-gradient(circle at 82% 0%, rgba(249, 171, 0, 0.16), transparent 44%),
+    linear-gradient(135deg, rgba(255, 255, 255, 0.075), rgba(255, 255, 255, 0.025));
+}
+
+.mobile-auth-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 24px 24px;
+  mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.55), transparent);
+  pointer-events: none;
+}
+
+.mobile-auth-panel__copy,
+.mobile-auth-google,
+.mobile-auth-actions,
+.mobile-auth-divider,
+.mobile-auth-error {
+  position: relative;
+  z-index: 1;
+}
+
+.mobile-auth-panel__copy span {
+  color: var(--accent-primary);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.mobile-auth-panel__copy h2 {
+  margin: 0.3rem 0 0;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.18;
+}
+
+.mobile-auth-google .auth-google-button {
+  min-height: 44px;
+  justify-content: stretch;
+}
+
+.mobile-auth-google .auth-google-button > div,
+.mobile-auth-google .auth-google-button iframe {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+.mobile-auth-error {
+  padding: 0.6rem 0.7rem;
+  border: 1px solid rgba(255, 77, 77, 0.28);
+  border-radius: 10px;
+  background: rgba(255, 77, 77, 0.1);
+  color: #ffb3b3;
+  font-size: 0.76rem;
+  font-weight: 700;
+}
+
+.mobile-auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 0.68rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.mobile-auth-divider::before,
+.mobile-auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-auth-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.65rem;
+}
+
+.mobile-auth-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  font-size: 0.84rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
+}
+
+.mobile-auth-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(249, 171, 0, 0.32);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.mobile-auth-btn--primary {
+  border-color: var(--accent-primary);
+  background: var(--accent-primary);
+  color: #151006;
+  box-shadow: 0 10px 24px rgba(249, 171, 0, 0.16);
+}
+
+.mobile-menu-footer {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* ================= APP LAYOUT ================= */

@@ -156,7 +156,7 @@ const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
   );
 };
 
-const GoogleSignInButton = ({
+export const GoogleSignInButton = ({
   onSuccess,
   onError,
 }: {
