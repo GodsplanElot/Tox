@@ -1,5 +1,14 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { FaPlay, FaShareAlt, FaPlus, FaCheck } from "react-icons/fa";
+import {
+  FaCalendarAlt,
+  FaCheck,
+  FaChevronLeft,
+  FaClock,
+  FaLayerGroup,
+  FaPlay,
+  FaPlus,
+  FaShareAlt,
+} from "react-icons/fa";
 import { useEffect, useState } from "react";
 import SeasonSelector from "../../components/SeasonSelector/SeasonSelector";
 import EpisodeList from "../../components/EpisodeList/EpisodeList";
@@ -79,6 +88,20 @@ const SeriesDetail = () => {
     navigate(-1);
   };
 
+  const shareSeries = async () => {
+    if (!series) return;
+    const shareUrl = window.location.href;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: series.title, url: shareUrl });
+      } else {
+        await navigator.clipboard.writeText(shareUrl);
+      }
+    } catch (error) {
+      console.error("Error sharing series:", error);
+    }
+  };
+
   if (loading) {
     return <LoadingSpinner />;
   }
@@ -90,10 +113,16 @@ const SeriesDetail = () => {
       </div>
     );
 
+  const activeSeasonData = series.seasons?.[activeSeason];
+  const episodeCount =
+    series.seasons?.reduce((total, season) => total + season.episodes.length, 0) ?? 0;
+  const firstAirDate = series.first_air_date
+    ? new Date(series.first_air_date)
+    : null;
+
   return (
     <div className="series-detail-container">
-      {/* Hero Section */}
-      <div className="series-hero">
+      <section className="series-hero">
         <div
           className="detail-hero-backdrop"
           style={{
@@ -106,21 +135,28 @@ const SeriesDetail = () => {
           <div className="series-poster-main">
             <img src={api.getMediaUrl(series.poster)} alt={series.title} />
           </div>
+
           <div className="series-info-main">
+            <span className="series-kicker">Series dossier</span>
             <div className="series-meta">
               {series.rating && (
                 <RatingBadge rating={series.rating} size="medium" />
               )}
-              {series.first_air_date && (
-                <>
-                  <span>{new Date(series.first_air_date).getFullYear()}</span>
-                  <span>
-                    {new Date(series.first_air_date).toLocaleDateString()}
-                  </span>
-                </>
+              {firstAirDate && (
+                <span>
+                  <FaCalendarAlt /> {firstAirDate.getFullYear()}
+                </span>
               )}
+              <span>
+                <FaLayerGroup /> {series.seasons?.length ?? 0} seasons
+              </span>
+              <span>
+                <FaClock /> {episodeCount} episodes
+              </span>
             </div>
+
             <h1 className="series-title-large">{series.title}</h1>
+
             <div className="series-genres">
               {series.categories?.map((cat) => (
                 <span key={cat.id} className="genre-tag">
@@ -129,6 +165,7 @@ const SeriesDetail = () => {
               ))}
             </div>
             <p className="series-description-large">{series.description}</p>
+
             <div className="series-actions">
               <div className="secondary-actions">
                 {series.trailer_url && (
@@ -154,19 +191,22 @@ const SeriesDetail = () => {
                     {isInWatchlist ? "In Watchlist" : "Watchlist"}
                   </span>
                 </button>
-                <button className="action-btn action-btn--share" title="Share">
+                <button
+                  className="action-btn action-btn--share"
+                  title="Share"
+                  onClick={shareSeries}
+                >
                   <FaShareAlt /> <span className="action-btn-label">Share</span>
                 </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      {/* Navigation Controls */}
       <div className="detail-controls">
         <button className="back-btn" onClick={handleBack}>
-          <i className="bi bi-arrow-left"></i>
+          <FaChevronLeft />
           <span className="back-btn-label">Back</span>
         </button>
         <Breadcrumbs
@@ -177,26 +217,34 @@ const SeriesDetail = () => {
         />
       </div>
 
-      {/* Seasons & Episodes Section */}
-      <div className="series-body">
+      <section className="series-body">
         {series.seasons && series.seasons.length > 0 ? (
           <>
             <div className="section-head">
-              <h2>Seasons-({series.seasons.length})</h2>
-              <SeasonSelector
-                seasons={series.seasons}
-                activeSeason={activeSeason}
-                onSelect={setActiveSeason}
-              />
+              <div>
+                <span>Episode guide</span>
+                <h2>
+                  {activeSeasonData?.title || `Season ${activeSeasonData?.season_number}`}
+                </h2>
+                {activeSeasonData?.description && <p>{activeSeasonData.description}</p>}
+              </div>
+              <div className="season-control-wrap">
+                <SeasonSelector
+                  seasons={series.seasons}
+                  activeSeason={activeSeason}
+                  onSelect={setActiveSeason}
+                />
+              </div>
             </div>
-            <EpisodeList episodes={series.seasons[activeSeason].episodes} />
+            <EpisodeList episodes={activeSeasonData?.episodes ?? []} />
           </>
         ) : (
-          <div className="p-5 text-center text-muted">
+          <div className="series-empty">
             <h3>No seasons available yet.</h3>
+            <p>Episodes will appear here once this series is published with season data.</p>
           </div>
         )}
-      </div>
+      </section>
     </div>
   );
 };
