@@ -1,0 +1,54 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: tox-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tox_db
+      POSTGRES_USER: tox_user
+      POSTGRES_PASSWORD: tox_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - tox_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tox_user -d tox_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio:
+    image: quay.io/minio/minio:latest
+    container_name: tox-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: tox_minio_admin
+      MINIO_ROOT_PASSWORD: tox_minio_password
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - tox_minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  minio-init:
+    image: quay.io/minio/mc:latest
+    container_name: tox-minio-init
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set local http://minio:9000 tox_minio_admin tox_minio_password;
+      mc mb --ignore-existing local/tox-media;
+      mc anonymous set download local/tox-media;
+      "
+
+volumes:
+  tox_postgres_data:
+  tox_minio_data:
