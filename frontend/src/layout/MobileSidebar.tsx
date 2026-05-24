@@ -1,7 +1,6 @@
-import { useState } from "react";
 import { Offcanvas, Nav } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
-import { GoogleSignInButton } from "../components/AuthModal";
+import { GoogleIcon } from "../components/AuthModal";
 
 type Props = {
   show: boolean;
@@ -26,7 +25,6 @@ const MobileSidebar = ({
   email,
   onLogout,
 }: Props) => {
-  const [oauthError, setOauthError] = useState("");
   const displayName = username || email || "Account";
   const accountLabel = email || "Signed in";
   const initials =
@@ -92,7 +90,7 @@ const MobileSidebar = ({
       >
         <Offcanvas.Header closeButton>
           <Offcanvas.Title className="mobile-menu-title">
-            <span>TOX</span>
+            <ToxicSkullMark />
             <small>Browse darker. Save smarter.</small>
           </Offcanvas.Title>
         </Offcanvas.Header>
@@ -191,18 +189,15 @@ const MobileSidebar = ({
                   >
                     Sign Up
                   </button>
-                  <div className="mobile-auth-google-icon" aria-label="Continue with Google">
-                    <GoogleSignInButton
-                      variant="icon"
-                      onSuccess={() => {
-                        setOauthError("");
-                        onClose();
-                      }}
-                      onError={setOauthError}
-                    />
-                  </div>
+                  <button
+                    type="button"
+                    className="mobile-auth-google-icon"
+                    aria-label="Continue with Google"
+                    onClick={onLoginClick}
+                  >
+                    <GoogleIcon />
+                  </button>
                 </div>
-                {oauthError && <div className="mobile-auth-error">{oauthError}</div>}
               </div>
             )}
           </div>
@@ -211,5 +206,20 @@ const MobileSidebar = ({
     </>
   );
 };
+
+const ToxicSkullMark = () => (
+  <span className="toxic-skull-mark" aria-label="ToxicWaste">
+    <svg viewBox="0 0 72 72" role="img" focusable="false">
+      <path className="skull-shadow" d="M18 62h36v5H18z" />
+      <path className="skull-head" d="M18 14h36v10h6v24h-8v10H20V48h-8V24h6z" />
+      <path className="skull-top" d="M24 8h24v8H24z" />
+      <path className="skull-jaw" d="M26 52h20v10H26z" />
+      <path className="skull-eye" d="M23 28h13v10H23zM40 28h13v10H40z" />
+      <path className="skull-nose" d="M34 40h6v8h-6z" />
+      <path className="skull-teeth" d="M29 54h4v8h-4zM36 54h4v8h-4zM43 54h4v8h-4z" />
+      <path className="skull-drip" d="M15 46h8v8h-8zM49 47h8v7h-8z" />
+    </svg>
+  </span>
+);
 
 export default MobileSidebar;

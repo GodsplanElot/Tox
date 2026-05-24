@@ -325,17 +325,10 @@ body {
 }
 
 .mobile-menu-title {
-  display: grid;
-  gap: 0.1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
   min-width: 0;
-}
-
-.mobile-menu-title span {
-  color: #ffffff;
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 800;
-  letter-spacing: 0;
 }
 
 .mobile-menu-title small {
@@ -346,6 +339,77 @@ body {
   font-weight: 700;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.toxic-skull-mark {
+  width: 48px;
+  height: 48px;
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 48px;
+  border-radius: 14px;
+  background:
+    radial-gradient(circle at 50% 38%, rgba(190, 255, 54, 0.28), transparent 48%),
+    linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.015));
+  box-shadow:
+    0 0 28px rgba(190, 255, 54, 0.16),
+    inset 0 0 18px rgba(190, 255, 54, 0.08);
+  animation: toxicSkullFloat 9s ease-in-out infinite;
+}
+
+.toxic-skull-mark svg {
+  width: 42px;
+  height: 42px;
+  overflow: visible;
+  filter: drop-shadow(0 0 10px rgba(190, 255, 54, 0.28));
+}
+
+.skull-shadow {
+  fill: rgba(0, 0, 0, 0.28);
+}
+
+.skull-head,
+.skull-top,
+.skull-jaw {
+  fill: #bfff28;
+  stroke: rgba(10, 13, 8, 0.88);
+  stroke-width: 2;
+  shape-rendering: crispEdges;
+}
+
+.skull-top {
+  fill: #d8ff58;
+}
+
+.skull-eye,
+.skull-nose {
+  fill: #121511;
+  shape-rendering: crispEdges;
+}
+
+.skull-teeth {
+  fill: rgba(12, 16, 10, 0.92);
+}
+
+.skull-drip {
+  fill: #74ff31;
+  opacity: 0.84;
+}
+
+@keyframes toxicSkullFloat {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-1deg);
+    box-shadow:
+      0 0 24px rgba(190, 255, 54, 0.14),
+      inset 0 0 18px rgba(190, 255, 54, 0.08);
+  }
+  50% {
+    transform: translateY(-5px) rotate(1deg);
+    box-shadow:
+      0 0 34px rgba(190, 255, 54, 0.24),
+      inset 0 0 22px rgba(190, 255, 54, 0.12);
+  }
 }
 
 /* ================= OFFCANVAS LINKS ================= */
@@ -598,21 +662,34 @@ body {
 .mobile-auth-google-icon {
   width: 44px;
   height: 44px;
-  overflow: hidden;
+  display: inline-grid;
+  place-items: center;
   border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.95);
+  color: #141414;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
 }
 
-.mobile-auth-google-icon .auth-google-button {
-  width: 44px;
-  min-height: 44px;
-  justify-content: center;
+.mobile-auth-google-icon:hover {
+  transform: translateY(-1px);
+  border-color: rgba(66, 133, 244, 0.45);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.24);
 }
 
-.mobile-auth-google-icon .auth-google-button > div,
-.mobile-auth-google-icon .auth-google-button iframe {
-  width: 44px !important;
-  min-width: 44px !important;
-  max-width: 44px !important;
+.mobile-auth-google-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toxic-skull-mark {
+    animation: none;
+  }
 }
 
 /* ================= APP LAYOUT ================= */
