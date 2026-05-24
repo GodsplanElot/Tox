@@ -78,7 +78,7 @@ const MobileSidebar = ({
           aria-label={isAuthenticated ? "Account" : "Log in"}
           onClick={isAuthenticated ? onOpen : onLoginClick}
         >
-          <i className="bi bi-person"></i>
+          <i className={isAuthenticated ? "bi bi-person" : "bi bi-person-plus"}></i>
         </button>
       </div>
 
