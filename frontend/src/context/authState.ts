@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import type { AuthUser } from "../types/auth";
+import type { AuthUser, RegisterPendingResponse } from "../types/auth";
 
 export type LoginPayload = {
   email: string;
@@ -19,7 +19,9 @@ export type AuthContextValue = {
   isLoading: boolean;
   login: (payload: LoginPayload) => Promise<void>;
   googleLogin: (credential: string) => Promise<void>;
-  register: (payload: RegisterPayload) => Promise<void>;
+  register: (payload: RegisterPayload) => Promise<RegisterPendingResponse>;
+  verifyEmail: (payload: { email: string; otp: string }) => Promise<void>;
+  resendOtp: (email: string) => Promise<RegisterPendingResponse>;
   logout: () => void;
 };
 

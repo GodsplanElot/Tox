@@ -314,6 +314,52 @@
   font-weight: 500;
 }
 
+.auth-otp-panel {
+  margin-bottom: 1rem;
+  padding: 0.9rem;
+  border: 1px solid rgba(190, 255, 54, 0.18);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 92% 12%, rgba(190, 255, 54, 0.13), transparent 38%),
+    rgba(255, 255, 255, 0.035);
+}
+
+.auth-otp-kicker {
+  color: var(--accent-primary);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.auth-otp-panel h3 {
+  margin: 0.25rem 0 0.35rem;
+  color: #ffffff;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.auth-otp-panel p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.84rem;
+  line-height: 1.45;
+}
+
+.auth-otp-panel strong {
+  color: #ffffff;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.auth-otp-input {
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 0.22em;
+  text-align: center;
+}
+
 /* ================= ACTION EXTRAS ================= */
 .auth-extras {
   display: flex;
@@ -444,6 +490,15 @@
 .auth-footer-link:hover {
   opacity: 0.8;
   text-decoration: underline;
+}
+
+.auth-footer-link:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.auth-footer--otp {
+  margin-top: 1rem;
 }
 
 /* ================= TAB CONTENT TRANSITIONS ================= */

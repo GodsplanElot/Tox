@@ -38,7 +38,7 @@ declare global {
   }
 }
 
-const GoogleIcon = () => (
+export const GoogleIcon = () => (
   <svg viewBox="0 0 24 24" width="20" height="20">
     <path
       d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"
@@ -341,14 +341,30 @@ const SignUpForm = ({
   onSuccess: () => void;
   onSwitchTab: () => void;
 }) => {
-  const { register } = useAuth();
+  const { register, resendOtp, verifyEmail } = useAuth();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [otp, setOtp] = useState("");
+  const [pendingEmail, setPendingEmail] = useState("");
+  const [resendWait, setResendWait] = useState(0);
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [error, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isAwaitingOtp = Boolean(pendingEmail);
+
+  useEffect(() => {
+    if (!resendWait) return;
+
+    const timer = window.setInterval(() => {
+      setResendWait((current) => Math.max(0, current - 1));
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [resendWait]);
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -362,13 +378,14 @@ const SignUpForm = ({
     setIsSubmitting(true);
 
     try {
-      await register({
+      const response = await register({
         username,
         email,
         password,
         password_confirm: passwordConfirm,
       });
-      onSuccess();
+      setPendingEmail(response.email);
+      setResendWait(response.resend_available_in ?? 0);
     } catch (submitError) {
       setError(
         submitError instanceof Error
@@ -379,6 +396,108 @@ const SignUpForm = ({
       setIsSubmitting(false);
     }
   };
+
+  const handleVerify = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError("");
+    setIsVerifying(true);
+
+    try {
+      await verifyEmail({ email: pendingEmail, otp });
+      onSuccess();
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : "Unable to verify this code.",
+      );
+    } finally {
+      setIsVerifying(false);
+    }
+  };
+
+  const handleResend = async () => {
+    setError("");
+    setIsResending(true);
+
+    try {
+      const response = await resendOtp(pendingEmail);
+      setResendWait(response.resend_available_in ?? 0);
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : "Unable to resend the verification code.",
+      );
+    } finally {
+      setIsResending(false);
+    }
+  };
+
+  if (isAwaitingOtp) {
+    return (
+      <form onSubmit={handleVerify}>
+        {error && <div className="auth-error">{error}</div>}
+
+        <div className="auth-otp-panel">
+          <span className="auth-otp-kicker">Email verification</span>
+          <h3>Check your inbox</h3>
+          <p>
+            Enter the 6 digit code sent to <strong>{pendingEmail}</strong>.
+          </p>
+        </div>
+
+        <div className="auth-form-group">
+          <label className="auth-form-label" htmlFor="signup-otp">
+            Verification code
+          </label>
+          <input
+            id="signup-otp"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className="auth-form-input auth-otp-input"
+            placeholder="000000"
+            autoComplete="one-time-code"
+            value={otp}
+            onChange={(event) => setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))}
+            required
+          />
+        </div>
+
+        <button type="submit" className="auth-submit-btn" disabled={isVerifying || otp.length !== 6}>
+          {isVerifying ? "Verifying..." : "Verify Email"}
+        </button>
+
+        <div className="auth-footer auth-footer--otp">
+          <button
+            type="button"
+            className="auth-footer-link"
+            onClick={handleResend}
+            disabled={isResending || resendWait > 0}
+          >
+            {resendWait > 0
+              ? `Resend in ${resendWait}s`
+              : isResending
+                ? "Resending..."
+                : "Resend code"}
+          </button>
+          <span> · </span>
+          <button
+            type="button"
+            className="auth-footer-link"
+            onClick={() => {
+              setPendingEmail("");
+              setOtp("");
+              setError("");
+            }}
+          >
+            Edit details
+          </button>
+        </div>
+      </form>
+    );
+  }
 
   return (
     <form onSubmit={handleSubmit}>

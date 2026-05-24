@@ -64,9 +64,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const register = useCallback(async (payload: RegisterPayload) => {
-    const response = await api.register(payload);
+    return api.register(payload);
+  }, []);
+
+  const verifyEmail = useCallback(async (payload: { email: string; otp: string }) => {
+    const response = await api.verifyEmail(payload);
     storeTokens(response);
     setUser(response.user ?? (await api.getCurrentUser()));
+  }, []);
+
+  const resendOtp = useCallback(async (email: string) => {
+    return api.resendOtp(email);
   }, []);
 
   const logout = useCallback(() => {
@@ -82,9 +90,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       login,
       googleLogin,
       register,
+      verifyEmail,
+      resendOtp,
       logout,
     }),
-    [googleLogin, isLoading, login, logout, register, user],
+    [googleLogin, isLoading, login, logout, register, resendOtp, user, verifyEmail],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -2,7 +2,7 @@ import type { Movie } from "../types/movie";
 import type { Series } from "../types/series";
 import type { Category } from "../types/category";
 import type { WatchlistItem } from "../types/watchlist";
-import type { AuthResponse, AuthUser } from "../types/auth";
+import type { AuthResponse, AuthUser, RegisterPendingResponse } from "../types/auth";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ??
@@ -112,11 +112,25 @@ export const api = {
     email: string;
     password: string;
     password_confirm: string;
-  }): Promise<AuthResponse> =>
+  }): Promise<RegisterPendingResponse> =>
     fetch(`${API_BASE_URL}/users/register/`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload),
+    }).then(handleResponse),
+
+  verifyEmail: (payload: { email: string; otp: string }): Promise<AuthResponse> =>
+    fetch(`${API_BASE_URL}/users/verify-email/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    }).then(handleResponse),
+
+  resendOtp: (email: string): Promise<RegisterPendingResponse> =>
+    fetch(`${API_BASE_URL}/users/resend-otp/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
     }).then(handleResponse),
 
   login: (email: string, password: string): Promise<AuthResponse> =>
