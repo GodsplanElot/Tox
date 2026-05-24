@@ -5,12 +5,16 @@ import requests
 from rest_framework import status
 from rest_framework.test import APITestCase
 
+from .models import PendingSignupVerification
+
 
 User = get_user_model()
 
 
 class AuthApiTests(APITestCase):
-    def test_register_returns_tokens_and_user(self):
+    @patch("apps.users.views.send_signup_otp")
+    @patch("apps.users.views.generate_otp", return_value="123456")
+    def test_register_sends_otp_without_creating_user(self, mock_generate_otp, mock_send_signup_otp):
         response = self.client.post(
             "/api/users/register/",
             {
@@ -22,11 +26,11 @@ class AuthApiTests(APITestCase):
             format="json",
         )
 
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertIn("access", response.data)
-        self.assertIn("refresh", response.data)
-        self.assertEqual(response.data["user"]["email"], "tox@example.com")
-        self.assertTrue(User.objects.filter(username="toxuser").exists())
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertEqual(response.data["email"], "tox@example.com")
+        self.assertFalse(User.objects.filter(username="toxuser").exists())
+        self.assertTrue(PendingSignupVerification.objects.filter(email="tox@example.com").exists())
+        mock_send_signup_otp.assert_called_once_with("tox@example.com", "123456")
 
     def test_register_rejects_password_mismatch(self):
         response = self.client.post(
@@ -42,6 +46,56 @@ class AuthApiTests(APITestCase):
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("password_confirm", response.data)
+
+    @patch("apps.users.views.send_signup_otp")
+    @patch("apps.users.views.generate_otp", return_value="123456")
+    def test_verify_email_creates_user_and_returns_tokens(self, mock_generate_otp, mock_send_signup_otp):
+        self.client.post(
+            "/api/users/register/",
+            {
+                "username": "toxuser",
+                "email": "tox@example.com",
+                "password": "StrongPass123",
+                "password_confirm": "StrongPass123",
+            },
+            format="json",
+        )
+
+        response = self.client.post(
+            "/api/users/verify-email/",
+            {"email": "tox@example.com", "otp": "123456"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertIn("access", response.data)
+        self.assertIn("refresh", response.data)
+        self.assertEqual(response.data["user"]["email"], "tox@example.com")
+        self.assertTrue(User.objects.filter(username="toxuser").exists())
+        self.assertFalse(PendingSignupVerification.objects.filter(email="tox@example.com").exists())
+
+    @patch("apps.users.views.send_signup_otp")
+    @patch("apps.users.views.generate_otp", return_value="123456")
+    def test_verify_email_rejects_wrong_otp(self, mock_generate_otp, mock_send_signup_otp):
+        self.client.post(
+            "/api/users/register/",
+            {
+                "username": "toxuser",
+                "email": "tox@example.com",
+                "password": "StrongPass123",
+                "password_confirm": "StrongPass123",
+            },
+            format="json",
+        )
+
+        response = self.client.post(
+            "/api/users/verify-email/",
+            {"email": "tox@example.com", "otp": "000000"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertFalse(User.objects.filter(username="toxuser").exists())
 
     def test_login_accepts_email_and_me_requires_token(self):
         User.objects.create_user(
