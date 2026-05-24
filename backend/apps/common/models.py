@@ -31,6 +31,13 @@ class PublishableModel(models.Model):
         on_delete=models.SET_NULL,
         related_name="reviewed_%(class)ss",
     )
+    uploaded_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+        related_name="uploaded_%(class)ss",
+    )
 
     class Meta:
         abstract = True

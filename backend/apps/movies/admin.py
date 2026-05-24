@@ -1,16 +1,26 @@
 from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
 from .models import DraftMovie, Movie, PendingReviewMovie, PublishedMovie
+from apps.common.admin_roles import ContentRoleAdminMixin
 from apps.common.tmdb import TMDBService
 
 
-class MovieWorkflowAdmin(admin.ModelAdmin):
-    list_display = ('title', 'status', 'release_date', 'rating', 'source_type')
-    list_filter = ('status', 'source_type', 'categories', 'release_date')
+class MovieWorkflowAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
+    list_display = (
+        'title',
+        'status',
+        'uploaded_by',
+        'reviewed_by',
+        'release_date',
+        'rating',
+        'source_type',
+    )
+    list_filter = ('status', 'source_type', 'uploaded_by', 'reviewed_by', 'categories', 'release_date')
     list_per_page = 50
-    search_fields = ('title', 'description', 'external_url')
+    search_fields = ('title', 'description', 'external_url', 'uploaded_by__username')
     autocomplete_fields = ['categories']
     prepopulated_fields = {"slug": ("title",)}
+    readonly_fields = ("uploaded_by", "reviewed_by", "submitted_at", "published_at")
     actions = ['submit_for_review', 'approve_selected', 'reject_selected', 'move_to_draft', 'sync_from_tmdb']
     
     fieldsets = (
@@ -25,7 +35,12 @@ class MovieWorkflowAdmin(admin.ModelAdmin):
             'fields': ('poster',),
         }),
         ("Metadata", {
-            'fields': (('rating', 'release_date', 'runtime'), 'status'),
+            'fields': (
+                ('rating', 'release_date', 'runtime'),
+                'status',
+                ('uploaded_by', 'reviewed_by'),
+                ('submitted_at', 'published_at'),
+            ),
         }),
     )
 
@@ -110,7 +125,7 @@ class StatusMovieAdmin(MovieWorkflowAdmin):
 @admin.register(DraftMovie)
 class DraftMovieAdmin(StatusMovieAdmin):
     status_filter = Movie.STATUS_DRAFT
-    actions = ['submit_for_review', 'approve_selected']
+    actions = ['submit_for_review']
 
 
 @admin.register(PendingReviewMovie)

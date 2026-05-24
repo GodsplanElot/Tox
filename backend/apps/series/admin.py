@@ -4,19 +4,30 @@ from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html
 
+from apps.common.admin_roles import ContentRoleAdminMixin
 from apps.common.tmdb import TMDBService
 from .models import DraftSeries, Episode, PendingReviewSeries, PublishedSeries, Season, Series
 
 
 @admin.register(Episode)
-class EpisodeAdmin(admin.ModelAdmin):
-    list_display = ("title", "status", "parent_season_link", "episode_number", "release_date", "source_type")
-    list_filter = ("status", "source_type", "season__series", "season")
+class EpisodeAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
+    list_display = (
+        "title",
+        "status",
+        "uploaded_by",
+        "reviewed_by",
+        "parent_season_link",
+        "episode_number",
+        "release_date",
+        "source_type",
+    )
+    list_filter = ("status", "source_type", "uploaded_by", "reviewed_by", "season__series", "season")
     list_select_related = ("season", "season__series")
     list_per_page = 50
-    search_fields = ("title", "plot", "external_url")
+    search_fields = ("title", "plot", "external_url", "uploaded_by__username")
     autocomplete_fields = ["season"]
     prepopulated_fields = {"slug": ("title",)}
+    readonly_fields = ("uploaded_by", "reviewed_by", "submitted_at", "published_at")
     actions = ["submit_for_review", "approve_selected", "reject_selected", "move_to_draft"]
 
     fieldsets = (
@@ -41,7 +52,12 @@ class EpisodeAdmin(admin.ModelAdmin):
         (
             "Metadata",
             {
-                "fields": (("runtime", "release_date"), "status"),
+                "fields": (
+                    ("runtime", "release_date"),
+                    "status",
+                    ("uploaded_by", "reviewed_by"),
+                    ("submitted_at", "published_at"),
+                ),
             },
         ),
     )
@@ -92,9 +108,6 @@ class EpisodeAdmin(admin.ModelAdmin):
 
     parent_season_link.short_description = "Season"
 
-    def has_module_permission(self, request):
-        return False
-
 
 class EpisodeInline(admin.TabularInline):
     model = Episode
@@ -110,15 +123,16 @@ class EpisodeInline(admin.TabularInline):
 
 
 @admin.register(Season)
-class SeasonAdmin(admin.ModelAdmin):
-    list_display = ("season_label", "status", "parent_series_link", "episode_count_link")
-    list_filter = ("status", "series")
+class SeasonAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
+    list_display = ("season_label", "status", "uploaded_by", "reviewed_by", "parent_series_link", "episode_count_link")
+    list_filter = ("status", "uploaded_by", "reviewed_by", "series")
     list_select_related = ("series",)
     list_per_page = 50
-    search_fields = ("title", "description")
+    search_fields = ("title", "description", "uploaded_by__username")
     autocomplete_fields = ["series"]
     inlines = [EpisodeInline]
     prepopulated_fields = {"slug": ("season_number",)}
+    readonly_fields = ("uploaded_by", "reviewed_by", "submitted_at", "published_at")
     actions = ["submit_for_review", "approve_selected", "reject_selected", "move_to_draft"]
 
     fieldsets = (
@@ -132,6 +146,8 @@ class SeasonAdmin(admin.ModelAdmin):
                     "description",
                     "poster",
                     "status",
+                    ("uploaded_by", "reviewed_by"),
+                    ("submitted_at", "published_at"),
                 ),
             },
         ),
@@ -213,9 +229,6 @@ class SeasonAdmin(admin.ModelAdmin):
         count = queryset.update(status=Season.STATUS_DRAFT)
         self.message_user(request, f"Moved {count} seasons back to draft.", messages.SUCCESS)
 
-    def has_module_permission(self, request):
-        return False
-
 
 class SeasonInline(admin.TabularInline):
     model = Season
@@ -230,13 +243,14 @@ class SeasonInline(admin.TabularInline):
         return "-"
 
 
-class SeriesWorkflowAdmin(admin.ModelAdmin):
-    list_display = ("title", "status", "view_seasons_link", "rating", "first_air_date")
-    list_filter = ("status", "categories", "first_air_date")
+class SeriesWorkflowAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
+    list_display = ("title", "status", "uploaded_by", "reviewed_by", "view_seasons_link", "rating", "first_air_date")
+    list_filter = ("status", "uploaded_by", "reviewed_by", "categories", "first_air_date")
     list_per_page = 50
-    search_fields = ("title", "description")
+    search_fields = ("title", "description", "uploaded_by__username")
     autocomplete_fields = ["categories"]
     prepopulated_fields = {"slug": ("title",)}
+    readonly_fields = ("uploaded_by", "reviewed_by", "submitted_at", "published_at")
     actions = ["submit_for_review", "approve_selected", "reject_selected", "move_to_draft", "sync_from_tmdb"]
 
     fieldsets = (
@@ -256,7 +270,12 @@ class SeriesWorkflowAdmin(admin.ModelAdmin):
         (
             "Metadata",
             {
-                "fields": (("rating", "first_air_date"), "status"),
+                "fields": (
+                    ("rating", "first_air_date"),
+                    "status",
+                    ("uploaded_by", "reviewed_by"),
+                    ("submitted_at", "published_at"),
+                ),
             },
         ),
     )
@@ -382,7 +401,7 @@ class StatusSeriesAdmin(SeriesWorkflowAdmin):
 @admin.register(DraftSeries)
 class DraftSeriesAdmin(StatusSeriesAdmin):
     status_filter = Series.STATUS_DRAFT
-    actions = ["submit_for_review", "approve_selected"]
+    actions = ["submit_for_review"]
 
 
 @admin.register(PendingReviewSeries)

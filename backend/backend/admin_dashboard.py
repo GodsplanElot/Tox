@@ -5,6 +5,8 @@ from django.contrib.admin.models import LogEntry
 from django.template.response import TemplateResponse
 from django.urls import reverse
 
+from apps.common.admin_roles import is_worker
+
 
 def _safe_count(model, **filters):
     try:
@@ -13,45 +15,56 @@ def _safe_count(model, **filters):
         return 0
 
 
-def _dashboard_context():
+def _dashboard_context(request):
     from apps.movies.models import Movie
     from apps.series.models import Episode, Series
 
+    movie_scope = Movie.objects.all()
+    series_scope = Series.objects.all()
+    episode_scope = Episode.objects.all()
+    dashboard_title = "Global Review Queue"
+    if is_worker(request.user):
+        movie_scope = movie_scope.filter(uploaded_by=request.user)
+        series_scope = series_scope.filter(uploaded_by=request.user)
+        episode_scope = episode_scope.filter(uploaded_by=request.user)
+        dashboard_title = "Your Upload Queue"
+
     return {
+        "tox_dashboard_title": dashboard_title,
         "tox_stat_cards": [
             {
                 "label": "Draft Movies",
-                "value": _safe_count(Movie, status=Movie.STATUS_DRAFT),
+                "value": movie_scope.filter(status=Movie.STATUS_DRAFT).count(),
                 "url": reverse("admin:movies_draftmovie_changelist"),
                 "tone": "muted",
             },
             {
                 "label": "Movies Pending",
-                "value": _safe_count(Movie, status=Movie.STATUS_PENDING_REVIEW),
+                "value": movie_scope.filter(status=Movie.STATUS_PENDING_REVIEW).count(),
                 "url": reverse("admin:movies_pendingreviewmovie_changelist"),
                 "tone": "warning",
             },
             {
                 "label": "Published Movies",
-                "value": _safe_count(Movie, status=Movie.STATUS_PUBLISHED),
+                "value": movie_scope.filter(status=Movie.STATUS_PUBLISHED).count(),
                 "url": reverse("admin:movies_publishedmovie_changelist"),
                 "tone": "success",
             },
             {
                 "label": "Draft Series",
-                "value": _safe_count(Series, status=Series.STATUS_DRAFT),
+                "value": series_scope.filter(status=Series.STATUS_DRAFT).count(),
                 "url": reverse("admin:series_draftseries_changelist"),
                 "tone": "muted",
             },
             {
                 "label": "Series Pending",
-                "value": _safe_count(Series, status=Series.STATUS_PENDING_REVIEW),
+                "value": series_scope.filter(status=Series.STATUS_PENDING_REVIEW).count(),
                 "url": reverse("admin:series_pendingreviewseries_changelist"),
                 "tone": "warning",
             },
             {
                 "label": "Episodes Pending",
-                "value": _safe_count(Episode, status=Episode.STATUS_PENDING_REVIEW),
+                "value": episode_scope.filter(status=Episode.STATUS_PENDING_REVIEW).count(),
                 "url": reverse("admin:series_episode_changelist") + "?status__exact=pending_review",
                 "tone": "danger",
             },
@@ -118,7 +131,7 @@ def tox_admin_index(site, request, extra_context=None):
         "title": site.index_title,
         "subtitle": None,
         "app_list": app_list,
-        **_dashboard_context(),
+        **_dashboard_context(request),
         **(extra_context or {}),
     }
     request.current_app = site.name
