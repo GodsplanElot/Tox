@@ -875,6 +875,10 @@ body {
   line-height: 1.6;
   margin-bottom: 1rem;
   font-size: 0.95rem;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .hero-categories {

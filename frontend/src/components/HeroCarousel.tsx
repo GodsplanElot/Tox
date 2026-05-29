@@ -60,7 +60,7 @@ const HeroCarousel = ({ items }: HeroCarouselProps) => {
                 )}
               </h1>
 
-              <p className="hero-description line-clamp-3">
+              <p className="hero-description">
                 {item.description}
               </p>
 
