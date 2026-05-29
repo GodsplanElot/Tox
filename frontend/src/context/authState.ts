@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import type { AuthUser, RegisterPendingResponse } from "../types/auth";
+import type { AuthUser, PasswordResetPendingResponse, RegisterPendingResponse } from "../types/auth";
 
 export type LoginPayload = {
   email: string;
@@ -22,6 +22,13 @@ export type AuthContextValue = {
   register: (payload: RegisterPayload) => Promise<RegisterPendingResponse>;
   verifyEmail: (payload: { email: string; otp: string }) => Promise<void>;
   resendOtp: (email: string) => Promise<RegisterPendingResponse>;
+  requestPasswordReset: (email: string) => Promise<PasswordResetPendingResponse>;
+  confirmPasswordReset: (payload: {
+    email: string;
+    otp: string;
+    password: string;
+    password_confirm: string;
+  }) => Promise<void>;
   logout: () => void;
 };
 

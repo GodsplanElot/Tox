@@ -2,7 +2,12 @@ import type { Movie } from "../types/movie";
 import type { Series } from "../types/series";
 import type { Category } from "../types/category";
 import type { WatchlistItem } from "../types/watchlist";
-import type { AuthResponse, AuthUser, RegisterPendingResponse } from "../types/auth";
+import type {
+  AuthResponse,
+  AuthUser,
+  PasswordResetPendingResponse,
+  RegisterPendingResponse,
+} from "../types/auth";
 
 const API_BASE_URL =
   import.meta.env.VITE_API_BASE_URL ??
@@ -138,6 +143,25 @@ export const api = {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username: email, password }),
+    }).then(handleResponse),
+
+  requestPasswordReset: (email: string): Promise<PasswordResetPendingResponse> =>
+    fetch(`${API_BASE_URL}/users/password-reset/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email }),
+    }).then(handleResponse),
+
+  confirmPasswordReset: (payload: {
+    email: string;
+    otp: string;
+    password: string;
+    password_confirm: string;
+  }): Promise<{ detail: string }> =>
+    fetch(`${API_BASE_URL}/users/password-reset/confirm/`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
     }).then(handleResponse),
 
   googleLogin: (credential: string): Promise<AuthResponse> =>

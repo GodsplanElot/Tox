@@ -5,7 +5,7 @@ import requests
 from rest_framework import status
 from rest_framework.test import APITestCase
 
-from .models import PendingSignupVerification
+from .models import PendingPasswordReset, PendingSignupVerification
 
 
 User = get_user_model()
@@ -123,6 +123,84 @@ class AuthApiTests(APITestCase):
 
         self.assertEqual(me_response.status_code, status.HTTP_200_OK)
         self.assertEqual(me_response.data["username"], "toxuser")
+
+    @patch("apps.users.views.send_password_reset_otp")
+    @patch("apps.users.views.generate_otp", return_value="123456")
+    def test_password_reset_request_sends_otp(self, mock_generate_otp, mock_send_reset_otp):
+        User.objects.create_user(
+            username="toxuser",
+            email="tox@example.com",
+            password="StrongPass123",
+        )
+
+        response = self.client.post(
+            "/api/users/password-reset/",
+            {"email": "tox@example.com"},
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_202_ACCEPTED)
+        self.assertTrue(PendingPasswordReset.objects.filter(email="tox@example.com").exists())
+        mock_send_reset_otp.assert_called_once_with("tox@example.com", "123456")
+
+    @patch("apps.users.views.send_password_reset_otp")
+    @patch("apps.users.views.generate_otp", return_value="123456")
+    def test_password_reset_confirm_changes_password(self, mock_generate_otp, mock_send_reset_otp):
+        user = User.objects.create_user(
+            username="toxuser",
+            email="tox@example.com",
+            password="StrongPass123",
+        )
+        self.client.post(
+            "/api/users/password-reset/",
+            {"email": "tox@example.com"},
+            format="json",
+        )
+
+        response = self.client.post(
+            "/api/users/password-reset/confirm/",
+            {
+                "email": "tox@example.com",
+                "otp": "123456",
+                "password": "NewStrongPass123",
+                "password_confirm": "NewStrongPass123",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        user.refresh_from_db()
+        self.assertTrue(user.check_password("NewStrongPass123"))
+        self.assertFalse(PendingPasswordReset.objects.filter(email="tox@example.com").exists())
+
+    @patch("apps.users.views.send_password_reset_otp")
+    @patch("apps.users.views.generate_otp", return_value="123456")
+    def test_password_reset_confirm_rejects_wrong_otp(self, mock_generate_otp, mock_send_reset_otp):
+        user = User.objects.create_user(
+            username="toxuser",
+            email="tox@example.com",
+            password="StrongPass123",
+        )
+        self.client.post(
+            "/api/users/password-reset/",
+            {"email": "tox@example.com"},
+            format="json",
+        )
+
+        response = self.client.post(
+            "/api/users/password-reset/confirm/",
+            {
+                "email": "tox@example.com",
+                "otp": "000000",
+                "password": "NewStrongPass123",
+                "password_confirm": "NewStrongPass123",
+            },
+            format="json",
+        )
+
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        user.refresh_from_db()
+        self.assertTrue(user.check_password("StrongPass123"))
 
     @override_settings(GOOGLE_OAUTH_CLIENT_ID="google-client-id")
     @patch("apps.users.views.fetch_google_tokeninfo")

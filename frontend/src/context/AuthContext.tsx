@@ -77,6 +77,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return api.resendOtp(email);
   }, []);
 
+  const requestPasswordReset = useCallback(async (email: string) => {
+    return api.requestPasswordReset(email);
+  }, []);
+
+  const confirmPasswordReset = useCallback(async (payload: {
+    email: string;
+    otp: string;
+    password: string;
+    password_confirm: string;
+  }) => {
+    await api.confirmPasswordReset(payload);
+  }, []);
+
   const logout = useCallback(() => {
     clearTokens();
     setUser(null);
@@ -92,9 +105,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       register,
       verifyEmail,
       resendOtp,
+      requestPasswordReset,
+      confirmPasswordReset,
       logout,
     }),
-    [googleLogin, isLoading, login, logout, register, resendOtp, user, verifyEmail],
+    [
+      confirmPasswordReset,
+      googleLogin,
+      isLoading,
+      login,
+      logout,
+      register,
+      requestPasswordReset,
+      resendOtp,
+      user,
+      verifyEmail,
+    ],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

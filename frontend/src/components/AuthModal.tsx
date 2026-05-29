@@ -4,7 +4,7 @@ import { useAuth } from "../context/useAuth";
 import type { GoogleCredentialResponse } from "../types/auth";
 import "./AuthModal.css";
 
-type AuthTab = "login" | "signup";
+type AuthTab = "login" | "signup" | "reset";
 
 type Props = {
   show: boolean;
@@ -91,65 +91,78 @@ const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
     >
       <Modal.Header closeButton>
         <Modal.Title>
-          {activeTab === "login" ? "Welcome back" : "Create account"}
+          {activeTab === "login"
+            ? "Welcome back"
+            : activeTab === "signup"
+              ? "Create account"
+              : "Reset password"}
         </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
-        <div className="auth-tab-nav">
-          <button
-            type="button"
-            className={`auth-tab-btn ${activeTab === "login" ? "auth-tab-btn--active" : ""}`}
-            onClick={() => switchTab("login")}
-          >
-            Log In
-          </button>
-          <button
-            type="button"
-            className={`auth-tab-btn ${activeTab === "signup" ? "auth-tab-btn--active" : ""}`}
-            onClick={() => switchTab("signup")}
-          >
-            Sign Up
-          </button>
-        </div>
+        {activeTab !== "reset" && (
+          <div className="auth-tab-nav">
+            <button
+              type="button"
+              className={`auth-tab-btn ${activeTab === "login" ? "auth-tab-btn--active" : ""}`}
+              onClick={() => switchTab("login")}
+            >
+              Log In
+            </button>
+            <button
+              type="button"
+              className={`auth-tab-btn ${activeTab === "signup" ? "auth-tab-btn--active" : ""}`}
+              onClick={() => switchTab("signup")}
+            >
+              Sign Up
+            </button>
+          </div>
+        )}
 
-        <div className="auth-oauth-section">
-          <GoogleSignInButton
-            onSuccess={onHide}
-            onError={setOauthError}
-          />
-          {oauthError && <div className="auth-oauth-error">{oauthError}</div>}
+        {activeTab !== "reset" && (
+          <>
+            <div className="auth-oauth-section">
+              <GoogleSignInButton
+                onSuccess={onHide}
+                onError={setOauthError}
+              />
+              {oauthError && <div className="auth-oauth-error">{oauthError}</div>}
 
-          <button type="button" className="auth-oauth-btn auth-oauth-btn--github" disabled>
-            <span className="auth-oauth-icon">
-              <GitHubIcon />
-            </span>
-            Continue with GitHub
-          </button>
+              <button type="button" className="auth-oauth-btn auth-oauth-btn--github" disabled>
+                <span className="auth-oauth-icon">
+                  <GitHubIcon />
+                </span>
+                Continue with GitHub
+              </button>
 
-          <button type="button" className="auth-oauth-btn auth-oauth-btn--apple" disabled>
-            <span className="auth-oauth-icon">
-              <AppleIcon />
-            </span>
-            Continue with Apple
-          </button>
-        </div>
+              <button type="button" className="auth-oauth-btn auth-oauth-btn--apple" disabled>
+                <span className="auth-oauth-icon">
+                  <AppleIcon />
+                </span>
+                Continue with Apple
+              </button>
+            </div>
 
-        <div className="auth-divider">
-          <span>or continue with email</span>
-        </div>
+            <div className="auth-divider">
+              <span>or continue with email</span>
+            </div>
+          </>
+        )}
 
         <div key={activeTab} className="auth-tab-content">
           {activeTab === "login" ? (
             <LoginForm
               onSuccess={onHide}
               onSwitchTab={() => switchTab("signup")}
+              onForgotPassword={() => switchTab("reset")}
             />
-          ) : (
+          ) : activeTab === "signup" ? (
             <SignUpForm
               onSuccess={onHide}
               onSwitchTab={() => switchTab("login")}
             />
+          ) : (
+            <PasswordResetForm onSwitchLogin={() => switchTab("login")} />
           )}
         </div>
       </Modal.Body>
@@ -248,9 +261,11 @@ export const GoogleSignInButton = ({
 const LoginForm = ({
   onSuccess,
   onSwitchTab,
+  onForgotPassword,
 }: {
   onSuccess: () => void;
   onSwitchTab: () => void;
+  onForgotPassword: () => void;
 }) => {
   const { login } = useAuth();
   const [email, setEmail] = useState("");
@@ -315,7 +330,7 @@ const LoginForm = ({
 
       <div className="auth-extras">
         <div />
-        <button type="button" className="auth-forgot-link">
+        <button type="button" className="auth-forgot-link" onClick={onForgotPassword}>
           Forgot password?
         </button>
       </div>
@@ -328,6 +343,233 @@ const LoginForm = ({
         <span>Don't have an account? </span>
         <button type="button" className="auth-footer-link" onClick={onSwitchTab}>
           Sign Up
+        </button>
+      </div>
+    </form>
+  );
+};
+
+const PasswordResetForm = ({ onSwitchLogin }: { onSwitchLogin: () => void }) => {
+  const { requestPasswordReset, confirmPasswordReset } = useAuth();
+  const [email, setEmail] = useState("");
+  const [pendingEmail, setPendingEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
+  const [resendWait, setResendWait] = useState(0);
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isAwaitingOtp = Boolean(pendingEmail);
+
+  useEffect(() => {
+    if (!resendWait) return;
+
+    const timer = window.setInterval(() => {
+      setResendWait((current) => Math.max(0, current - 1));
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [resendWait]);
+
+  const handleRequest = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError("");
+    setMessage("");
+    setIsSubmitting(true);
+
+    try {
+      const response = await requestPasswordReset(email);
+      setPendingEmail(response.email);
+      setResendWait(response.resend_available_in ?? 0);
+      setMessage(response.detail);
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : "Unable to send password reset code.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleConfirm = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setError("");
+    setMessage("");
+    setIsSubmitting(true);
+
+    try {
+      await confirmPasswordReset({
+        email: pendingEmail,
+        otp,
+        password,
+        password_confirm: passwordConfirm,
+      });
+      setMessage("Password reset. You can log in with your new password.");
+      setOtp("");
+      setPassword("");
+      setPasswordConfirm("");
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : "Unable to reset password.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleResend = async () => {
+    if (resendWait > 0) return;
+    setError("");
+    setMessage("");
+    setIsSubmitting(true);
+
+    try {
+      const response = await requestPasswordReset(pendingEmail);
+      setResendWait(response.resend_available_in ?? 0);
+      setMessage(response.detail);
+      setOtp("");
+    } catch (submitError) {
+      setError(
+        submitError instanceof Error
+          ? submitError.message
+          : "Unable to send another reset code.",
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (isAwaitingOtp) {
+    return (
+      <form onSubmit={handleConfirm}>
+        {error && <div className="auth-error">{error}</div>}
+        {message && <div className="auth-success">{message}</div>}
+
+        <div className="auth-otp-panel">
+          <span className="auth-otp-kicker">Password reset</span>
+          <h3>Check your inbox</h3>
+          <p>
+            Enter the 6 digit code sent to <strong>{pendingEmail}</strong>.
+          </p>
+        </div>
+
+        <div className="auth-form-group">
+          <label className="auth-form-label" htmlFor="reset-otp">
+            Reset code
+          </label>
+          <input
+            id="reset-otp"
+            type="text"
+            inputMode="numeric"
+            pattern="[0-9]*"
+            className="auth-form-input auth-otp-input"
+            placeholder="000000"
+            autoComplete="one-time-code"
+            value={otp}
+            onChange={(event) => setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))}
+            required
+          />
+        </div>
+
+        <div className="auth-form-group">
+          <label className="auth-form-label" htmlFor="reset-password">
+            New password
+          </label>
+          <input
+            id="reset-password"
+            type="password"
+            className="auth-form-input"
+            placeholder="Create a new password"
+            autoComplete="new-password"
+            value={password}
+            onChange={(event) => setPassword(event.target.value)}
+            minLength={8}
+            required
+          />
+        </div>
+
+        <div className="auth-form-group">
+          <label className="auth-form-label" htmlFor="reset-password-confirm">
+            Confirm new password
+          </label>
+          <input
+            id="reset-password-confirm"
+            type="password"
+            className="auth-form-input"
+            placeholder="Confirm new password"
+            autoComplete="new-password"
+            value={passwordConfirm}
+            onChange={(event) => setPasswordConfirm(event.target.value)}
+            minLength={8}
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          className="auth-submit-btn"
+          disabled={isSubmitting || otp.length !== 6}
+        >
+          {isSubmitting ? "Resetting..." : "Reset Password"}
+        </button>
+
+        <div className="auth-footer auth-footer--otp">
+          <button
+            type="button"
+            className="auth-footer-link"
+            onClick={handleResend}
+            disabled={resendWait > 0}
+          >
+            {resendWait > 0 ? `Resend in ${resendWait}s` : "Send another code"}
+          </button>
+          <span> - </span>
+          <button type="button" className="auth-footer-link" onClick={onSwitchLogin}>
+            Back to log in
+          </button>
+        </div>
+      </form>
+    );
+  }
+
+  return (
+    <form onSubmit={handleRequest}>
+      {error && <div className="auth-error">{error}</div>}
+      {message && <div className="auth-success">{message}</div>}
+
+      <div className="auth-otp-panel">
+        <span className="auth-otp-kicker">Account recovery</span>
+        <h3>Get a reset code</h3>
+        <p>Enter your account email and we will send a one-time reset code.</p>
+      </div>
+
+      <div className="auth-form-group">
+        <label className="auth-form-label" htmlFor="reset-email">
+          Email
+        </label>
+        <input
+          id="reset-email"
+          type="email"
+          className="auth-form-input"
+          placeholder="you@example.com"
+          autoComplete="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          required
+        />
+      </div>
+
+      <button type="submit" className="auth-submit-btn" disabled={isSubmitting}>
+        {isSubmitting ? "Sending..." : "Send Reset Code"}
+      </button>
+
+      <div className="auth-footer">
+        <button type="button" className="auth-footer-link" onClick={onSwitchLogin}>
+          Back to log in
         </button>
       </div>
     </form>

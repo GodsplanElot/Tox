@@ -314,6 +314,17 @@
   font-weight: 500;
 }
 
+.auth-success {
+  padding: 0.7rem 0.85rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(190, 255, 54, 0.24);
+  border-radius: 10px;
+  background: rgba(190, 255, 54, 0.09);
+  color: #e3ff9d;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
 .auth-otp-panel {
   margin-bottom: 1rem;
   padding: 0.9rem;

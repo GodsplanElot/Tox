@@ -22,6 +22,8 @@ export type RegisterPendingResponse = {
   resend_available_in: number;
 };
 
+export type PasswordResetPendingResponse = RegisterPendingResponse;
+
 export type GoogleCredentialResponse = {
   credential?: string;
 };

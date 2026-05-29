@@ -11,10 +11,12 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
 
-from .models import PendingSignupVerification
+from .models import PendingPasswordReset, PendingSignupVerification
 from .serializers import (
+    ConfirmPasswordResetSerializer,
     EmailOrUsernameTokenObtainPairSerializer,
     RegisterSerializer,
+    RequestPasswordResetSerializer,
     ResendOtpSerializer,
     UserSerializer,
     VerifyEmailSerializer,
@@ -83,6 +85,37 @@ def send_signup_otp(email, otp):
             "text": (
                 f"Your ToxicWaste verification code is {otp}. "
                 f"It expires in {settings.OTP_EXPIRY_MINUTES} minutes."
+            ),
+        },
+        timeout=8,
+    )
+    response.raise_for_status()
+
+
+def send_password_reset_otp(email, otp):
+    if not settings.RESEND_API_KEY:
+        raise RuntimeError("Password reset email is not configured.")
+
+    response = requests.post(
+        RESEND_EMAIL_URL,
+        headers={
+            "Authorization": f"Bearer {settings.RESEND_API_KEY}",
+            "Content-Type": "application/json",
+        },
+        json={
+            "from": settings.DEFAULT_FROM_EMAIL,
+            "to": [email],
+            "subject": "Reset your ToxicWaste password",
+            "html": (
+                "<p>Your ToxicWaste password reset code is:</p>"
+                f"<h1 style='letter-spacing:4px'>{otp}</h1>"
+                f"<p>This code expires in {settings.OTP_EXPIRY_MINUTES} minutes.</p>"
+                "<p>If you did not request this, you can ignore this email.</p>"
+            ),
+            "text": (
+                f"Your ToxicWaste password reset code is {otp}. "
+                f"It expires in {settings.OTP_EXPIRY_MINUTES} minutes. "
+                "If you did not request this, you can ignore this email."
             ),
         },
         timeout=8,
@@ -293,6 +326,122 @@ class ResendOtpView(APIView):
 
 class LoginView(TokenObtainPairView):
     serializer_class = EmailOrUsernameTokenObtainPairSerializer
+
+
+class RequestPasswordResetView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = RequestPasswordResetSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data["email"]
+        now = timezone.now()
+        user_exists = User.objects.filter(email__iexact=email).exists()
+        existing_pending = PendingPasswordReset.objects.filter(
+            email=email,
+            consumed_at__isnull=True,
+        ).first()
+
+        if user_exists and existing_pending and existing_pending.resend_available_at > now:
+            return Response(
+                {
+                    "detail": "Please wait before requesting another code.",
+                    "email": email,
+                    "resend_available_in": seconds_until(existing_pending.resend_available_at),
+                },
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
+        otp = generate_otp()
+        pending = None
+        if user_exists:
+            pending, _created = PendingPasswordReset.objects.update_or_create(
+                email=email,
+                defaults={
+                    "otp_hash": make_password(otp),
+                    "expires_at": now + otp_expiry_delta(),
+                    "resend_available_at": now + otp_resend_delta(),
+                    "attempt_count": 0,
+                    "consumed_at": None,
+                },
+            )
+            try:
+                send_password_reset_otp(email, otp)
+            except (RuntimeError, requests.RequestException):
+                pending.delete()
+                return Response(
+                    {"detail": "Unable to send password reset email right now."},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                )
+
+        return Response(
+            {
+                "detail": "If an account exists for this email, a password reset code has been sent.",
+                "email": email,
+                "expires_in": seconds_until(pending.expires_at) if pending else settings.OTP_EXPIRY_MINUTES * 60,
+                "resend_available_in": seconds_until(pending.resend_available_at) if pending else settings.OTP_RESEND_COOLDOWN_SECONDS,
+            },
+            status=status.HTTP_202_ACCEPTED,
+        )
+
+
+class ConfirmPasswordResetView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def post(self, request):
+        serializer = ConfirmPasswordResetSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        email = serializer.validated_data["email"]
+        otp = serializer.validated_data["otp"]
+        password = serializer.validated_data["password"]
+
+        pending = PendingPasswordReset.objects.filter(
+            email=email,
+            consumed_at__isnull=True,
+        ).first()
+        if not pending:
+            return Response(
+                {"detail": "No active password reset was found for this email."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        now = timezone.now()
+        if pending.expires_at <= now:
+            pending.delete()
+            return Response(
+                {"detail": "Password reset code has expired. Request a new code."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        if pending.attempt_count >= settings.OTP_MAX_ATTEMPTS:
+            return Response(
+                {"detail": "Too many incorrect attempts. Request a new code."},
+                status=status.HTTP_429_TOO_MANY_REQUESTS,
+            )
+
+        if not check_password(otp, pending.otp_hash):
+            pending.attempt_count += 1
+            pending.save(update_fields=["attempt_count", "updated_at"])
+            return Response(
+                {"detail": "Password reset code is incorrect."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
+
+        user = User.objects.filter(email__iexact=email).first()
+        if not user:
+            pending.delete()
+            return Response(
+                {"detail": "No active password reset was found for this email."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        user.set_password(password)
+        user.save(update_fields=["password"])
+        pending.consumed_at = now
+        pending.save(update_fields=["consumed_at", "updated_at"])
+        pending.delete()
+
+        return Response({"detail": "Password has been reset. You can now log in."})
 
 
 class MeView(APIView):
