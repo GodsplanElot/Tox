@@ -32,7 +32,7 @@ class MovieWorkflowAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
             'description': "Prefer an external legal download/source link. Upload only when the file should be hosted by this app.",
         }),
         ("Media Assets", {
-            'fields': ('poster',),
+            'fields': ('poster', 'hero_image'),
         }),
         ("Metadata", {
             'fields': (

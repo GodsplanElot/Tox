@@ -5,6 +5,7 @@ export interface Movie {
   title: string;
   slug: string;
   poster: string;
+  hero_image?: string | null;
   description: string;
   rating?: number;
   release_date?: string;
