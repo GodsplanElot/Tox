@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">ToxicReels</title>
+  <desc id="desc">AI-powered movie reels and future AI cinema network</desc>
+  <defs>
+    <radialGradient id="glow" cx="72%" cy="20%" r="68%">
+      <stop offset="0%" stop-color="#d9ff3f" stop-opacity="0.42"/>
+      <stop offset="42%" stop-color="#f9ab00" stop-opacity="0.18"/>
+      <stop offset="100%" stop-color="#050505" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="panel" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#151515"/>
+      <stop offset="100%" stop-color="#050505"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#050505"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <path d="M0 474 C188 390 316 542 520 470 C705 405 833 243 1200 326 L1200 630 L0 630 Z" fill="#101010" opacity="0.9"/>
+  <rect x="72" y="76" width="1056" height="478" rx="34" fill="url(#panel)" stroke="#2b2b2b"/>
+  <circle cx="974" cy="166" r="92" fill="#d9ff3f" opacity="0.12"/>
+  <text x="116" y="180" fill="#f9ab00" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="800" letter-spacing="8">TOXICREELS</text>
+  <text x="112" y="286" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="900">AI Movie Reels</text>
+  <text x="112" y="366" fill="#ffffff" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="900">&amp; Future Cinema</text>
+  <text x="116" y="438" fill="#c9c9c9" font-family="Arial, Helvetica, sans-serif" font-size="30">A streaming discovery network evolving toward hosted AI-generated movies.</text>
+  <g transform="translate(900 345)">
+    <rect x="0" y="0" width="148" height="88" rx="16" fill="#f9ab00"/>
+    <path d="M58 26 L58 62 L92 44 Z" fill="#050505"/>
+  </g>
+</svg>
