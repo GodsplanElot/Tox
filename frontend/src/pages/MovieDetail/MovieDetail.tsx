@@ -6,6 +6,7 @@ import type { Movie } from "../../types/movie";
 import RatingBadge from "../../components/common/RatingBadge";
 import { FaDownload, FaPlus, FaCheck, FaShareAlt } from "react-icons/fa";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import DownloadRedirectModal from "../../components/DownloadRedirectModal";
 import "./MovieDetail.css";
 
 const MovieDetail: React.FC = () => {
@@ -15,6 +16,10 @@ const MovieDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [isInWatchlist, setIsInWatchlist] = useState(false);
   const [watchlistItemId, setWatchlistItemId] = useState<number | null>(null);
+  const [downloadTarget, setDownloadTarget] = useState<{
+    title: string;
+    url: string;
+  } | null>(null);
 
   useEffect(() => {
     const fetchMovieData = async () => {
@@ -90,6 +95,13 @@ const MovieDetail: React.FC = () => {
     }
   };
 
+  const openDownloadModal = () => {
+    if (!movie) return;
+    const url = api.getVideoUrl(movie);
+    if (!url) return;
+    setDownloadTarget({ title: movie.title, url });
+  };
+
   if (loading) {
     return <LoadingSpinner />;
   }
@@ -148,16 +160,14 @@ const MovieDetail: React.FC = () => {
             <div className="movie-detail__actions">
               <div className="download-group">
                 {api.getVideoUrl(movie) ? (
-                  <a
-                    href={api.getVideoUrl(movie)}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    type="button"
                     className="download-btn download-btn--1080p"
-                    download
+                    onClick={openDownloadModal}
                   >
                     <FaDownload />{" "}
                     <span className="action-btn-label">Download</span>
-                  </a>
+                  </button>
                 ) : (
                   <button
                     className="download-btn download-btn--1080p disabled"
@@ -190,6 +200,13 @@ const MovieDetail: React.FC = () => {
           </div>
         </div>
       </section>
+
+      <DownloadRedirectModal
+        show={Boolean(downloadTarget)}
+        title={downloadTarget?.title ?? ""}
+        targetUrl={downloadTarget?.url ?? ""}
+        onHide={() => setDownloadTarget(null)}
+      />
 
       {/* RECOMMENDATIONS */}
       {relatedMovies.length > 0 && (
