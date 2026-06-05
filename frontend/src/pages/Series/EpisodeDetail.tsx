@@ -5,6 +5,7 @@ import Breadcrumbs from "../../components/common/Breadcrumbs";
 import { api } from "../../services/api";
 import type { Series } from "../../types/series";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import DownloadRedirectModal from "../../components/DownloadRedirectModal";
 import "./EpisodeDetail.css";
 
 const EpisodeDetail = () => {
@@ -15,6 +16,10 @@ const EpisodeDetail = () => {
   const navigate = useNavigate();
   const [series, setSeries] = useState<Series | null>(null);
   const [loading, setLoading] = useState(true);
+  const [downloadTarget, setDownloadTarget] = useState<{
+    title: string;
+    url: string;
+  } | null>(null);
 
   useEffect(() => {
     const fetchEpisodeData = async () => {
@@ -49,6 +54,15 @@ const EpisodeDetail = () => {
 
   const handleBack = () => {
     navigate(-1);
+  };
+
+  const openDownloadModal = () => {
+    const url = api.getVideoUrl(episode);
+    if (!url) return;
+    setDownloadTarget({
+      title: `E${episode.episode_number}: ${episode.title}`,
+      url,
+    });
   };
 
   return (
@@ -117,18 +131,16 @@ const EpisodeDetail = () => {
 
             <div className="episode-actions">
               {api.getVideoUrl(episode) && (
-                <a
-                  href={api.getVideoUrl(episode)}
+                <button
+                  type="button"
                   className="download-btn download-btn--small"
-                  download
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  onClick={openDownloadModal}
                 >
                   <FaDownload />{" "}
                   <span className="action-btn-label">
                     Download E{episode.episode_number}: {episode.title}
                   </span>
-                </a>
+                </button>
               )}
             </div>
           </div>
@@ -139,6 +151,13 @@ const EpisodeDetail = () => {
           <p>{episode.plot || series?.description}</p>
         </div>
       </div>
+
+      <DownloadRedirectModal
+        show={Boolean(downloadTarget)}
+        title={downloadTarget?.title ?? ""}
+        targetUrl={downloadTarget?.url ?? ""}
+        onHide={() => setDownloadTarget(null)}
+      />
     </div>
   );
 };

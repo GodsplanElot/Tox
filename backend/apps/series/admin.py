@@ -263,8 +263,8 @@ class SeriesWorkflowAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
         (
             "Media Assets",
             {
-                "fields": ("poster", "trailer_url"),
-                "description": "Upload a poster and provide a trailer link.",
+                "fields": ("poster", "hero_image", "trailer_url"),
+                "description": "Upload a vertical poster, optional wide hero artwork, and provide a trailer link.",
             },
         ),
         (

@@ -41,7 +41,7 @@ class SeriesSerializer(serializers.ModelSerializer):
     class Meta:
         model = Series
         fields = [
-            'id', 'title', 'slug', 'description', 'poster',
+            'id', 'title', 'slug', 'description', 'poster', 'hero_image',
             'trailer_url', 'rating', 'first_air_date', 'categories',
             'seasons', 'created_at'
         ]
@@ -59,7 +59,7 @@ class SeriesListSerializer(serializers.ModelSerializer):
     class Meta:
         model = Series
         fields = [
-            'id', 'title', 'slug', 'description', 'poster',
+            'id', 'title', 'slug', 'description', 'poster', 'hero_image',
             'trailer_url', 'rating', 'first_air_date', 'categories',
             'created_at'
         ]
