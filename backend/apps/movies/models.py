@@ -20,6 +20,12 @@ class Movie(PublishableModel):
         upload_to="posters/movies/",
         help_text="Recommended size: 600x900px (2:3 aspect ratio)"
     )
+    hero_image = models.ImageField(
+        upload_to="heroes/movies/",
+        null=True,
+        blank=True,
+        help_text="Recommended size: 1920x1080px or wider cinematic 16:9 artwork"
+    )
 
     # Video Source Fields (Moved directly into model for easier upload)
     source_type = models.CharField(

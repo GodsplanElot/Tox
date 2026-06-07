@@ -30,6 +30,7 @@ export interface Series {
   slug: string;
   description: string;
   poster: string;
+  hero_image?: string | null;
   trailer_url?: string;
   rating?: number;
   first_air_date?: string;

@@ -14,6 +14,12 @@ class Series(PublishableModel):
         upload_to="posters/series/",
         help_text="Recommended size: 600x900px (2:3 aspect ratio)"
     )
+    hero_image = models.ImageField(
+        upload_to="heroes/series/",
+        null=True,
+        blank=True,
+        help_text="Recommended size: 1920x1080px or wider cinematic 16:9 artwork"
+    )
     trailer_url = models.URLField(help_text="Link to YouTube/Vimeo trailer", null=True, blank=True)
 
     rating = models.FloatField(
