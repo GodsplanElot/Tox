@@ -185,11 +185,16 @@ export const GoogleSignInButton = ({
 
   useEffect(() => {
     if (!clientId || !buttonRef.current) return;
+    const buttonElement = buttonRef.current;
+    let hasUnmounted = false;
 
     const renderGoogleButton = () => {
-      if (!window.google || !buttonRef.current) return;
+      if (!window.google || hasUnmounted) return;
 
-      buttonRef.current.innerHTML = "";
+      const containerWidth = Math.floor(buttonElement.getBoundingClientRect().width);
+      const buttonWidth = variant === "icon" ? 44 : Math.min(Math.max(containerWidth, 220), 400);
+
+      buttonElement.innerHTML = "";
       window.google.accounts.id.initialize({
         client_id: clientId,
         callback: async (response) => {
@@ -212,36 +217,57 @@ export const GoogleSignInButton = ({
         },
       });
 
-      window.google.accounts.id.renderButton(buttonRef.current, {
+      window.google.accounts.id.renderButton(buttonElement, {
         theme: "outline",
         size: "large",
         shape: variant === "icon" ? "circle" : "rectangular",
         type: variant === "icon" ? "icon" : "standard",
         text: "continue_with",
-        width: variant === "icon" ? 44 : 360,
+        width: buttonWidth,
       });
     };
 
+    const renderWhenReady = () => {
+      window.requestAnimationFrame(renderGoogleButton);
+    };
+
+    const resizeObserver = new ResizeObserver(renderWhenReady);
+    resizeObserver.observe(buttonElement);
+
     if (window.google) {
-      renderGoogleButton();
-      return;
+      renderWhenReady();
+      return () => {
+        hasUnmounted = true;
+        resizeObserver.disconnect();
+      };
     }
 
     const existingScript = document.querySelector<HTMLScriptElement>(
       'script[src="https://accounts.google.com/gsi/client"]',
     );
     if (existingScript) {
-      existingScript.addEventListener("load", renderGoogleButton);
-      return () => existingScript.removeEventListener("load", renderGoogleButton);
+      existingScript.addEventListener("load", renderWhenReady);
+      return () => {
+        hasUnmounted = true;
+        resizeObserver.disconnect();
+        existingScript.removeEventListener("load", renderWhenReady);
+      };
     }
 
     const script = document.createElement("script");
     script.src = "https://accounts.google.com/gsi/client";
     script.async = true;
     script.defer = true;
-    script.onload = renderGoogleButton;
+    script.onload = renderWhenReady;
     script.onerror = () => onError("Unable to load Google sign-in.");
     document.head.appendChild(script);
+
+    return () => {
+      hasUnmounted = true;
+      resizeObserver.disconnect();
+      script.onload = null;
+      script.onerror = null;
+    };
   }, [clientId, googleLogin, onError, onSuccess, variant]);
 
   if (!clientId) {

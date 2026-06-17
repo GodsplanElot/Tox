@@ -116,14 +116,17 @@
 }
 
 .auth-google-button {
+  width: 100%;
   min-height: 44px;
   display: flex;
   justify-content: center;
+  overflow: hidden;
 }
 
 .auth-google-button > div,
 .auth-google-button iframe {
   width: 100% !important;
+  max-width: 100% !important;
 }
 
 .auth-oauth-error {
