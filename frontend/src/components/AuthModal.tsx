@@ -187,13 +187,16 @@ export const GoogleSignInButton = ({
     if (!clientId || !buttonRef.current) return;
     const buttonElement = buttonRef.current;
     let hasUnmounted = false;
+    let lastRenderedWidth = 0;
 
     const renderGoogleButton = () => {
       if (!window.google || hasUnmounted) return;
 
       const containerWidth = Math.floor(buttonElement.getBoundingClientRect().width);
       const buttonWidth = variant === "icon" ? 44 : Math.min(Math.max(containerWidth, 220), 400);
+      if (!buttonWidth || buttonWidth === lastRenderedWidth) return;
 
+      lastRenderedWidth = buttonWidth;
       buttonElement.innerHTML = "";
       window.google.accounts.id.initialize({
         client_id: clientId,
@@ -228,17 +231,15 @@ export const GoogleSignInButton = ({
     };
 
     const renderWhenReady = () => {
-      window.requestAnimationFrame(renderGoogleButton);
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(renderGoogleButton);
+      });
     };
-
-    const resizeObserver = new ResizeObserver(renderWhenReady);
-    resizeObserver.observe(buttonElement);
 
     if (window.google) {
       renderWhenReady();
       return () => {
         hasUnmounted = true;
-        resizeObserver.disconnect();
       };
     }
 
@@ -249,7 +250,6 @@ export const GoogleSignInButton = ({
       existingScript.addEventListener("load", renderWhenReady);
       return () => {
         hasUnmounted = true;
-        resizeObserver.disconnect();
         existingScript.removeEventListener("load", renderWhenReady);
       };
     }
@@ -264,7 +264,6 @@ export const GoogleSignInButton = ({
 
     return () => {
       hasUnmounted = true;
-      resizeObserver.disconnect();
       script.onload = null;
       script.onerror = null;
     };
