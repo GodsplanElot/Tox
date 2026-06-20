@@ -12,6 +12,15 @@ type Props = {
   defaultTab?: AuthTab;
 };
 
+type GoogleButtonOptions = {
+  theme: "outline" | "filled_blue" | "filled_black";
+  size: "large" | "medium" | "small";
+  shape: "rectangular" | "pill" | "circle" | "square";
+  text?: "signin_with" | "signup_with" | "continue_with" | "signin";
+  type?: "standard" | "icon";
+  width?: number;
+};
+
 declare global {
   interface Window {
     google?: {
@@ -23,18 +32,13 @@ declare global {
           }) => void;
           renderButton: (
             element: HTMLElement,
-            options: {
-              theme: "outline" | "filled_blue" | "filled_black";
-              size: "large" | "medium" | "small";
-              shape: "rectangular" | "pill" | "circle" | "square";
-              text?: "signin_with" | "signup_with" | "continue_with" | "signin";
-              type?: "standard" | "icon";
-              width?: number;
-            },
+            options: GoogleButtonOptions,
           ) => void;
         };
       };
     };
+    toxGoogleClientId?: string;
+    toxGoogleCredentialHandler?: (response: GoogleCredentialResponse) => void;
   }
 }
 
@@ -74,10 +78,21 @@ const AppleIcon = () => (
 const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
   const [activeTab, setActiveTab] = useState<AuthTab>(defaultTab);
   const [oauthError, setOauthError] = useState("");
+  const [isCompactOauth, setIsCompactOauth] = useState(false);
 
   useEffect(() => {
     setActiveTab(defaultTab);
   }, [defaultTab, show]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 575.98px)");
+    const syncOauthLayout = () => setIsCompactOauth(mediaQuery.matches);
+
+    syncOauthLayout();
+    mediaQuery.addEventListener("change", syncOauthLayout);
+
+    return () => mediaQuery.removeEventListener("change", syncOauthLayout);
+  }, []);
 
   const switchTab = (tab: AuthTab) => setActiveTab(tab);
 
@@ -125,21 +140,22 @@ const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
               <GoogleSignInButton
                 onSuccess={onHide}
                 onError={setOauthError}
+                variant={isCompactOauth ? "icon" : "standard"}
               />
               {oauthError && <div className="auth-oauth-error">{oauthError}</div>}
 
-              <button type="button" className="auth-oauth-btn auth-oauth-btn--github" disabled>
+              <button type="button" className="auth-oauth-btn auth-oauth-btn--github" aria-label="Continue with GitHub" disabled>
                 <span className="auth-oauth-icon">
                   <GitHubIcon />
                 </span>
-                Continue with GitHub
+                <span className="auth-oauth-label">Continue with GitHub</span>
               </button>
 
-              <button type="button" className="auth-oauth-btn auth-oauth-btn--apple" disabled>
+              <button type="button" className="auth-oauth-btn auth-oauth-btn--apple" aria-label="Continue with Apple" disabled>
                 <span className="auth-oauth-icon">
                   <AppleIcon />
                 </span>
-                Continue with Apple
+                <span className="auth-oauth-label">Continue with Apple</span>
               </button>
             </div>
 
@@ -193,41 +209,51 @@ export const GoogleSignInButton = ({
       if (!window.google || hasUnmounted) return;
 
       const containerWidth = Math.floor(buttonElement.getBoundingClientRect().width);
-      const buttonWidth = variant === "icon" ? 44 : Math.min(Math.max(containerWidth, 220), 400);
+      const buttonWidth = variant === "standard" ? Math.min(Math.max(containerWidth, 220), 400) : 44;
       if (!buttonWidth || buttonWidth === lastRenderedWidth) return;
 
       lastRenderedWidth = buttonWidth;
       buttonElement.innerHTML = "";
-      window.google.accounts.id.initialize({
-        client_id: clientId,
-        callback: async (response) => {
-          if (!response.credential) {
-            onError("Google did not return a sign-in credential.");
-            return;
-          }
+      window.toxGoogleCredentialHandler = async (response) => {
+        if (!response.credential) {
+          onError("Google did not return a sign-in credential.");
+          return;
+        }
 
-          try {
-            onError("");
-            await googleLogin(response.credential);
-            onSuccess();
-          } catch (error) {
-            onError(
-              error instanceof Error
-                ? error.message
-                : "Unable to sign in with Google.",
+        try {
+          onError("");
+          await googleLogin(response.credential);
+          onSuccess();
+        } catch (error) {
+          onError(
+            error instanceof Error
+              ? error.message
+              : "Unable to sign in with Google.",
             );
           }
-        },
-      });
+      };
 
-      window.google.accounts.id.renderButton(buttonElement, {
+      if (window.toxGoogleClientId !== clientId) {
+        window.google.accounts.id.initialize({
+          client_id: clientId,
+          callback: (response) => window.toxGoogleCredentialHandler?.(response),
+        });
+        window.toxGoogleClientId = clientId;
+      }
+
+      const renderOptions: GoogleButtonOptions = {
         theme: "outline",
         size: "large",
         shape: variant === "icon" ? "circle" : "rectangular",
         type: variant === "icon" ? "icon" : "standard",
         text: "continue_with",
-        width: buttonWidth,
-      });
+      };
+
+      if (variant === "standard") {
+        renderOptions.width = buttonWidth;
+      }
+
+      window.google.accounts.id.renderButton(buttonElement, renderOptions);
     };
 
     const renderWhenReady = () => {
@@ -271,11 +297,16 @@ export const GoogleSignInButton = ({
 
   if (!clientId) {
     return (
-      <button type="button" className="auth-oauth-btn auth-oauth-btn--google" disabled>
+      <button
+        type="button"
+        className={`auth-oauth-btn auth-oauth-btn--google ${variant === "icon" ? "auth-oauth-btn--icon" : ""}`}
+        aria-label="Google sign-in not configured"
+        disabled
+      >
         <span className="auth-oauth-icon">
           <GoogleIcon />
         </span>
-        Google sign-in not configured
+        <span className="auth-oauth-label">Google sign-in not configured</span>
       </button>
     );
   }
