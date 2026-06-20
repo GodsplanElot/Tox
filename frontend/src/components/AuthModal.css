@@ -126,6 +126,19 @@
   width: 100% !important;
 }
 
+.auth-google-button--icon {
+  width: 44px;
+  min-height: 44px;
+  flex: 0 0 44px;
+  border-radius: 999px;
+}
+
+.auth-google-button--icon > div,
+.auth-google-button--icon iframe {
+  width: 44px !important;
+  max-width: 44px !important;
+}
+
 .auth-oauth-error {
   padding: 0.65rem 0.8rem;
   border: 1px solid rgba(255, 77, 77, 0.28);
@@ -234,6 +247,10 @@
   justify-content: center;
   font-size: 1.1rem;
   flex-shrink: 0;
+}
+
+.auth-oauth-label {
+  min-width: 0;
 }
 
 /* ================= DIVIDER ================= */
@@ -540,5 +557,54 @@
 
   .auth-modal .modal-body {
     padding: 0.75rem 1.25rem 1.25rem;
+  }
+
+  .auth-oauth-section {
+    display: grid;
+    grid-template-columns: repeat(3, 44px);
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+
+  .auth-google-button {
+    width: 44px;
+    min-height: 44px;
+    border-radius: 999px;
+  }
+
+  .auth-google-button > div,
+  .auth-google-button iframe {
+    width: 44px !important;
+    max-width: 44px !important;
+  }
+
+  .auth-oauth-btn {
+    width: 44px;
+    height: 44px;
+    min-height: 44px;
+    padding: 0;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.96);
+    color: #141414;
+  }
+
+  .auth-oauth-btn:disabled {
+    opacity: 0.72;
+  }
+
+  .auth-oauth-label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+
+  .auth-oauth-error {
+    grid-column: 1 / -1;
+    text-align: center;
   }
 }
