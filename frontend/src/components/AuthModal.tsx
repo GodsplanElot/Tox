@@ -63,36 +63,25 @@ export const GoogleIcon = () => (
   </svg>
 );
 
-const GitHubIcon = () => (
+const InstagramIcon = () => (
   <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-    <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
+    <path d="M7.75 2h8.5A5.76 5.76 0 0 1 22 7.75v8.5A5.76 5.76 0 0 1 16.25 22h-8.5A5.76 5.76 0 0 1 2 16.25v-8.5A5.76 5.76 0 0 1 7.75 2zm0 2A3.76 3.76 0 0 0 4 7.75v8.5A3.76 3.76 0 0 0 7.75 20h8.5A3.76 3.76 0 0 0 20 16.25v-8.5A3.76 3.76 0 0 0 16.25 4h-8.5zM12 7.25A4.75 4.75 0 1 1 12 16.75 4.75 4.75 0 0 1 12 7.25zm0 2A2.75 2.75 0 1 0 12 14.75 2.75 2.75 0 0 0 12 9.25zm5-2.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z" />
   </svg>
 );
 
-const AppleIcon = () => (
+const FacebookIcon = () => (
   <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-    <path d="M17.05 20.28c-.98.95-2.05.88-3.08.4-1.09-.5-2.08-.48-3.24 0-1.44.62-2.2.44-3.06-.4C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z" />
+    <path d="M22 12.06C22 6.48 17.52 2 11.94 2S2 6.48 2 12.06c0 5.04 3.69 9.21 8.51 9.94v-7.03H7.98v-2.91h2.53V9.84c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.45h-1.25c-1.24 0-1.63.77-1.63 1.56v1.89h2.77l-.44 2.91h-2.33V22A10.02 10.02 0 0 0 22 12.06z" />
   </svg>
 );
 
 const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
   const [activeTab, setActiveTab] = useState<AuthTab>(defaultTab);
   const [oauthError, setOauthError] = useState("");
-  const [isCompactOauth, setIsCompactOauth] = useState(false);
 
   useEffect(() => {
     setActiveTab(defaultTab);
   }, [defaultTab, show]);
-
-  useEffect(() => {
-    const mediaQuery = window.matchMedia("(max-width: 575.98px)");
-    const syncOauthLayout = () => setIsCompactOauth(mediaQuery.matches);
-
-    syncOauthLayout();
-    mediaQuery.addEventListener("change", syncOauthLayout);
-
-    return () => mediaQuery.removeEventListener("change", syncOauthLayout);
-  }, []);
 
   const switchTab = (tab: AuthTab) => setActiveTab(tab);
 
@@ -140,22 +129,22 @@ const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
               <GoogleSignInButton
                 onSuccess={onHide}
                 onError={setOauthError}
-                variant={isCompactOauth ? "icon" : "standard"}
+                variant="icon"
               />
               {oauthError && <div className="auth-oauth-error">{oauthError}</div>}
 
-              <button type="button" className="auth-oauth-btn auth-oauth-btn--github" aria-label="Continue with GitHub" disabled>
+              <button type="button" className="auth-oauth-btn auth-oauth-btn--instagram" aria-label="Continue with Instagram" disabled>
                 <span className="auth-oauth-icon">
-                  <GitHubIcon />
+                  <InstagramIcon />
                 </span>
-                <span className="auth-oauth-label">Continue with GitHub</span>
+                <span className="auth-oauth-label">Continue with Instagram</span>
               </button>
 
-              <button type="button" className="auth-oauth-btn auth-oauth-btn--apple" aria-label="Continue with Apple" disabled>
+              <button type="button" className="auth-oauth-btn auth-oauth-btn--facebook" aria-label="Continue with Facebook" disabled>
                 <span className="auth-oauth-icon">
-                  <AppleIcon />
+                  <FacebookIcon />
                 </span>
-                <span className="auth-oauth-label">Continue with Apple</span>
+                <span className="auth-oauth-label">Continue with Facebook</span>
               </button>
             </div>
 
@@ -209,7 +198,7 @@ export const GoogleSignInButton = ({
       if (!window.google || hasUnmounted) return;
 
       const containerWidth = Math.floor(buttonElement.getBoundingClientRect().width);
-      const buttonWidth = variant === "standard" ? Math.min(Math.max(containerWidth, 220), 400) : 44;
+      const buttonWidth = variant === "standard" ? Math.min(Math.max(containerWidth, 240), 400) : 44;
       if (!buttonWidth || buttonWidth === lastRenderedWidth) return;
 
       lastRenderedWidth = buttonWidth;
@@ -311,7 +300,16 @@ export const GoogleSignInButton = ({
     );
   }
 
-  return <div ref={buttonRef} className={`auth-google-button auth-google-button--${variant}`} />;
+  return (
+    <div className={`auth-google-button auth-google-button--${variant}`}>
+      {variant === "icon" && (
+        <span className="auth-google-button__mark" aria-hidden="true">
+          <GoogleIcon />
+        </span>
+      )}
+      <div ref={buttonRef} className="auth-google-button__sdk" />
+    </div>
+  );
 };
 
 const LoginForm = ({
