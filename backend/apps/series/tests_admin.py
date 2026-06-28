@@ -1,9 +1,12 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
-from django.test import TestCase
+from django.contrib.admin.sites import AdminSite
+from django.core.exceptions import ValidationError
+from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
 from apps.common.admin_roles import EDITOR_GROUP, WORKER_GROUP
+from apps.series.admin import EpisodeInline, SeasonAdmin, SeasonInline, SeriesAdmin
 from apps.series.models import DraftSeries, Episode, PendingReviewSeries, PublishedSeries, Season, Series
 
 
@@ -154,3 +157,74 @@ class SeriesAdminRolePermissionTests(TestCase):
         self.assertEqual(self.pending_series.status, Series.STATUS_PUBLISHED)
         self.assertEqual(self.pending_season.status, Season.STATUS_PUBLISHED)
         self.assertEqual(self.pending_series.reviewed_by, self.editor)
+
+
+class SeriesCreationWorkflowAdminTests(TestCase):
+    def setUp(self):
+        self.site = AdminSite()
+        self.request = RequestFactory().get("/admin/")
+        self.request.user = User.objects.create_superuser(
+            username="workflow-admin",
+            email="workflow-admin@example.com",
+            password="StrongPass123",
+        )
+        self.series_admin = SeriesAdmin(Series, self.site)
+        self.season_admin = SeasonAdmin(Season, self.site)
+        self.series = Series.objects.create(
+            title="Workflow Series",
+            slug="workflow-series",
+            description="Series description",
+            poster="posters/series/example.jpg",
+        )
+
+    def test_new_series_and_season_forms_only_offer_draft_status(self):
+        series_form = self.series_admin.get_form(self.request)
+        season_form = self.season_admin.get_form(self.request)
+
+        self.assertEqual(
+            list(series_form.base_fields["status"].choices),
+            [(Series.STATUS_DRAFT, "Draft")],
+        )
+        self.assertEqual(
+            list(season_form.base_fields["status"].choices),
+            [(Season.STATUS_DRAFT, "Draft")],
+        )
+
+    def test_existing_series_form_retains_publication_statuses(self):
+        series_form = self.series_admin.get_form(self.request, obj=self.series)
+        status_values = [value for value, _label in series_form.base_fields["status"].choices]
+
+        self.assertIn(Series.STATUS_PUBLISHED, status_values)
+
+    def test_creation_inlines_start_with_one_draft_child(self):
+        season_inline = SeasonInline(Series, self.site)
+        episode_inline = EpisodeInline(Season, self.site)
+
+        self.assertEqual(season_inline.extra, 1)
+        self.assertNotIn("status", season_inline.fields)
+        self.assertEqual(episode_inline.extra, 1)
+        self.assertNotIn("status", episode_inline.fields)
+        self.assertIn("external_url", episode_inline.fields)
+        self.assertIn("video_file", episode_inline.fields)
+
+    def test_draft_parents_can_exist_before_children_are_added(self):
+        self.series.full_clean()
+        season = Season(series=self.series, season_number=1)
+
+        season.full_clean()
+
+    def test_incomplete_parents_still_cannot_be_published(self):
+        self.series.status = Series.STATUS_PUBLISHED
+        with self.assertRaisesMessage(
+            ValidationError,
+            "A published series needs at least one ready season with one ready episode.",
+        ):
+            self.series.full_clean()
+
+        season = Season.objects.create(series=self.series, season_number=1)
+        season.status = Season.STATUS_PUBLISHED
+        with self.assertRaisesMessage(
+            ValidationError,
+            "A published season needs at least one ready episode.",
+        ):
+            season.full_clean()
