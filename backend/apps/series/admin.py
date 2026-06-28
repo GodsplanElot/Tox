@@ -111,8 +111,15 @@ class EpisodeAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
 
 class EpisodeInline(admin.TabularInline):
     model = Episode
-    extra = 0
-    fields = ("episode_number", "title", "status", "view_episode_link")
+    extra = 1
+    fields = (
+        "episode_number",
+        "title",
+        "source_type",
+        "video_file",
+        "external_url",
+        "view_episode_link",
+    )
     readonly_fields = ("view_episode_link",)
 
     def view_episode_link(self, obj):
@@ -155,6 +162,17 @@ class SeasonAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(admin_episode_count=Count("episodes"))
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        status_field = form.base_fields.get("status")
+        if status_field and obj is None:
+            status_field.choices = [(Season.STATUS_DRAFT, "Draft")]
+            status_field.initial = Season.STATUS_DRAFT
+            status_field.help_text = (
+                "New seasons start as drafts. Add an episode, then submit or approve the season."
+            )
+        return form
 
     def season_label(self, obj):
         return str(obj)
@@ -232,8 +250,8 @@ class SeasonAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
 
 class SeasonInline(admin.TabularInline):
     model = Season
-    extra = 0
-    fields = ("season_number", "title", "status", "view_season_link")
+    extra = 1
+    fields = ("season_number", "title", "view_season_link")
     readonly_fields = ("view_season_link",)
 
     def view_season_link(self, obj):
@@ -284,6 +302,17 @@ class SeriesWorkflowAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(admin_season_count=Count("seasons"))
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        status_field = form.base_fields.get("status")
+        if status_field and obj is None:
+            status_field.choices = [(Series.STATUS_DRAFT, "Draft")]
+            status_field.initial = Series.STATUS_DRAFT
+            status_field.help_text = (
+                "New series start as drafts. Add a season and episode before submitting or approving the series."
+            )
+        return form
 
     def _save_with_validation(self, request, obj, success_count):
         try:
