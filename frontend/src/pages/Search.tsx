@@ -15,7 +15,7 @@ import "../styles/Search.css";
 const Search = () => {
   const [params, setParams] = useSearchParams();
   const [isSuggestionsVisible, setIsSuggestionsVisible] = useState(false);
-  const mobileWrapperRef = useRef<HTMLDivElement>(null);
+  const searchWrapperRef = useRef<HTMLDivElement>(null);
 
   const [movies, setMovies] = useState<Movie[]>([]);
   const [series, setSeries] = useState<Series[]>([]);
@@ -23,6 +23,10 @@ const Search = () => {
 
   const initialQuery = params.get("q") || "";
   const [query, setQuery] = useState(initialQuery);
+
+  useEffect(() => {
+    setQuery(initialQuery);
+  }, [initialQuery]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -42,12 +46,11 @@ const Search = () => {
     fetchData();
   }, []);
 
-  // Close suggestions when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
-        mobileWrapperRef.current &&
-        !mobileWrapperRef.current.contains(event.target as Node)
+        searchWrapperRef.current &&
+        !searchWrapperRef.current.contains(event.target as Node)
       ) {
         setIsSuggestionsVisible(false);
       }
@@ -57,9 +60,6 @@ const Search = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  /**
-   * MOVIE RESULTS
-   */
   const movieResults = useMemo(() => {
     if (!initialQuery) return [];
 
@@ -68,9 +68,6 @@ const Search = () => {
     );
   }, [initialQuery, movies]);
 
-  /**
-   * SERIES RESULTS
-   */
   const seriesResults = useMemo(() => {
     if (!initialQuery) return [];
 
@@ -79,14 +76,19 @@ const Search = () => {
     );
   }, [initialQuery, series]);
 
+  const recommended = useMemo(() => movies.slice(0, 14), [movies]);
+
   const onSearch = (e: React.FormEvent) => {
     e.preventDefault();
-    setParams({ q: query });
+
+    const nextQuery = query.trim();
+    if (nextQuery) {
+      setParams({ q: nextQuery });
+    } else {
+      setParams({});
+    }
     setIsSuggestionsVisible(false);
   };
-
-  const recommended = useMemo(() => movies.slice(0, 12), [movies]);
-  const latest = useMemo(() => movies.slice(-12), [movies]);
 
   if (loading) {
     return <LoadingSpinner />;
@@ -94,57 +96,59 @@ const Search = () => {
 
   return (
     <section className="search-page">
-      {/* MOBILE SEARCH INPUT */}
-      <form className="search-mobile" onSubmit={onSearch}>
-        <div className="search-wrapper" ref={mobileWrapperRef}>
-          <i className="bi bi-search search-icon"></i>
-          <input
-            type="search"
-            placeholder="Search movies or TV series..."
-            value={query}
-            onChange={(e) => {
-              setQuery(e.target.value);
-              setIsSuggestionsVisible(true);
-            }}
-            onFocus={() => setIsSuggestionsVisible(true)}
-          />
-          <SearchSuggestions
-            query={query}
-            isVisible={isSuggestionsVisible}
-            onClear={() => setIsSuggestionsVisible(false)}
-          />
+      <div className="search-hero">
+        <div className="search-hero__copy">
+          <span>Search the vault</span>
+          <h1>Find your next watch</h1>
         </div>
-      </form>
 
-      {/* SEARCH RESULTS */}
+        <form className="search-hero__form" onSubmit={onSearch}>
+          <div className="search-page-input" ref={searchWrapperRef}>
+            <i className="bi bi-search search-page-input__icon" aria-hidden="true"></i>
+            <input
+              type="search"
+              placeholder="Search movies or TV series..."
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+                setIsSuggestionsVisible(true);
+              }}
+              onFocus={() => setIsSuggestionsVisible(true)}
+              aria-label="Search movies or TV series"
+            />
+            <button type="submit" aria-label="Search">
+              <i className="bi bi-arrow-right" aria-hidden="true"></i>
+            </button>
+            <SearchSuggestions
+              query={query}
+              isVisible={isSuggestionsVisible}
+              onClear={() => setIsSuggestionsVisible(false)}
+            />
+          </div>
+        </form>
+      </div>
+
+      {recommended.length > 0 && (
+        <MovieRail title="Recommended Movies" movies={recommended} />
+      )}
+
       {initialQuery && (
-        <>
-          <h2 className="search-title">Results for “{initialQuery}”</h2>
+        <div className="search-results">
+          <h2 className="search-title">Results for "{initialQuery}"</h2>
 
-          {/* MOVIES */}
           {movieResults.length > 0 && <MovieGrid movies={movieResults} />}
 
-          {/* SERIES */}
           {seriesResults.length > 0 && (
             <SeriesRail title="TV Series" series={seriesResults} />
           )}
 
-          {/* EMPTY STATE */}
           {movieResults.length === 0 && seriesResults.length === 0 && (
             <EmptyState
               title="No Results Found"
               message={`We couldn't find any matches for "${initialQuery}". Try searching for something else!`}
             />
           )}
-        </>
-      )}
-
-      {/* RAILS (ALWAYS SHOWN) */}
-      {!initialQuery && (
-        <>
-          <MovieRail title="Recommended" movies={recommended} />
-          <MovieRail title="Latest" movies={latest} />
-        </>
+        </div>
       )}
     </section>
   );

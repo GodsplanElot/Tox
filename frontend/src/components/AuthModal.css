@@ -8,7 +8,7 @@
 
 /* Dialog */
 .auth-modal .modal-dialog {
-  max-width: 420px;
+  max-width: 380px;
 }
 
 /* Content */
@@ -109,21 +109,72 @@
 
 /* ================= OAUTH BUTTONS ================= */
 .auth-oauth-section {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-bottom: 1.25rem;
+  display: grid;
+  grid-template-columns: repeat(3, 44px);
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .auth-google-button {
+  width: 44px;
   min-height: 44px;
   display: flex;
   justify-content: center;
+  align-self: center;
+  border-radius: 999px;
+  position: relative;
+  background: rgba(255, 255, 255, 0.96);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  overflow: hidden;
 }
 
-.auth-google-button > div,
-.auth-google-button iframe {
+.auth-google-button__mark {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.auth-google-button__mark svg {
+  width: 20px;
+  height: 20px;
+}
+
+.auth-google-button__sdk {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+}
+
+.auth-google-button__sdk > div,
+.auth-google-button__sdk iframe {
+  width: 44px !important;
+  max-width: 44px !important;
+}
+
+.auth-google-button--icon .auth-google-button__sdk {
+  opacity: 0.01;
+}
+
+.auth-google-button--standard {
+  width: 100%;
+  background: transparent;
+  border: 0;
+}
+
+.auth-google-button--standard .auth-google-button__sdk {
+  position: static;
+  width: 100%;
+}
+
+.auth-google-button--standard .auth-google-button__sdk > div,
+.auth-google-button--standard .auth-google-button__sdk iframe {
   width: 100% !important;
+  max-width: 100% !important;
 }
 
 .auth-google-button--icon {
@@ -133,13 +184,14 @@
   border-radius: 999px;
 }
 
-.auth-google-button--icon > div,
-.auth-google-button--icon iframe {
+.auth-google-button--icon .auth-google-button__sdk > div,
+.auth-google-button--icon .auth-google-button__sdk iframe {
   width: 44px !important;
   max-width: 44px !important;
 }
 
 .auth-oauth-error {
+  grid-column: 1 / -1;
   padding: 0.65rem 0.8rem;
   border: 1px solid rgba(255, 77, 77, 0.28);
   border-radius: 10px;
@@ -153,13 +205,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  width: 100%;
-  padding: 0.7rem 1rem;
+  width: 44px;
+  height: 44px;
+  min-height: 44px;
+  padding: 0;
   border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 10px;
-  background: rgba(255, 255, 255, 0.03);
-  color: #e5e5e5;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.96);
+  color: #141414;
   font-weight: 600;
   font-size: 0.875rem;
   letter-spacing: 0.2px;
@@ -209,34 +262,26 @@
   border-color: rgba(66, 133, 244, 0.3);
 }
 
-/* GitHub */
-.auth-oauth-btn--github::before {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.06),
-    rgba(255, 255, 255, 0.02)
-  );
+/* Instagram */
+.auth-oauth-btn--instagram::before {
+  background: linear-gradient(135deg, rgba(245, 96, 64, 0.16), rgba(193, 53, 132, 0.14));
 }
-.auth-oauth-btn--github:hover::before {
+.auth-oauth-btn--instagram:hover::before {
   opacity: 1;
 }
-.auth-oauth-btn--github:hover {
-  border-color: rgba(255, 255, 255, 0.25);
+.auth-oauth-btn--instagram:hover {
+  border-color: rgba(225, 48, 108, 0.35);
 }
 
-/* Apple */
-.auth-oauth-btn--apple::before {
-  background: linear-gradient(
-    135deg,
-    rgba(255, 255, 255, 0.06),
-    rgba(255, 255, 255, 0.02)
-  );
+/* Facebook */
+.auth-oauth-btn--facebook::before {
+  background: linear-gradient(135deg, rgba(24, 119, 242, 0.16), rgba(24, 119, 242, 0.06));
 }
-.auth-oauth-btn--apple:hover::before {
+.auth-oauth-btn--facebook:hover::before {
   opacity: 1;
 }
-.auth-oauth-btn--apple:hover {
-  border-color: rgba(255, 255, 255, 0.25);
+.auth-oauth-btn--facebook:hover {
+  border-color: rgba(24, 119, 242, 0.35);
 }
 
 .auth-oauth-icon {
@@ -250,7 +295,12 @@
 }
 
 .auth-oauth-label {
-  min-width: 0;
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
 }
 
 /* ================= DIVIDER ================= */
@@ -574,8 +624,8 @@
     border-radius: 999px;
   }
 
-  .auth-google-button > div,
-  .auth-google-button iframe {
+  .auth-google-button__sdk > div,
+  .auth-google-button__sdk iframe {
     width: 44px !important;
     max-width: 44px !important;
   }
