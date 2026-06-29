@@ -1,5 +1,4 @@
 from django.db import models
-from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from apps.categories.models import Category
 from apps.common.models import PublishableModel
@@ -37,22 +36,10 @@ class Series(PublishableModel):
 
     created_at = models.DateTimeField(auto_now_add=True)
 
-    def has_ready_children(self):
-        return self.seasons.filter(
-            status__in=[self.STATUS_PENDING_REVIEW, self.STATUS_PUBLISHED],
-            episodes__status__in=[self.STATUS_PENDING_REVIEW, self.STATUS_PUBLISHED],
-        ).distinct().exists()
-
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(self.title)
         super().save(*args, **kwargs)
-
-    def clean(self):
-        super().clean()
-        if self.status == self.STATUS_PUBLISHED:
-            if not self.pk or not self.has_ready_children():
-                raise ValidationError("A published series needs at least one ready season with one ready episode.")
 
     def __str__(self):
         return self.title
@@ -101,21 +88,10 @@ class Season(PublishableModel):
         unique_together = ("series", "season_number")
         ordering = ["season_number"]
 
-    def has_ready_episodes(self):
-        return self.episodes.filter(
-            status__in=[self.STATUS_PENDING_REVIEW, self.STATUS_PUBLISHED],
-        ).exists()
-
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = slugify(f"{self.series.title}-season-{self.season_number}")
         super().save(*args, **kwargs)
-
-    def clean(self):
-        super().clean()
-        if self.status == self.STATUS_PUBLISHED:
-            if not self.pk or not self.has_ready_episodes():
-                raise ValidationError("A published season needs at least one ready episode.")
 
     def __str__(self):
         return f"{self.series.title} - Season {self.season_number}"
@@ -186,4 +162,3 @@ class Episode(PublishableModel):
 
     def __str__(self):
         return f"{self.season} - Episode {self.episode_number}"
-

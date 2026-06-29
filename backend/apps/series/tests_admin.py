@@ -1,7 +1,6 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.contrib.admin.sites import AdminSite
-from django.core.exceptions import ValidationError
 from django.test import RequestFactory, TestCase
 from django.urls import reverse
 
@@ -101,7 +100,7 @@ class SeriesAdminRolePermissionTests(TestCase):
             status=Season.STATUS_PENDING_REVIEW,
             uploaded_by=self.other_worker,
         )
-        Episode.objects.create(
+        self.pending_episode = Episode.objects.create(
             season=self.pending_season,
             episode_number=1,
             slug="pending-series-s1e1",
@@ -140,7 +139,7 @@ class SeriesAdminRolePermissionTests(TestCase):
 
         self.assertNotEqual(response.status_code, 200)
 
-    def test_editor_can_approve_pending_series_and_ready_children(self):
+    def test_editor_can_approve_pending_series_without_approving_children(self):
         self.client.force_login(self.editor)
 
         response = self.client.post(
@@ -154,9 +153,49 @@ class SeriesAdminRolePermissionTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.pending_series.refresh_from_db()
         self.pending_season.refresh_from_db()
+        self.pending_episode.refresh_from_db()
         self.assertEqual(self.pending_series.status, Series.STATUS_PUBLISHED)
-        self.assertEqual(self.pending_season.status, Season.STATUS_PUBLISHED)
+        self.assertEqual(self.pending_season.status, Season.STATUS_PENDING_REVIEW)
+        self.assertEqual(self.pending_episode.status, Episode.STATUS_PENDING_REVIEW)
         self.assertEqual(self.pending_series.reviewed_by, self.editor)
+
+    def test_editor_can_approve_pending_season_without_approving_episode(self):
+        self.client.force_login(self.editor)
+
+        response = self.client.post(
+            reverse("admin:series_season_changelist"),
+            {
+                "action": "approve_selected",
+                "_selected_action": [self.pending_season.id],
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.pending_series.refresh_from_db()
+        self.pending_season.refresh_from_db()
+        self.pending_episode.refresh_from_db()
+        self.assertEqual(self.pending_series.status, Series.STATUS_PENDING_REVIEW)
+        self.assertEqual(self.pending_season.status, Season.STATUS_PUBLISHED)
+        self.assertEqual(self.pending_episode.status, Episode.STATUS_PENDING_REVIEW)
+
+    def test_editor_can_approve_pending_episode_without_approving_parents(self):
+        self.client.force_login(self.editor)
+
+        response = self.client.post(
+            reverse("admin:series_episode_changelist"),
+            {
+                "action": "approve_selected",
+                "_selected_action": [self.pending_episode.id],
+            },
+        )
+
+        self.assertEqual(response.status_code, 302)
+        self.pending_series.refresh_from_db()
+        self.pending_season.refresh_from_db()
+        self.pending_episode.refresh_from_db()
+        self.assertEqual(self.pending_series.status, Series.STATUS_PENDING_REVIEW)
+        self.assertEqual(self.pending_season.status, Season.STATUS_PENDING_REVIEW)
+        self.assertEqual(self.pending_episode.status, Episode.STATUS_PUBLISHED)
 
 
 class SeriesCreationWorkflowAdminTests(TestCase):
@@ -213,18 +252,13 @@ class SeriesCreationWorkflowAdminTests(TestCase):
 
         season.full_clean()
 
-    def test_incomplete_parents_still_cannot_be_published(self):
+    def test_parents_can_be_published_without_ready_children(self):
         self.series.status = Series.STATUS_PUBLISHED
-        with self.assertRaisesMessage(
-            ValidationError,
-            "A published series needs at least one ready season with one ready episode.",
-        ):
-            self.series.full_clean()
+        self.series.full_clean()
 
-        season = Season.objects.create(series=self.series, season_number=1)
-        season.status = Season.STATUS_PUBLISHED
-        with self.assertRaisesMessage(
-            ValidationError,
-            "A published season needs at least one ready episode.",
-        ):
-            season.full_clean()
+        season = Season(
+            series=self.series,
+            season_number=1,
+            status=Season.STATUS_PUBLISHED,
+        )
+        season.full_clean()
