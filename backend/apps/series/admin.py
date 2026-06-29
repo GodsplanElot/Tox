@@ -170,7 +170,7 @@ class SeasonAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
             status_field.choices = [(Season.STATUS_DRAFT, "Draft")]
             status_field.initial = Season.STATUS_DRAFT
             status_field.help_text = (
-                "New seasons start as drafts. Add an episode, then submit or approve the season."
+                "New seasons start as drafts. Episodes are reviewed and published separately."
             )
         return form
 
@@ -201,15 +201,6 @@ class SeasonAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
             self.message_user(request, f"{obj}: {exc}", messages.ERROR)
             return success_count
 
-    def _approve_ready_episodes(self, request, season):
-        count = 0
-        for episode in season.episodes.filter(status__in=[Episode.STATUS_DRAFT, Episode.STATUS_PENDING_REVIEW]):
-            if not (episode.external_url or episode.video_file):
-                continue
-            episode.mark_published(request.user)
-            count = self._save_with_validation(request, episode, count)
-        return count
-
     @admin.action(description="Submit selected seasons for review")
     def submit_for_review(self, request, queryset):
         count = 0
@@ -219,19 +210,13 @@ class SeasonAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
             count += 1
         self.message_user(request, f"Submitted {count} seasons for review.", messages.SUCCESS)
 
-    @admin.action(description="Approve selected seasons and ready episodes")
+    @admin.action(description="Approve selected seasons")
     def approve_selected(self, request, queryset):
         season_count = 0
-        episode_count = 0
         for season in queryset:
-            episode_count += self._approve_ready_episodes(request, season)
             season.mark_published(request.user)
             season_count = self._save_with_validation(request, season, season_count)
-        self.message_user(
-            request,
-            f"Approved {season_count} seasons and {episode_count} ready episodes.",
-            messages.SUCCESS,
-        )
+        self.message_user(request, f"Approved {season_count} seasons.", messages.SUCCESS)
 
     @admin.action(description="Reject selected seasons")
     def reject_selected(self, request, queryset):
@@ -310,7 +295,7 @@ class SeriesWorkflowAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
             status_field.choices = [(Series.STATUS_DRAFT, "Draft")]
             status_field.initial = Series.STATUS_DRAFT
             status_field.help_text = (
-                "New series start as drafts. Add a season and episode before submitting or approving the series."
+                "New series start as drafts. Seasons and episodes are reviewed and published separately."
             )
         return form
 
@@ -323,22 +308,6 @@ class SeriesWorkflowAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
             self.message_user(request, f"{obj}: {exc}", messages.ERROR)
             return success_count
 
-    def _approve_ready_children(self, request, series):
-        season_count = 0
-        episode_count = 0
-        for season in series.seasons.all():
-            for episode in season.episodes.filter(status__in=[Episode.STATUS_DRAFT, Episode.STATUS_PENDING_REVIEW]):
-                if not (episode.external_url or episode.video_file):
-                    continue
-                episode.mark_published(request.user)
-                episode_count = self._save_with_validation(request, episode, episode_count)
-
-            if season.episodes.filter(status=Episode.STATUS_PUBLISHED).exists():
-                season.mark_published(request.user)
-                season_count = self._save_with_validation(request, season, season_count)
-
-        return season_count, episode_count
-
     @admin.action(description="Submit selected series for review")
     def submit_for_review(self, request, queryset):
         count = 0
@@ -348,22 +317,13 @@ class SeriesWorkflowAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
             count += 1
         self.message_user(request, f"Submitted {count} series for review.", messages.SUCCESS)
 
-    @admin.action(description="Approve selected series and ready children")
+    @admin.action(description="Approve selected series")
     def approve_selected(self, request, queryset):
         series_count = 0
-        season_count = 0
-        episode_count = 0
         for series in queryset:
-            approved_seasons, approved_episodes = self._approve_ready_children(request, series)
-            season_count += approved_seasons
-            episode_count += approved_episodes
             series.mark_published(request.user)
             series_count = self._save_with_validation(request, series, series_count)
-        self.message_user(
-            request,
-            f"Approved {series_count} series, {season_count} seasons, and {episode_count} ready episodes.",
-            messages.SUCCESS,
-        )
+        self.message_user(request, f"Approved {series_count} series.", messages.SUCCESS)
 
     @admin.action(description="Reject selected series")
     def reject_selected(self, request, queryset):
