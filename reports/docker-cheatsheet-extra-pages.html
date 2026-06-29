@@ -1,0 +1,57 @@
+<section class="page"><div class="running"><span>TOXICREELS</span><span>PRE-DEPLOYMENT AND BACKUP</span></div><h1>6. Pre-deployment gate and database safety</h1><h2>Connect, enter the repository, and inspect</h2><pre>cd &lt;APP_DIRECTORY_ON_LIGHTSAIL&gt;
+git status -sb
+git branch --show-current
+git fetch origin
+git log --oneline --decorate -5
+docker --version
+docker compose version
+docker compose --env-file backend/.env -f docker-compose.prod.yml config --quiet
+docker compose --env-file backend/.env -f docker-compose.prod.yml ps</pre><table><tr><th class="w1">Gate</th><th>Expected result</th></tr><tr><td>Git state</td><td>Branch is <code>main</code>; there are no unexplained server-side edits.</td></tr><tr><td>Remote release</td><td>The intended commit exists on <code>origin/main</code>. Lightsail cannot pull a commit that only exists locally.</td></tr><tr><td>Compose validation</td><td><code>config --quiet</code> returns no error and does not expose resolved values.</td></tr><tr><td>Service baseline</td><td>Web is Up; PostgreSQL is Up and healthy before deployment begins.</td></tr></table><h2>Create a timestamped PostgreSQL backup</h2><pre>mkdir -p backups
+docker compose --env-file backend/.env -f docker-compose.prod.yml exec -T postgres sh -c 'pg_dump -U "$POSTGRES_USER" -d "$POSTGRES_DB"' &gt; "backups/toxicreels_$(date +%F_%H%M%S).sql"
+ls -lh backups/</pre><p><code>-T</code> disables pseudo-terminal output so redirected SQL is clean. Database variables expand inside the container; their values are not printed by the command itself.</p><h2>Minimum backup validation</h2><pre>test -s backups/&lt;BACKUP_FILE.sql&gt; &amp;&amp; echo "Backup file is non-empty"
+head -n 5 backups/&lt;BACKUP_FILE.sql&gt;</pre><div class="callout danger">Never commit a backup to Git. A backup stored only on the same Lightsail instance is not disaster recovery; copy approved backups to protected storage under your retention policy.</div><h2>Migration rules</h2><ul class="check"><li>Deploy committed, reviewed migration files only.</li><li>Never run <code>makemigrations</code> on production.</li><li>Back up before schema or production data changes.</li><li>Do not reverse a migration without reviewing data impact.</li></ul><div class="foot"><span>ToxicReels backend operations</span><span>7 / 10</span></div></section>
+
+<section class="page"><div class="running"><span>TOXICREELS</span><span>CONFIGURATION AND MAINTENANCE</span></div><h1>7. Environment, Compose, Nginx, and disk commands</h1><h2>Environment-only update</h2><pre># Edit backend/.env with a secure server editor.
+docker compose --env-file backend/.env -f docker-compose.prod.yml config --quiet
+docker compose --env-file backend/.env -f docker-compose.prod.yml up -d --force-recreate web
+docker compose --env-file backend/.env -f docker-compose.prod.yml logs --tail=100 web</pre><p>An env change normally needs container recreation, not an image build. Build as well if code, requirements, or the Dockerfile changed.</p><h2>Production Compose update</h2><pre>git pull --ff-only origin main
+git diff HEAD~1 -- docker-compose.prod.yml
+docker compose --env-file backend/.env -f docker-compose.prod.yml config --quiet
+docker compose --env-file backend/.env -f docker-compose.prod.yml up -d --build</pre><p>Review service names, bind mounts, named volumes, ports, and PostgreSQL settings before applying a Compose change.</p><h2>Nginx-only update</h2><pre>sudo nginx -t
+sudo systemctl reload nginx
+sudo systemctl status nginx --no-pager</pre><p>Reload only after <code>nginx -t</code> succeeds. Nginx-only changes do not require a Docker rebuild.</p><h2>Run a reviewed Django command</h2><pre>docker compose --env-file backend/.env -f docker-compose.prod.yml exec web python manage.py &lt;command&gt;</pre><h2>Inspect disk usage and reclaim dangling images</h2><pre>df -h
+docker system df
+docker image ls
+docker image prune -f</pre><table><tr><th class="w1">Command</th><th>Production meaning</th></tr><tr><td><code>image prune -f</code></td><td>Removes dangling images only. Run after the new release is verified.</td></tr><tr><td><code>system prune -a</code></td><td>Broad cleanup; can remove useful cached and unused images. Do not use routinely.</td></tr><tr><td><code>volume prune</code></td><td>Can remove unused volumes. Avoid unless every candidate volume is reviewed.</td></tr></table><div class="foot"><span>ToxicReels backend operations</span><span>8 / 10</span></div></section>
+
+<section class="page"><div class="running"><span>TOXICREELS</span><span>DEEP VERIFICATION</span></div><h1>8. Verify from container to public HTTPS</h1><h2>Container and commit checks</h2><pre>docker compose --env-file backend/.env -f docker-compose.prod.yml ps
+docker compose --env-file backend/.env -f docker-compose.prod.yml logs --tail=150 web
+git rev-parse --short HEAD</pre><h2>Local Gunicorn and public endpoint checks</h2><pre>curl -sS -o /dev/null -w '%{http_code}\n' -H 'Host: api.toxicreels.com' http://127.0.0.1:8000/admin/
+curl -sS -o /dev/null -w '%{http_code}\n' https://api.toxicreels.com/admin/</pre><p>The explicit Host header matters because Django production allowed-host rules may reject a direct <code>127.0.0.1</code> request. A <code>200</code>, <code>301</code>, or <code>302</code> is normally acceptable for the admin path.</p><h2>What clean verification looks like</h2><ul class="check"><li>Both services are <code>Up</code>; PostgreSQL reports <code>healthy</code>.</li><li>Gunicorn starts workers without repeated exits.</li><li>No import, database, S3, allowed-host, or missing-env errors appear.</li><li>The checked-out SHA equals the intended release.</li><li>Local and public HTTP checks return valid status codes.</li><li>The exact workflow changed in development works in production.</li></ul><h2>Diagnostic commands, in order</h2><pre>docker compose --env-file backend/.env -f docker-compose.prod.yml logs --tail=200 web
+docker compose --env-file backend/.env -f docker-compose.prod.yml logs --tail=200 postgres
+docker compose --env-file backend/.env -f docker-compose.prod.yml exec web python manage.py check
+docker compose --env-file backend/.env -f docker-compose.prod.yml exec web python manage.py showmigrations
+df -h
+docker system df
+sudo nginx -t
+sudo journalctl -u nginx --since "15 minutes ago" --no-pager</pre><div class="callout">Follow the boundary: container failure → Docker/web logs; local HTTP works but public fails → Nginx/Cloudflare/TLS; database unhealthy → PostgreSQL logs and disk state.</div><div class="foot"><span>ToxicReels backend operations</span><span>9 / 10</span></div></section>
+
+<section class="page"><div class="running"><span>TOXICREELS</span><span>COPY-READY OPERATOR CHECKLIST</span></div><h1>9. Lightsail deployment checklist</h1><h2>Before</h2><ul class="check"><li>Release is merged into <code>main</code> and pushed to <code>origin/main</code>.</li><li>Release type is identified from page 2.</li><li>A database backup exists when migrations or data changes are involved.</li><li>The server working tree has no unexplained edits.</li></ul><h2>Deploy</h2><pre>cd &lt;APP_DIRECTORY_ON_LIGHTSAIL&gt;
+git status -sb
+git switch main
+git pull --ff-only origin main
+docker compose --env-file backend/.env -f docker-compose.prod.yml config --quiet
+docker compose --env-file backend/.env -f docker-compose.prod.yml build web
+docker compose --env-file backend/.env -f docker-compose.prod.yml up -d postgres
+
+# Run when migrations exist (also safe as a schema-current check):
+docker compose --env-file backend/.env -f docker-compose.prod.yml run --rm web python manage.py migrate
+
+# Run only when Django static/admin assets changed:
+docker compose --env-file backend/.env -f docker-compose.prod.yml run --rm web python manage.py collectstatic --noinput
+
+docker compose --env-file backend/.env -f docker-compose.prod.yml up -d web</pre><h2>After</h2><pre>docker compose --env-file backend/.env -f docker-compose.prod.yml ps
+docker compose --env-file backend/.env -f docker-compose.prod.yml logs --tail=100 web
+git rev-parse --short HEAD
+curl -sS -o /dev/null -w '%{http_code}\n' -H 'Host: api.toxicreels.com' http://127.0.0.1:8000/admin/
+curl -sS -o /dev/null -w '%{http_code}\n' https://api.toxicreels.com/admin/</pre><div class="callout">Deployment is complete only when services are healthy, logs are clean, the SHA matches, HTTP checks respond correctly, and the changed workflow passes.</div><h2>Current release acceptance check</h2><table><tr><th class="w1">Release</th><th>Manual production check</th></tr><tr><td><code>b2243eb</code></td><td>Create a series draft → create a season draft before an episode exists → create the episode/source → complete the intended submit/approve flow.</td></tr></table><div class="callout danger"><b>Never use routinely:</b> <code>down -v</code>, <code>volume prune</code>, production <code>makemigrations</code>, force-push, or an unreviewed database restore.</div><p class="small">Prepared from this repository's production Compose file, backend Dockerfile, and Lightsail deployment notes. Updated 28 June 2026.</p><div class="foot"><span>ToxicReels backend operations</span><span>10 / 10</span></div></section>
