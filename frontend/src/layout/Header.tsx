@@ -4,19 +4,15 @@ import { NavLink } from "react-router-dom";
 import SearchForm from "../components/SearchForm";
 import AuthModal from "../components/AuthModal";
 import { useAuth } from "../context/useAuth";
-import MobileSidebar from "./MobileSidebar";
+import MobileNavBar from "./MobileNavBar";
 import logo from "../assets/icons/nav_logo.png";
 
 type AuthTab = "login" | "signup";
 
 const Header = () => {
   const { isAuthenticated, logout, user } = useAuth();
-  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
   const [showAuth, setShowAuth] = useState(false);
   const [authTab, setAuthTab] = useState<AuthTab>("login");
-
-  const openSidebar = () => setMobileSidebarOpen(true);
-  const closeSidebar = () => setMobileSidebarOpen(false);
 
   const openAuth = (tab: AuthTab) => {
     setAuthTab(tab);
@@ -40,16 +36,6 @@ const Header = () => {
           <Navbar.Brand as={NavLink} to="/">
             <img src={logo} alt="TOXin" height={32} />
           </Navbar.Brand>
-
-          {/* MOBILE TOGGLE */}
-          <button
-            className="navbar-toggler d-lg-none"
-            type="button"
-            aria-label="Open menu"
-            onClick={openSidebar}
-          >
-            <span className="navbar-toggler-icon" />
-          </button>
 
           {/* DESKTOP NAV */}
           <Nav className="me-auto d-none d-lg-flex gap-3">
@@ -130,23 +116,9 @@ const Header = () => {
         </Container>
       </Navbar>
 
-      {/* MOBILE SIDEBAR */}
-      <MobileSidebar
-        show={mobileSidebarOpen}
-        onOpen={openSidebar}
-        onClose={closeSidebar}
-        onLoginClick={() => {
-          closeSidebar();
-          openAuth("login");
-        }}
-        onSignUpClick={() => {
-          closeSidebar();
-          openAuth("signup");
-        }}
+      <MobileNavBar
         isAuthenticated={isAuthenticated}
-        username={user?.username}
-        email={user?.email}
-        onLogout={logout}
+        onLoginClick={() => openAuth("login")}
       />
 
       {/* AUTH MODAL */}
