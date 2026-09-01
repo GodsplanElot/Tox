@@ -18,6 +18,13 @@ const MEDIA_BASE_URL =
 
 export type { Movie, Series, Category };
 
+export type PaginatedResponse<T> = {
+  count: number;
+  next: string | null;
+  previous: string | null;
+  results: T[];
+};
+
 const ACCESS_TOKEN_KEY = "tox_access_token";
 const REFRESH_TOKEN_KEY = "tox_refresh_token";
 const AUTH_CLEARED_EVENT = "tox-auth-cleared";
@@ -176,6 +183,14 @@ export const api = {
 
   getMovies: (): Promise<Movie[]> => 
     fetch(`${API_BASE_URL}/movies/`).then(unwrapList<Movie>),
+
+  getMoviesPage: (page = 1, pageSize = 50): Promise<PaginatedResponse<Movie>> => {
+    const params = new URLSearchParams({
+      page: String(page),
+      page_size: String(pageSize),
+    });
+    return fetch(`${API_BASE_URL}/movies/?${params.toString()}`).then(handleResponse);
+  },
   
   getMovie: (slug: string): Promise<Movie> => 
     fetch(`${API_BASE_URL}/movies/${slug}/`).then(handleResponse),

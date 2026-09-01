@@ -35,7 +35,7 @@ const MovieGrid: React.FC<MovieGridProps> = ({
 
       {shouldLimit && (
         <div className="movie-grid-cta">
-          <Link to="/categories" className="movie-grid-link">
+          <Link to="/movies" className="movie-grid-link">
             View all {movies.length} movies →
           </Link>
         </div>

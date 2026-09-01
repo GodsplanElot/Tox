@@ -37,6 +37,17 @@ class MovieApiVisibilityTests(APITestCase):
         self.assertEqual(detail_response.status_code, 200)
         self.assertEqual(detail_response.data["title"], "Published Movie")
 
+    def test_movie_list_allows_fifty_item_pages(self):
+        for index in range(55):
+            self._movie(f"Published Movie {index}", Movie.STATUS_PUBLISHED)
+
+        response = self.client.get(reverse("movie-list"), {"page_size": 50})
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["count"], 55)
+        self.assertEqual(len(response.data["results"]), 50)
+        self.assertIsNotNone(response.data["next"])
+
     def test_published_movie_requires_a_source(self):
         movie = self._movie("Incomplete Movie", Movie.STATUS_DRAFT, external_url="")
         movie.status = Movie.STATUS_PUBLISHED

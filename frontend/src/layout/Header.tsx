@@ -47,6 +47,10 @@ const Header = () => {
               Categories
             </Nav.Link>
 
+            <Nav.Link as={NavLink} to="/movies">
+              Movies
+            </Nav.Link>
+
             <Nav.Link as={NavLink} to="/series">
               Tv Series
             </Nav.Link>

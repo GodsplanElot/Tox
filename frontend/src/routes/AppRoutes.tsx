@@ -5,6 +5,7 @@ import NotFound from "../pages/NotFound";
 import Categories from "../pages/Categories";
 import CategoryDetail from "../pages/CategoryDetail";
 import Search from "../pages/Search";
+import Movies from "../pages/Movies";
 import MovieDetail from "../pages/MovieDetail/MovieDetail";
 import SeriesList from "../pages/Series/SeriesList";
 import SeriesDetail from "../pages/Series/SeriesDetail";
@@ -19,6 +20,7 @@ const AppRoutes = () => {
         <Route path="/" element={<Home />} />
         <Route path="/categories" element={<Categories />} />
         <Route path="/categories/:slug" element={<CategoryDetail />} />
+        <Route path="/movies" element={<Movies />} />
         <Route path="/series" element={<SeriesList />} />
         <Route path="/search" element={<Search />} />
         <Route path="/watchlist" element={<Watchlist />} />
