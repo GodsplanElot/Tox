@@ -75,6 +75,12 @@ const FacebookIcon = () => (
   </svg>
 );
 
+const YouTubeIcon = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+    <path d="M23.5 6.2a3 3 0 0 0-2.1-2.12C19.55 3.58 12 3.58 12 3.58s-7.55 0-9.4.5A3 3 0 0 0 .5 6.2 31.2 31.2 0 0 0 0 12a31.2 31.2 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.12c1.85.5 9.4.5 9.4.5s7.55 0 9.4-.5a3 3 0 0 0 2.1-2.12A31.2 31.2 0 0 0 24 12a31.2 31.2 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z" />
+  </svg>
+);
+
 const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
   const [activeTab, setActiveTab] = useState<AuthTab>(defaultTab);
   const [oauthError, setOauthError] = useState("");
@@ -145,6 +151,13 @@ const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
                   <FacebookIcon />
                 </span>
                 <span className="auth-oauth-label">Continue with Facebook</span>
+              </button>
+
+              <button type="button" className="auth-oauth-btn auth-oauth-btn--youtube" aria-label="Continue with YouTube" disabled>
+                <span className="auth-oauth-icon">
+                  <YouTubeIcon />
+                </span>
+                <span className="auth-oauth-label">Continue with YouTube</span>
               </button>
             </div>
 

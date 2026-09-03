@@ -123,6 +123,7 @@ const Header = () => {
       <MobileNavBar
         isAuthenticated={isAuthenticated}
         onLoginClick={() => openAuth("login")}
+        onLogout={logout}
       />
 
       {/* AUTH MODAL */}

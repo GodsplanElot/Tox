@@ -9,6 +9,11 @@
 /* Dialog */
 .auth-modal .modal-dialog {
   max-width: 380px;
+  min-height: calc(100dvh - 2rem);
+  display: flex;
+  align-items: center;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
 }
 
 /* Content */
@@ -110,7 +115,7 @@
 /* ================= OAUTH BUTTONS ================= */
 .auth-oauth-section {
   display: grid;
-  grid-template-columns: repeat(3, 44px);
+  grid-template-columns: repeat(4, 44px);
   justify-content: center;
   align-items: center;
   gap: 0.75rem;
@@ -247,6 +252,11 @@
   transform: none;
 }
 
+.auth-oauth-btn:disabled:hover {
+  border-color: rgba(255, 255, 255, 0.08);
+  box-shadow: none;
+}
+
 /* Google */
 .auth-oauth-btn--google::before {
   background: linear-gradient(
@@ -282,6 +292,18 @@
 }
 .auth-oauth-btn--facebook:hover {
   border-color: rgba(24, 119, 242, 0.35);
+}
+
+/* YouTube */
+.auth-oauth-btn--youtube {
+  background: rgba(210, 212, 218, 0.9);
+  color: #6f747e;
+}
+.auth-oauth-btn--youtube::before {
+  background: rgba(255, 255, 255, 0.1);
+}
+.auth-oauth-btn--youtube:hover::before {
+  opacity: 0;
 }
 
 .auth-oauth-icon {
@@ -598,6 +620,8 @@
 /* ================= RESPONSIVE ================= */
 @media (max-width: 575.98px) {
   .auth-modal .modal-dialog {
+    min-height: calc(100dvh - 1.5rem);
+    align-items: center;
     margin: 0.75rem;
   }
 
@@ -611,7 +635,7 @@
 
   .auth-oauth-section {
     display: grid;
-    grid-template-columns: repeat(3, 44px);
+    grid-template-columns: repeat(4, 44px);
     justify-content: center;
     align-items: center;
     gap: 0.75rem;
