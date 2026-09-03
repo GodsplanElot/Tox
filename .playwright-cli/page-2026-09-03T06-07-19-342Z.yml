@@ -1,0 +1,75 @@
+- generic [ref=e3]:
+  - navigation [ref=e4]:
+    - generic [ref=e5]:
+      - link [ref=e6] [cursor=pointer]:
+        - /url: /
+        - img "TOXin" [ref=e7]
+      - generic [ref=e8]:
+        - link "Home" [ref=e9] [cursor=pointer]:
+          - /url: /
+        - link "Categories" [ref=e10] [cursor=pointer]:
+          - /url: /categories
+        - link "Movies" [ref=e11] [cursor=pointer]:
+          - /url: /movies
+        - link "Tv Series" [ref=e12] [cursor=pointer]:
+          - /url: /series
+      - generic [ref=e13]:
+        - generic [ref=e15]:
+          - generic: 
+          - searchbox "Search movies..." [ref=e16]
+        - generic [ref=e17]:
+          - button "Login" [ref=e18] [cursor=pointer]
+          - button "Sign Up" [ref=e19] [cursor=pointer]
+  - text:     
+  - main [ref=e20]:
+    - generic [ref=e21]:
+      - generic [ref=e22]:
+        - text: Movie Library
+        - heading "All Movies" [level=1] [ref=e23]
+        - paragraph [ref=e24]: Browse every published movie in a stable grid, 50 titles per page.
+      - generic [ref=e25]:
+        - generic [ref=e26]: Page 1 of 1
+        - strong [ref=e27]: 2 published movies
+      - generic [ref=e28]:
+        - link "The dancing Dragon 8.0 The dancing Dragon 2026" [ref=e29] [cursor=pointer]:
+          - /url: /movies/the-dancing-dragon
+          - generic [ref=e30]:
+            - img "The dancing Dragon" [ref=e31]
+            - generic [ref=e32]: "8.0"
+          - generic [ref=e38]:
+            - heading "The dancing Dragon" [level=4] [ref=e39]
+            - text: "2026"
+        - link "hk 3.0 hk 2026" [ref=e40] [cursor=pointer]:
+          - /url: /movies/hk
+          - generic [ref=e41]:
+            - img "hk" [ref=e42]
+            - generic [ref=e43]: "3.0"
+          - generic [ref=e49]:
+            - heading "hk" [level=4] [ref=e50]
+            - text: "2026"
+      - navigation "Movie pages" [ref=e51]:
+        - button "Previous" [disabled] [ref=e52]
+        - generic [ref=e53]: 1 / 1
+        - button "Next" [disabled] [ref=e54]
+  - contentinfo [ref=e55]:
+    - generic [ref=e56]:
+      - generic [ref=e57]:
+        - img "TOX Logo" [ref=e58]
+        - paragraph [ref=e59]: Discover, explore, and stream the latest movies and series in one place.
+      - generic [ref=e60]:
+        - heading "Explore" [level=4] [ref=e61]
+        - link "Home" [ref=e62] [cursor=pointer]:
+          - /url: /
+        - link "Movies" [ref=e63] [cursor=pointer]:
+          - /url: /movies
+        - link "Categories" [ref=e64] [cursor=pointer]:
+          - /url: /categories
+        - link "Series" [ref=e65] [cursor=pointer]:
+          - /url: /series
+      - generic [ref=e66]:
+        - heading "Discover" [level=4] [ref=e67]
+        - link "Search" [ref=e68] [cursor=pointer]:
+          - /url: /search
+        - link "Genres" [ref=e69] [cursor=pointer]:
+          - /url: /categories
+    - generic [ref=e70]: © 2026 TOX. All rights reserved.

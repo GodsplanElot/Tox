@@ -15,9 +15,9 @@ const MobileNavBar = ({ isAuthenticated, onLoginClick }: Props) => {
         <span>Home</span>
       </NavLink>
 
-      <NavLink to="/series" className="mobile-bottom-nav__item mobile-bottom-nav__item--series">
-        <i className="bi bi-collection-play" aria-hidden="true"></i>
-        <span>Series</span>
+      <NavLink to="/movies" className="mobile-bottom-nav__item mobile-bottom-nav__item--movies">
+        <i className="bi bi-play-btn" aria-hidden="true"></i>
+        <span>Movies</span>
       </NavLink>
 
       <span className="mobile-bottom-nav__spacer" aria-hidden="true"></span>
@@ -33,11 +33,6 @@ const MobileNavBar = ({ isAuthenticated, onLoginClick }: Props) => {
       <NavLink to="/search" className="mobile-bottom-nav__item mobile-bottom-nav__item--search">
         <i className="bi bi-search" aria-hidden="true"></i>
         <span>Search</span>
-      </NavLink>
-
-      <NavLink to="/watchlist" className="mobile-bottom-nav__item mobile-bottom-nav__item--watchlist">
-        <i className="bi bi-bookmark-check" aria-hidden="true"></i>
-        <span>List</span>
       </NavLink>
 
       {isAuthenticated ? (
