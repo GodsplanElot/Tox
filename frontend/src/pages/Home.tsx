@@ -6,6 +6,7 @@ import type { Movie } from "../types/movie";
 import type { Series } from "../types/series";
 import EmptyState from "../components/common/EmptyState";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+import OfflineState from "../components/common/OfflineState";
 
 const getDateTime = (value?: string) => {
   if (!value) return 0;
@@ -17,10 +18,12 @@ const Home = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [series, setSeries] = useState<Series[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadFailed, setLoadFailed] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        setLoadFailed(false);
         const [moviesData, seriesData] = await Promise.all([
           api.getMovies(),
           api.getSeries(),
@@ -29,6 +32,7 @@ const Home = () => {
         setSeries(seriesData);
       } catch (error) {
         console.error("Error fetching data:", error);
+        setLoadFailed(true);
       } finally {
         setLoading(false);
       }
@@ -95,6 +99,10 @@ const Home = () => {
   }
 
   const hasContent = movies.length > 0 || series.length > 0;
+
+  if (loadFailed) {
+    return <OfflineState />;
+  }
 
   if (!hasContent) {
     return (

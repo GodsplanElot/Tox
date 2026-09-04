@@ -1,0 +1,74 @@
+.offline-state {
+  min-height: min(720px, calc(100svh - var(--navbar-height) - 2rem));
+  display: grid;
+  place-items: center;
+  padding: 2rem 0.75rem;
+  background:
+    radial-gradient(circle at 18% 12%, rgba(249, 171, 0, 0.13), transparent 28%),
+    radial-gradient(circle at 82% 18%, rgba(255, 77, 45, 0.13), transparent 26%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.025), transparent 42%);
+}
+
+.offline-state__panel {
+  width: min(100%, 520px);
+  display: grid;
+  justify-items: center;
+  padding: 1.75rem 1.25rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 18px;
+  background:
+    linear-gradient(145deg, rgba(28, 28, 35, 0.96), rgba(10, 10, 14, 0.98)),
+    var(--bg-surface);
+  box-shadow:
+    0 28px 70px rgba(0, 0, 0, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  text-align: center;
+}
+
+.offline-skull {
+  width: min(86vw, 320px);
+  height: auto;
+  margin-bottom: 0.65rem;
+}
+
+.offline-state__kicker {
+  color: var(--accent-primary);
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.offline-state h1 {
+  max-width: 440px;
+  margin: 0.45rem 0 0.65rem;
+  color: #ffffff;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 10vw, 3.4rem);
+  font-weight: 900;
+  line-height: 0.96;
+}
+
+.offline-state p {
+  max-width: 390px;
+  margin: 0 0 1.25rem;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.offline-state button {
+  min-height: 44px;
+  padding: 0 1.25rem;
+  border: 0;
+  border-radius: 10px;
+  background: var(--accent-primary);
+  color: #090909;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 12px 28px rgba(249, 171, 0, 0.2);
+}
+
+.offline-state button:hover {
+  background: #ffc02f;
+}
