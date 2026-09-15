@@ -4,6 +4,8 @@ import { api } from "../../services/api";
 import type { Category, Series } from "../../services/api";
 import EmptyState from "../../components/common/EmptyState";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import AdResponsiveBanner from "../../components/ads/AdResponsiveBanner";
+import AdSlot from "../../components/ads/AdSlot";
 import "./SeriesList.css";
 
 const SeriesList = () => {
@@ -59,15 +61,33 @@ const SeriesList = () => {
         <p>Browse shows by genre, from new obsessions to long-running favorites.</p>
       </header>
 
-      {categorizedSeries.map(({ cat, filteredSeries }, index) => (
-        <div key={cat.id} className="category-section animate-in" style={{ animationDelay: `${index * 70}ms` }}>
-          <div className="category-section__header">
-            <h2>{cat.name}</h2>
-            <span>{filteredSeries.length} shows</span>
-          </div>
-          <SeriesRail title="" series={filteredSeries} />
+      <AdResponsiveBanner />
+
+      <div className="ad-supported-layout">
+        <div className="ad-supported-layout__main">
+          {categorizedSeries.map(({ cat, filteredSeries }, index) => (
+            <div key={cat.id} className="category-section animate-in" style={{ animationDelay: `${index * 70}ms` }}>
+              <div className="category-section__header">
+                <h2>{cat.name}</h2>
+                <span>{filteredSeries.length} shows</span>
+              </div>
+              <SeriesRail title="" series={filteredSeries} />
+              {index === 0 && (
+                <AdSlot
+                  unit="native"
+                  className="ad-inline"
+                  label="Sponsored shows"
+                />
+              )}
+            </div>
+          ))}
         </div>
-      ))}
+
+        <aside className="ad-side-rail" aria-label="Sponsored">
+          <AdSlot unit="160x600" />
+          <AdSlot unit="160x300" />
+        </aside>
+      </div>
     </div>
   );
 };

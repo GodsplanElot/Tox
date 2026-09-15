@@ -12,6 +12,7 @@ import SeriesDetail from "../pages/Series/SeriesDetail";
 import EpisodeDetail from "../pages/Series/EpisodeDetail";
 import Watchlist from "../pages/Watchlist";
 import Profile from "../pages/Profile";
+import LegalPage from "../pages/LegalPage";
 
 const AppRoutes = () => {
   return (
@@ -31,6 +32,7 @@ const AppRoutes = () => {
           path="/series/:seriesSlug/episode/:episodeSlug"
           element={<EpisodeDetail />}
         />
+        <Route path="/legal/:slug" element={<LegalPage />} />
         <Route path="*" element={<NotFound />} />
       </Route>
     </Routes>

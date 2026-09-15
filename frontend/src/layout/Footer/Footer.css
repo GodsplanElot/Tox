@@ -78,8 +78,14 @@
   }
 
   .footer-inner {
-    grid-template-columns: 1.6fr 1fr 1fr;
+    grid-template-columns: 1.5fr 0.8fr 0.8fr 1fr;
     gap: 2rem;
+  }
+}
+
+@media (min-width: 700px) and (max-width: 899.98px) {
+  .footer-inner {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 

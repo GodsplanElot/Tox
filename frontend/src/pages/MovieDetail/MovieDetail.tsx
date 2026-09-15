@@ -7,6 +7,9 @@ import RatingBadge from "../../components/common/RatingBadge";
 import { FaDownload, FaPlus, FaCheck, FaShareAlt } from "react-icons/fa";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import DownloadRedirectModal from "../../components/DownloadRedirectModal";
+import AdResponsiveBanner from "../../components/ads/AdResponsiveBanner";
+import AdSlot from "../../components/ads/AdSlot";
+import { triggerAdsterraPopunder } from "../../components/ads/adsterraActions";
 import "./MovieDetail.css";
 
 const MovieDetail: React.FC = () => {
@@ -99,6 +102,7 @@ const MovieDetail: React.FC = () => {
     if (!movie) return;
     const url = api.getVideoUrl(movie);
     if (!url) return;
+    triggerAdsterraPopunder();
     setDownloadTarget({ title: movie.title, url });
   };
 
@@ -207,6 +211,9 @@ const MovieDetail: React.FC = () => {
         targetUrl={downloadTarget?.url ?? ""}
         onHide={() => setDownloadTarget(null)}
       />
+
+      <AdResponsiveBanner />
+      <AdSlot unit="native" className="ad-inline" label="Sponsored titles" />
 
       {/* RECOMMENDATIONS */}
       {relatedMovies.length > 0 && (

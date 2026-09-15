@@ -17,6 +17,8 @@ import RatingBadge from "../../components/common/RatingBadge";
 import { api } from "../../services/api";
 import type { Series } from "../../types/series";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import AdResponsiveBanner from "../../components/ads/AdResponsiveBanner";
+import AdSlot from "../../components/ads/AdSlot";
 import "./SeriesDetail.css";
 
 const SeriesDetail = () => {
@@ -217,9 +219,12 @@ const SeriesDetail = () => {
         />
       </div>
 
+      <AdResponsiveBanner />
+
       <section className="series-body">
         {series.seasons && series.seasons.length > 0 ? (
           <>
+            <AdSlot unit="native" className="ad-inline" label="Sponsored episodes" />
             <div className="section-head">
               <div>
                 <span>Episode guide</span>

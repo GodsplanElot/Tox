@@ -7,6 +7,8 @@ import type { Series } from "../types/series";
 import EmptyState from "../components/common/EmptyState";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import OfflineState from "../components/common/OfflineState";
+import AdResponsiveBanner from "../components/ads/AdResponsiveBanner";
+import AdSlot from "../components/ads/AdSlot";
 
 const getDateTime = (value?: string) => {
   if (!value) return 0;
@@ -116,13 +118,16 @@ const Home = () => {
   return (
     <>
       <HeroCarousel items={carouselItems} />
+      <AdResponsiveBanner />
 
       {trendingMovies.length > 0 && (
         <MovieRail title="Trending Now" movies={trendingMovies.slice(0, 18)} />
       )}
+      <AdSlot unit="native" className="ad-inline" label="Sponsored recommendations" />
       {popularMovies.length > 0 && (
         <MovieRail title="Popular Movies" movies={popularMovies.slice(0, 18)} />
       )}
+      <AdSlot unit="468x60" className="ad-inline" />
       {newReleases.length > 0 && (
         <MovieRail title="New Releases" movies={newReleases.slice(0, 18)} />
       )}

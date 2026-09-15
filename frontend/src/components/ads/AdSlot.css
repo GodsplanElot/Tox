@@ -1,0 +1,116 @@
+.ad-slot {
+  width: min(100%, var(--ad-width));
+  min-height: var(--ad-height);
+  display: grid;
+  grid-template-rows: auto var(--ad-height);
+  align-items: center;
+  justify-items: center;
+  margin-inline: auto;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015)),
+    rgba(0, 0, 0, 0.14);
+}
+
+.ad-slot__label {
+  width: 100%;
+  padding: 0.28rem 0.5rem;
+  color: rgba(255, 255, 255, 0.42);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.ad-slot__frame,
+.ad-slot__reserve {
+  width: min(100%, var(--ad-width));
+  height: var(--ad-height);
+  display: block;
+  border: 0;
+  background: transparent;
+}
+
+.ad-slot__reserve {
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.035) 0,
+      rgba(255, 255, 255, 0.035) 8px,
+      transparent 8px,
+      transparent 16px
+    );
+}
+
+.ad-slot--native {
+  width: min(100%, 760px);
+}
+
+.ad-responsive-banner {
+  display: grid;
+  justify-items: center;
+  width: 100%;
+  margin: 1.4rem auto 1.6rem;
+}
+
+.ad-responsive-banner__desktop,
+.ad-responsive-banner__tablet {
+  display: none;
+}
+
+.ad-inline {
+  margin-block: 1.4rem;
+}
+
+.ad-grid-wide {
+  grid-column: 1 / -1;
+  width: 100%;
+  display: grid;
+  justify-items: center;
+  margin-block: 0.25rem;
+}
+
+.ad-side-rail {
+  display: none;
+}
+
+@media (min-width: 560px) {
+  .ad-responsive-banner__mobile {
+    display: none;
+  }
+
+  .ad-responsive-banner__tablet {
+    display: grid;
+  }
+}
+
+@media (min-width: 860px) {
+  .ad-responsive-banner__tablet {
+    display: none;
+  }
+
+  .ad-responsive-banner__desktop {
+    display: grid;
+  }
+}
+
+@media (min-width: 1200px) {
+  .ad-supported-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 180px;
+    gap: 1.25rem;
+    align-items: start;
+  }
+
+  .ad-side-rail {
+    position: sticky;
+    top: calc(var(--navbar-height) + 1rem);
+    display: grid;
+    gap: 1rem;
+    justify-items: center;
+  }
+}

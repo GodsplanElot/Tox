@@ -27,6 +27,16 @@ const Footer = () => {
           <Link to="/search">Search</Link>
           <Link to="/categories">Genres</Link>
         </div>
+
+        <div className="footer-links">
+          <h4>Legal</h4>
+          <Link to="/legal/privacy-policy">Privacy Policy</Link>
+          <Link to="/legal/terms-of-use">Terms of Use</Link>
+          <Link to="/legal/dmca">DMCA / Copyright</Link>
+          <Link to="/legal/contact">Contact</Link>
+          <Link to="/legal/about">About</Link>
+          <Link to="/legal/content-rights">Content Rights</Link>
+        </div>
       </div>
 
       <div className="footer-bottom">

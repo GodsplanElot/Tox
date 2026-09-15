@@ -1,8 +1,10 @@
-import { useEffect, useMemo, useState } from "react";
+import { Fragment, useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import MovieCard from "../components/MovieCard/MovieCard";
 import EmptyState from "../components/common/EmptyState";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+import AdResponsiveBanner from "../components/ads/AdResponsiveBanner";
+import AdSlot from "../components/ads/AdSlot";
 import { api } from "../services/api";
 import type { Movie, PaginatedResponse } from "../services/api";
 import "./Movies.css";
@@ -95,40 +97,58 @@ const Movies = () => {
         <p>Browse every published movie in a stable grid, 50 titles per page.</p>
       </header>
 
-      <div className="movies-page__summary">
-        <span>
-          Page {currentPage} of {totalPages}
-        </span>
-        <strong>{moviePage.count} published movies</strong>
+      <AdResponsiveBanner />
+
+      <div className="ad-supported-layout">
+        <div className="ad-supported-layout__main">
+          <div className="movies-page__summary">
+            <span>
+              Page {currentPage} of {totalPages}
+            </span>
+            <strong>{moviePage.count} published movies</strong>
+          </div>
+
+          <div className="movies-page__grid">
+            {moviePage.results.map((movie, index) => (
+              <Fragment key={movie.id}>
+                {index === 16 && (
+                  <div className="ad-grid-wide">
+                    <AdSlot unit="300x250" />
+                  </div>
+                )}
+                <MovieCard movie={movie} />
+              </Fragment>
+            ))}
+          </div>
+
+          <nav className="movies-pagination" aria-label="Movie pages">
+            <button
+              type="button"
+              disabled={!moviePage.previous}
+              onClick={() => goToPage(currentPage - 1)}
+            >
+              Previous
+            </button>
+
+            <span>
+              {currentPage} / {totalPages}
+            </span>
+
+            <button
+              type="button"
+              disabled={!moviePage.next}
+              onClick={() => goToPage(currentPage + 1)}
+            >
+              Next
+            </button>
+          </nav>
+        </div>
+
+        <aside className="ad-side-rail" aria-label="Sponsored">
+          <AdSlot unit="160x600" />
+          <AdSlot unit="160x300" />
+        </aside>
       </div>
-
-      <div className="movies-page__grid">
-        {moviePage.results.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
-        ))}
-      </div>
-
-      <nav className="movies-pagination" aria-label="Movie pages">
-        <button
-          type="button"
-          disabled={!moviePage.previous}
-          onClick={() => goToPage(currentPage - 1)}
-        >
-          Previous
-        </button>
-
-        <span>
-          {currentPage} / {totalPages}
-        </span>
-
-        <button
-          type="button"
-          disabled={!moviePage.next}
-          onClick={() => goToPage(currentPage + 1)}
-        >
-          Next
-        </button>
-      </nav>
     </section>
   );
 };

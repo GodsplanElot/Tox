@@ -7,6 +7,8 @@ import LoadingSpinner from "../components/common/LoadingSpinner";
 
 import MovieGrid from "../components/MovieGrid/MovieGrid";
 import SeriesRail from "../components/SeriesRail/SeriesRail";
+import AdResponsiveBanner from "../components/ads/AdResponsiveBanner";
+import AdSlot from "../components/ads/AdSlot";
 
 import "../styles/CategoryDetail.css";
 
@@ -143,8 +145,14 @@ const CategoryDetail = () => {
         </div>
       </header>
 
+      <AdResponsiveBanner />
+
       {/* MOVIES */}
       {movies.length > 0 && <MovieGrid movies={movies} />}
+
+      {movies.length > 0 && series.length > 0 && (
+        <AdSlot unit="300x250" className="ad-inline" />
+      )}
 
       {/* SERIES */}
       {series.length > 0 && <SeriesRail title="TV Series" series={series} />}

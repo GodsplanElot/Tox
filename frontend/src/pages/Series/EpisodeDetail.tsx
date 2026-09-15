@@ -6,6 +6,9 @@ import { api } from "../../services/api";
 import type { Series } from "../../types/series";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import DownloadRedirectModal from "../../components/DownloadRedirectModal";
+import AdResponsiveBanner from "../../components/ads/AdResponsiveBanner";
+import AdSlot from "../../components/ads/AdSlot";
+import { triggerAdsterraPopunder } from "../../components/ads/adsterraActions";
 import "./EpisodeDetail.css";
 
 const EpisodeDetail = () => {
@@ -59,6 +62,7 @@ const EpisodeDetail = () => {
   const openDownloadModal = () => {
     const url = api.getVideoUrl(episode);
     if (!url) return;
+    triggerAdsterraPopunder();
     setDownloadTarget({
       title: `E${episode.episode_number}: ${episode.title}`,
       url,
@@ -150,6 +154,9 @@ const EpisodeDetail = () => {
           <h3>Overview</h3>
           <p>{episode.plot || series?.description}</p>
         </div>
+
+        <AdResponsiveBanner />
+        <AdSlot unit="native" className="ad-inline" label="Sponsored titles" />
       </div>
 
       <DownloadRedirectModal

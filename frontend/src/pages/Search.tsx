@@ -9,6 +9,8 @@ import { api } from "../services/api";
 import type { Movie, Series } from "../services/api";
 import EmptyState from "../components/common/EmptyState";
 import LoadingSpinner from "../components/common/LoadingSpinner";
+import AdResponsiveBanner from "../components/ads/AdResponsiveBanner";
+import AdSlot from "../components/ads/AdSlot";
 
 import "../styles/Search.css";
 
@@ -128,9 +130,13 @@ const Search = () => {
         </form>
       </div>
 
+      <AdResponsiveBanner />
+
       {recommended.length > 0 && (
         <MovieRail title="Recommended Movies" movies={recommended} />
       )}
+
+      <AdSlot unit="native" className="ad-inline" label="Sponsored results" />
 
       {initialQuery && (
         <div className="search-results">
