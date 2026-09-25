@@ -21,7 +21,6 @@ const EpisodeDetail = () => {
   const [loading, setLoading] = useState(true);
   const [downloadTarget, setDownloadTarget] = useState<{
     title: string;
-    url: string;
   } | null>(null);
 
   useEffect(() => {
@@ -60,13 +59,16 @@ const EpisodeDetail = () => {
   };
 
   const openDownloadModal = () => {
-    const url = api.getVideoUrl(episode);
-    if (!url) return;
     triggerAdsterraPopunder();
     setDownloadTarget({
       title: `E${episode.episode_number}: ${episode.title}`,
-      url,
     });
+  };
+
+  const prepareDownloadLink = async () => {
+    if (!seriesSlug || !episodeSlug) return "";
+    const download = await api.getEpisodeDownloadLink(seriesSlug, episodeSlug);
+    return download.url;
   };
 
   return (
@@ -134,7 +136,7 @@ const EpisodeDetail = () => {
             <h1 className="episode-title-large">{episode.title}</h1>
 
             <div className="episode-actions">
-              {api.getVideoUrl(episode) && (
+              {episode.download_available && (
                 <button
                   type="button"
                   className="download-btn download-btn--small"
@@ -162,7 +164,7 @@ const EpisodeDetail = () => {
       <DownloadRedirectModal
         show={Boolean(downloadTarget)}
         title={downloadTarget?.title ?? ""}
-        targetUrl={downloadTarget?.url ?? ""}
+        onPrepareDownload={prepareDownloadLink}
         onHide={() => setDownloadTarget(null)}
       />
     </div>

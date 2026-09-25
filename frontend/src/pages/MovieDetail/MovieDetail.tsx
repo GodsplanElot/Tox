@@ -21,7 +21,6 @@ const MovieDetail: React.FC = () => {
   const [watchlistItemId, setWatchlistItemId] = useState<number | null>(null);
   const [downloadTarget, setDownloadTarget] = useState<{
     title: string;
-    url: string;
   } | null>(null);
 
   useEffect(() => {
@@ -100,10 +99,14 @@ const MovieDetail: React.FC = () => {
 
   const openDownloadModal = () => {
     if (!movie) return;
-    const url = api.getVideoUrl(movie);
-    if (!url) return;
     triggerAdsterraPopunder();
-    setDownloadTarget({ title: movie.title, url });
+    setDownloadTarget({ title: movie.title });
+  };
+
+  const prepareDownloadLink = async () => {
+    if (!movie) return "";
+    const download = await api.getMovieDownloadLink(movie.slug);
+    return download.url;
   };
 
   if (loading) {
@@ -163,7 +166,7 @@ const MovieDetail: React.FC = () => {
 
             <div className="movie-detail__actions">
               <div className="download-group">
-                {api.getVideoUrl(movie) ? (
+                {movie.download_available ? (
                   <button
                     type="button"
                     className="download-btn download-btn--1080p"
@@ -208,7 +211,7 @@ const MovieDetail: React.FC = () => {
       <DownloadRedirectModal
         show={Boolean(downloadTarget)}
         title={downloadTarget?.title ?? ""}
-        targetUrl={downloadTarget?.url ?? ""}
+        onPrepareDownload={prepareDownloadLink}
         onHide={() => setDownloadTarget(null)}
       />
 

@@ -8,7 +8,7 @@ import "./DownloadRedirectModal.css";
 type DownloadRedirectModalProps = {
   show: boolean;
   title: string;
-  targetUrl: string;
+  onPrepareDownload: () => Promise<string>;
   onHide: () => void;
 };
 
@@ -17,15 +17,19 @@ const CONTINUE_DELAY_SECONDS = 5;
 const DownloadRedirectModal = ({
   show,
   title,
-  targetUrl,
+  onPrepareDownload,
   onHide,
 }: DownloadRedirectModalProps) => {
   const [secondsRemaining, setSecondsRemaining] = useState(CONTINUE_DELAY_SECONDS);
+  const [isPreparing, setIsPreparing] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     if (!show) return;
 
     setSecondsRemaining(CONTINUE_DELAY_SECONDS);
+    setIsPreparing(false);
+    setErrorMessage("");
     const timer = window.setInterval(() => {
       setSecondsRemaining((current) => {
         if (current <= 1) {
@@ -37,16 +41,42 @@ const DownloadRedirectModal = ({
     }, 1000);
 
     return () => window.clearInterval(timer);
-  }, [show, targetUrl]);
+  }, [show]);
 
-  const handleContinue = () => {
-    if (!targetUrl || secondsRemaining > 0) return;
+  const handleContinue = async () => {
+    if (secondsRemaining > 0 || isPreparing) return;
 
-    const openedWindow = window.open(targetUrl, "_blank", "noopener,noreferrer");
+    setIsPreparing(true);
+    setErrorMessage("");
+    const openedWindow = window.open("about:blank", "_blank", "noopener,noreferrer");
     if (openedWindow) {
       openedWindow.opener = null;
+      openedWindow.document.title = "Preparing download...";
+      openedWindow.document.body.textContent = "Preparing secure download link...";
     }
-    onHide();
+
+    try {
+      const targetUrl = await onPrepareDownload();
+      if (!targetUrl) {
+        throw new Error("Download link is not available yet.");
+      }
+
+      if (openedWindow) {
+        openedWindow.location.href = targetUrl;
+      } else {
+        window.location.href = targetUrl;
+      }
+      onHide();
+    } catch (error) {
+      openedWindow?.close();
+      setErrorMessage(
+        error instanceof Error
+          ? error.message
+          : "Could not prepare the download link. Please try again.",
+      );
+    } finally {
+      setIsPreparing(false);
+    }
   };
 
   return (
@@ -78,6 +108,12 @@ const DownloadRedirectModal = ({
           <strong title={title}>{title}</strong>
         </div>
 
+        {errorMessage && (
+          <div className="download-redirect-modal__status" role="alert">
+            {errorMessage}
+          </div>
+        )}
+
         <div className="download-redirect-modal__ad">
           {show && <AdSlot unit="300x250" />}
         </div>
@@ -102,10 +138,12 @@ const DownloadRedirectModal = ({
           <button
             type="button"
             className="download-redirect-modal__btn download-redirect-modal__btn--primary"
-            disabled={secondsRemaining > 0 || !targetUrl}
+            disabled={secondsRemaining > 0 || isPreparing}
             onClick={handleContinue}
           >
-            {secondsRemaining > 0 ? (
+            {isPreparing ? (
+              "Preparing secure link..."
+            ) : secondsRemaining > 0 ? (
               `Continue in ${secondsRemaining}s`
             ) : (
               <>

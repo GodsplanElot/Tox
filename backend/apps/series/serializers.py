@@ -3,23 +3,33 @@ from .models import Series, Season, Episode
 from apps.categories.serializers import CategorySerializer
 
 class EpisodeSerializer(serializers.ModelSerializer):
+    download_available = serializers.SerializerMethodField()
+
     class Meta:
         model = Episode
         fields = [
             'id', 'episode_number', 'title', 'slug', 'plot',
             'thumbnail', 'runtime', 'release_date',
-            'source_type', 'video_file', 'external_url'
+            'source_type', 'download_available'
         ]
+
+    def get_download_available(self, obj):
+        return bool(obj.external_url or obj.video_file)
 
 
 class EpisodeSummarySerializer(serializers.ModelSerializer):
+    download_available = serializers.SerializerMethodField()
+
     class Meta:
         model = Episode
         fields = [
             'id', 'episode_number', 'title', 'slug', 'plot',
             'thumbnail', 'runtime', 'release_date',
-            'source_type', 'video_file', 'external_url'
+            'source_type', 'download_available'
         ]
+
+    def get_download_available(self, obj):
+        return bool(obj.external_url or obj.video_file)
 
 class SeasonSerializer(serializers.ModelSerializer):
     episodes = serializers.SerializerMethodField()

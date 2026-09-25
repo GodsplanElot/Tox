@@ -27,6 +27,10 @@ docker compose ps
 The `minio-init` service creates the `tox-media` bucket and makes it readable
 for local media previews.
 
+Production uses the same MinIO pattern, but the bucket remains private and the
+MinIO API is exposed only through the HTTPS `media.toxicreels.com` reverse
+proxy. The production data is kept in the `tox_minio_prod_data` Docker volume.
+
 ## Enable Postgres and MinIO in Django
 
 Update `backend/.env`:

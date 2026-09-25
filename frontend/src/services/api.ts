@@ -25,6 +25,13 @@ export type PaginatedResponse<T> = {
   results: T[];
 };
 
+export type DownloadLinkResponse = {
+  title: string;
+  url: string;
+  expires_in: number | null;
+  source_type: "upload" | "external";
+};
+
 const ACCESS_TOKEN_KEY = "tox_access_token";
 const REFRESH_TOKEN_KEY = "tox_refresh_token";
 const AUTH_CLEARED_EVENT = "tox-auth-cleared";
@@ -211,11 +218,18 @@ export const api = {
     return `${MEDIA_BASE_URL}${cleanPath}`;
   },
 
-  getVideoUrl: (item: { source_type?: string; video_file?: string; external_url?: string } | null | undefined) => {
-    if (!item) return '';
-    if (item.source_type === 'external') return item.external_url || '';
-    return api.getMediaUrl(item.video_file);
-  },
+  getMovieDownloadLink: (slug: string): Promise<DownloadLinkResponse> =>
+    fetch(`${API_BASE_URL}/movies/${slug}/download/`, {
+      method: "POST",
+    }).then(handleResponse),
+
+  getEpisodeDownloadLink: (
+    seriesSlug: string,
+    episodeSlug: string,
+  ): Promise<DownloadLinkResponse> =>
+    fetch(`${API_BASE_URL}/series/${seriesSlug}/episodes/${episodeSlug}/download/`, {
+      method: "POST",
+    }).then(handleResponse),
 
   getWatchlist: (): Promise<WatchlistItem[]> => 
     authFetch(`${API_BASE_URL}/watchlist/`).then(unwrapList<WatchlistItem>),

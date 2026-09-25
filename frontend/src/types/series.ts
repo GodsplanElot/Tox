@@ -10,8 +10,7 @@ export interface Episode {
   runtime?: number;
   release_date?: string;
   source_type?: "upload" | "external";
-  video_file?: string;
-  external_url?: string;
+  download_available?: boolean;
 }
 
 export interface Season {

@@ -36,6 +36,18 @@ class MovieApiVisibilityTests(APITestCase):
         detail_response = self.client.get(reverse("movie-detail", kwargs={"slug": movie.slug}))
         self.assertEqual(detail_response.status_code, 200)
         self.assertEqual(detail_response.data["title"], "Published Movie")
+        self.assertTrue(detail_response.data["download_available"])
+        self.assertNotIn("video_file", detail_response.data)
+        self.assertNotIn("external_url", detail_response.data)
+
+    def test_movie_download_endpoint_returns_controlled_url(self):
+        movie = self._movie("Published Movie", Movie.STATUS_PUBLISHED)
+
+        response = self.client.post(reverse("movie-download", kwargs={"slug": movie.slug}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["url"], "https://example.com/movie")
+        self.assertEqual(response.data["source_type"], "external")
 
     def test_movie_list_allows_fifty_item_pages(self):
         for index in range(55):

@@ -62,4 +62,21 @@ class SeriesApiVisibilityTests(APITestCase):
         episodes = response.data["seasons"][0]["episodes"]
         self.assertEqual(len(episodes), 1)
         self.assertEqual(episodes[0]["title"], "Published Episode")
-        self.assertEqual(episodes[0]["external_url"], "https://example.com/episode")
+        self.assertTrue(episodes[0]["download_available"])
+        self.assertNotIn("video_file", episodes[0])
+        self.assertNotIn("external_url", episodes[0])
+
+    def test_episode_download_endpoint_returns_controlled_url(self):
+        response = self.client.post(
+            reverse(
+                "series-episode-download",
+                kwargs={
+                    "slug": self.series.slug,
+                    "episode_slug": "published-series-s1e1",
+                },
+            )
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["url"], "https://example.com/episode")
+        self.assertEqual(response.data["source_type"], "external")

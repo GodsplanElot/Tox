@@ -14,6 +14,8 @@ from pathlib import Path
 import os
 from urllib.parse import urlparse
 
+from . import django_compat  # noqa: F401
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -257,6 +259,12 @@ AWS_QUERYSTRING_AUTH = env_bool("AWS_QUERYSTRING_AUTH", False)
 AWS_S3_FILE_OVERWRITE = env_bool("AWS_S3_FILE_OVERWRITE", False)
 AWS_S3_CUSTOM_DOMAIN = os.environ.get("AWS_S3_CUSTOM_DOMAIN", "")
 AWS_S3_URL_PROTOCOL = os.environ.get("AWS_S3_URL_PROTOCOL", "http:")
+
+DOWNLOAD_LINK_EXPIRY_SECONDS = int(os.environ.get("DOWNLOAD_LINK_EXPIRY_SECONDS", "900"))
+DOWNLOAD_LINK_RATE_LIMIT = int(os.environ.get("DOWNLOAD_LINK_RATE_LIMIT", "20"))
+DOWNLOAD_LINK_RATE_WINDOW_SECONDS = int(
+    os.environ.get("DOWNLOAD_LINK_RATE_WINDOW_SECONDS", "3600")
+)
 
 if USE_S3:
     STORAGES = {
