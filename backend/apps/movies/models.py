@@ -3,6 +3,7 @@ from django.core.exceptions import ValidationError
 from django.utils.text import slugify
 from apps.categories.models import Category
 from apps.common.models import PublishableModel
+from apps.common.storage import local_video_storage
 
 class Movie(PublishableModel):
     SOURCE_TYPE_CHOICES = (
@@ -34,6 +35,7 @@ class Movie(PublishableModel):
         default="upload"
     )
     video_file = models.FileField(
+        storage=local_video_storage,
         upload_to="videos/movies/",
         blank=True,
         null=True,

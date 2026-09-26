@@ -80,3 +80,28 @@ class SeriesApiVisibilityTests(APITestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.data["url"], "https://example.com/episode")
         self.assertEqual(response.data["source_type"], "external")
+
+    def test_uploaded_episode_returns_a_temporary_protected_download_url(self):
+        episode = Episode.objects.create(
+            season=self.season,
+            episode_number=3,
+            slug="published-series-s1e3",
+            title="Uploaded Episode",
+            source_type="upload",
+            video_file="videos/episodes/uploaded.mp4",
+            status=Episode.STATUS_PUBLISHED,
+        )
+
+        response = self.client.post(
+            reverse(
+                "series-episode-download",
+                kwargs={"slug": self.series.slug, "episode_slug": episode.slug},
+            )
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn(
+            "/api/series/published-series/episodes/published-series-s1e3/download-file/?token=",
+            response.data["url"],
+        )
+        self.assertEqual(response.data["expires_in"], 900)

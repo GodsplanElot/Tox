@@ -49,6 +49,41 @@ class MovieApiVisibilityTests(APITestCase):
         self.assertEqual(response.data["url"], "https://example.com/movie")
         self.assertEqual(response.data["source_type"], "external")
 
+    def test_uploaded_movie_returns_a_temporary_protected_download_url(self):
+        movie = Movie.objects.create(
+            title="Uploaded Movie",
+            slug="uploaded-movie",
+            description="Movie description",
+            poster="posters/movies/example.jpg",
+            source_type="upload",
+            video_file="videos/movies/uploaded.mp4",
+            status=Movie.STATUS_PUBLISHED,
+        )
+
+        response = self.client.post(reverse("movie-download", kwargs={"slug": movie.slug}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("/api/movies/uploaded-movie/download-file/?token=", response.data["url"])
+        self.assertEqual(response.data["expires_in"], 900)
+
+    def test_uploaded_movie_rejects_an_invalid_download_token(self):
+        movie = Movie.objects.create(
+            title="Uploaded Movie",
+            slug="uploaded-movie",
+            description="Movie description",
+            poster="posters/movies/example.jpg",
+            source_type="upload",
+            video_file="videos/movies/uploaded.mp4",
+            status=Movie.STATUS_PUBLISHED,
+        )
+
+        response = self.client.get(
+            reverse("movie-download-file", kwargs={"slug": movie.slug}),
+            {"token": "invalid"},
+        )
+
+        self.assertEqual(response.status_code, 403)
+
     def test_movie_list_allows_fifty_item_pages(self):
         for index in range(55):
             self._movie(f"Published Movie {index}", Movie.STATUS_PUBLISHED)

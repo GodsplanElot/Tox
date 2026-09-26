@@ -29,6 +29,7 @@ services:
       - "127.0.0.1:8000:8000"
     volumes:
       - ./backend/staticfiles:/app/staticfiles
+      - ${LOCAL_VIDEO_HOST_PATH:-/srv/toxicreels/media}:/app/media
 
 volumes:
   tox_postgres_prod_data:

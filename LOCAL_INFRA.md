@@ -28,9 +28,9 @@ Create the `tox-media` bucket with the MinIO Client after MinIO starts. Keep
 the bucket private in production; local development can use the same private
 bucket and signed URLs.
 
-Production keeps MinIO private on the Lightsail host and exposes its API only
-through the HTTPS `media.toxicreels.com` reverse proxy. The production service
-is managed by systemd and stores data under `/var/lib/minio`.
+Production keeps posters and image assets in the configured S3 storage. Large
+video files are stored directly on the Lightsail host under
+`/srv/toxicreels/media` and are served through protected Nginx routes.
 
 ## Enable Postgres and MinIO in Django
 

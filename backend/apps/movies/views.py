@@ -3,7 +3,14 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
-from apps.common.downloads import build_download_url, download_rate_limit
+from apps.common.downloads import (
+    build_download_url,
+    build_local_download_url,
+    download_rate_limit,
+    local_video_download_response,
+    uses_local_video_storage,
+    validate_local_download_token,
+)
 from .models import Movie
 from .serializers import MovieListSerializer, MovieSerializer
 
@@ -33,12 +40,39 @@ class MovieViewSet(viewsets.ReadOnlyModelViewSet):
             )
 
         download_rate_limit(request, f"movie:{movie.id}")
-        target_url = movie.external_url or build_download_url(movie.video_file)
+        if movie.external_url:
+            target_url = movie.external_url
+            expires_in = None
+        elif uses_local_video_storage(movie.video_file):
+            target_url = build_local_download_url(
+                request,
+                "movie-download-file",
+                {"slug": movie.slug},
+                movie.video_file,
+            )
+            expires_in = settings.DOWNLOAD_LINK_EXPIRY_SECONDS
+        else:
+            target_url = build_download_url(movie.video_file)
+            expires_in = settings.DOWNLOAD_LINK_EXPIRY_SECONDS
+
         return Response(
             {
                 "title": movie.title,
                 "url": target_url,
-                "expires_in": None if movie.external_url else settings.DOWNLOAD_LINK_EXPIRY_SECONDS,
+                "expires_in": expires_in,
                 "source_type": movie.source_type,
             }
         )
+
+    @action(detail=True, methods=["get"], url_path="download-file", url_name="download-file")
+    def download_file(self, request, slug=None):
+        movie = self.get_object()
+        if not movie.video_file or not uses_local_video_storage(movie.video_file):
+            return Response(
+                {"detail": "No local video file is available for this movie."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        validate_local_download_token(request.query_params.get("token"), movie.video_file.name)
+        download_rate_limit(request, f"movie:{movie.id}")
+        return local_video_download_response(movie.video_file)

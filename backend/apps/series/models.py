@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 from apps.categories.models import Category
 from apps.common.models import PublishableModel
+from apps.common.storage import local_video_storage
 
 class Series(PublishableModel):
     title = models.CharField(max_length=255)
@@ -127,6 +128,7 @@ class Episode(PublishableModel):
         default="upload"
     )
     video_file = models.FileField(
+        storage=local_video_storage,
         upload_to="videos/episodes/",
         blank=True,
         null=True,
