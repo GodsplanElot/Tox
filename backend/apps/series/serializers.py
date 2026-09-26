@@ -14,7 +14,7 @@ class EpisodeSerializer(serializers.ModelSerializer):
         ]
 
     def get_download_available(self, obj):
-        return bool(obj.external_url or obj.video_file)
+        return bool(obj.external_url or obj.video_file or obj.bunny_video_id)
 
 
 class EpisodeSummarySerializer(serializers.ModelSerializer):
@@ -29,7 +29,7 @@ class EpisodeSummarySerializer(serializers.ModelSerializer):
         ]
 
     def get_download_available(self, obj):
-        return bool(obj.external_url or obj.video_file)
+        return bool(obj.external_url or obj.video_file or obj.bunny_video_id)
 
 class SeasonSerializer(serializers.ModelSerializer):
     episodes = serializers.SerializerMethodField()

@@ -272,6 +272,17 @@ DOWNLOAD_LINK_RATE_WINDOW_SECONDS = int(
     os.environ.get("DOWNLOAD_LINK_RATE_WINDOW_SECONDS", "3600")
 )
 
+# Bunny Stream video delivery. These values are intentionally backend-only:
+# the browser receives short-lived upload and playback authorizations instead.
+VIDEO_PROVIDER = os.environ.get("VIDEO_PROVIDER", "local").strip().lower()
+BUNNY_STREAM_LIBRARY_ID = os.environ.get("BUNNY_STREAM_LIBRARY_ID", "").strip()
+BUNNY_STREAM_CDN_HOSTNAME = os.environ.get("BUNNY_STREAM_CDN_HOSTNAME", "").strip()
+BUNNY_STREAM_API_KEY = os.environ.get("BUNNY_STREAM_API_KEY", "").strip()
+BUNNY_STREAM_TOKEN_AUTH_KEY = os.environ.get("BUNNY_STREAM_TOKEN_AUTH_KEY", "").strip()
+BUNNY_STREAM_UPLOAD_EXPIRY_SECONDS = int(
+    os.environ.get("BUNNY_STREAM_UPLOAD_EXPIRY_SECONDS", "21600")
+)
+
 if USE_S3:
     STORAGES = {
         "default": {

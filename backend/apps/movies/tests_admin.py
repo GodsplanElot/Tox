@@ -2,8 +2,11 @@ from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
 from django.urls import reverse
 from django.test import TestCase
+from django.test import override_settings
+from unittest.mock import patch
 
 from apps.common.admin_roles import EDITOR_GROUP, WORKER_GROUP
+from apps.common.bunny import BunnyUploadSession
 from apps.movies.models import DraftMovie, Movie, PendingReviewMovie, PublishedMovie
 
 
@@ -59,6 +62,47 @@ class MovieAdminStatusPageTests(TestCase):
         self.assertEqual(DraftMovie.objects.count(), 3)
         self.assertEqual(PendingReviewMovie.objects.count(), 3)
         self.assertEqual(PublishedMovie.objects.count(), 3)
+
+    @override_settings(
+        VIDEO_PROVIDER="bunny_stream",
+        BUNNY_STREAM_LIBRARY_ID="123",
+        BUNNY_STREAM_CDN_HOSTNAME="example.b-cdn.net",
+        BUNNY_STREAM_API_KEY="api-key",
+        BUNNY_STREAM_TOKEN_AUTH_KEY="token-key",
+    )
+    @patch("apps.common.admin_bunny.BunnyStreamClient")
+    def test_admin_creates_a_signed_bunny_upload_session(self, client_class):
+        client_class.return_value.create_upload_session.return_value = BunnyUploadSession(
+            video_id="be5f5cf8-d5af-4a0a-a664-88072ab12a4a",
+            endpoint="https://video.bunnycdn.com/tusupload",
+            headers={"AuthorizationSignature": "signature"},
+            expires_at=1234567890,
+        )
+
+        response = self.client.post(
+            reverse("admin:movies_movie_bunny_upload_session", args=[self.draft_movie.id])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["video_id"], "be5f5cf8-d5af-4a0a-a664-88072ab12a4a")
+        self.draft_movie.refresh_from_db()
+        self.assertEqual(str(self.draft_movie.bunny_video_id), "be5f5cf8-d5af-4a0a-a664-88072ab12a4a")
+        self.assertEqual(self.draft_movie.bunny_status, "uploading")
+
+    @override_settings(
+        VIDEO_PROVIDER="bunny_stream",
+        BUNNY_STREAM_LIBRARY_ID="123",
+        BUNNY_STREAM_CDN_HOSTNAME="example.b-cdn.net",
+        BUNNY_STREAM_API_KEY="api-key",
+        BUNNY_STREAM_TOKEN_AUTH_KEY="token-key",
+    )
+    def test_admin_change_form_shows_bunny_upload_panel(self):
+        response = self.client.get(
+            reverse("admin:movies_movie_change", args=[self.draft_movie.id])
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Bunny Stream video")
 
 
 class MovieAdminRolePermissionTests(TestCase):

@@ -5,12 +5,13 @@ from django.urls import reverse
 from django.utils.html import format_html
 
 from apps.common.admin_roles import ContentRoleAdminMixin
+from apps.common.admin_bunny import BunnyVideoAdminMixin
 from apps.common.tmdb import TMDBService
 from .models import DraftSeries, Episode, PendingReviewSeries, PublishedSeries, Season, Series
 
 
 @admin.register(Episode)
-class EpisodeAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
+class EpisodeAdmin(BunnyVideoAdminMixin, ContentRoleAdminMixin, admin.ModelAdmin):
     list_display = (
         "title",
         "status",
@@ -27,7 +28,7 @@ class EpisodeAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
     search_fields = ("title", "plot", "external_url", "uploaded_by__username")
     autocomplete_fields = ["season"]
     prepopulated_fields = {"slug": ("title",)}
-    readonly_fields = ("uploaded_by", "reviewed_by", "submitted_at", "published_at")
+    readonly_fields = ("uploaded_by", "reviewed_by", "submitted_at", "published_at", "bunny_stream_video")
     actions = ["submit_for_review", "approve_selected", "reject_selected", "move_to_draft"]
 
     fieldsets = (
@@ -45,8 +46,8 @@ class EpisodeAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
         (
             "Video Source",
             {
-                "fields": ("source_type", "video_file", "external_url"),
-                "description": "Prefer an external legal download/source link. Upload only when the file should be hosted by this app.",
+                "fields": ("source_type", "bunny_stream_video", "video_file", "external_url"),
+                "description": "For new video uploads, save a draft then use the Bunny Stream panel below. Existing local files and external links remain supported.",
             },
         ),
         (

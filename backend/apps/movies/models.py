@@ -47,6 +47,16 @@ class Movie(PublishableModel):
         verbose_name="External download/source URL",
         help_text="Recommended. Link to the legal download or source page for this movie."
     )
+    bunny_video_id = models.UUIDField(
+        blank=True,
+        null=True,
+        unique=True,
+        editable=False,
+        help_text="Bunny Stream video ID managed by the secure upload panel.",
+    )
+    bunny_status = models.CharField(max_length=32, blank=True, default="")
+    bunny_encode_progress = models.PositiveSmallIntegerField(default=0)
+    bunny_available_resolutions = models.CharField(max_length=128, blank=True, default="")
 
     rating = models.FloatField(
         null=True, 
@@ -75,7 +85,7 @@ class Movie(PublishableModel):
 
     def clean(self):
         super().clean()
-        if self.status == self.STATUS_PUBLISHED and not (self.external_url or self.video_file):
+        if self.status == self.STATUS_PUBLISHED and not (self.external_url or self.video_file or self.bunny_video_id):
             raise ValidationError("A published movie needs an external source URL or uploaded video file.")
 
     def __str__(self):

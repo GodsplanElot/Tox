@@ -2,10 +2,11 @@ from django.contrib import admin, messages
 from django.core.exceptions import ValidationError
 from .models import DraftMovie, Movie, PendingReviewMovie, PublishedMovie
 from apps.common.admin_roles import ContentRoleAdminMixin
+from apps.common.admin_bunny import BunnyVideoAdminMixin
 from apps.common.tmdb import TMDBService
 
 
-class MovieWorkflowAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
+class MovieWorkflowAdmin(BunnyVideoAdminMixin, ContentRoleAdminMixin, admin.ModelAdmin):
     list_display = (
         'title',
         'status',
@@ -20,7 +21,7 @@ class MovieWorkflowAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
     search_fields = ('title', 'description', 'external_url', 'uploaded_by__username')
     autocomplete_fields = ['categories']
     prepopulated_fields = {"slug": ("title",)}
-    readonly_fields = ("uploaded_by", "reviewed_by", "submitted_at", "published_at")
+    readonly_fields = ("uploaded_by", "reviewed_by", "submitted_at", "published_at", "bunny_stream_video")
     actions = ['submit_for_review', 'approve_selected', 'reject_selected', 'move_to_draft', 'sync_from_tmdb']
     
     fieldsets = (
@@ -28,8 +29,8 @@ class MovieWorkflowAdmin(ContentRoleAdminMixin, admin.ModelAdmin):
             'fields': (('title', 'slug', 'tmdb_id'), 'description', 'categories'),
         }),
         ("Video Source", {
-            'fields': ('source_type', 'video_file', 'external_url'),
-            'description': "Prefer an external legal download/source link. Upload only when the file should be hosted by this app.",
+            'fields': ('source_type', 'bunny_stream_video', 'video_file', 'external_url'),
+            'description': "For new video uploads, save a draft then use the Bunny Stream panel below. Existing local files and external links remain supported.",
         }),
         ("Media Assets", {
             'fields': ('poster', 'hero_image'),

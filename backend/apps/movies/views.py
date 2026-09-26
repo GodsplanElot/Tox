@@ -11,6 +11,7 @@ from apps.common.downloads import (
     uses_local_video_storage,
     validate_local_download_token,
 )
+from apps.common.bunny import BunnyStreamClient, BunnyStreamError
 from .models import Movie
 from .serializers import MovieListSerializer, MovieSerializer
 
@@ -33,14 +34,26 @@ class MovieViewSet(viewsets.ReadOnlyModelViewSet):
     @action(detail=True, methods=["post"], url_path="download")
     def download(self, request, slug=None):
         movie = self.get_object()
-        if not (movie.external_url or movie.video_file):
+        if not (movie.external_url or movie.video_file or movie.bunny_video_id):
             return Response(
                 {"detail": "No download source is available for this movie."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
         download_rate_limit(request, f"movie:{movie.id}")
-        if movie.external_url:
+        if movie.bunny_video_id and movie.bunny_status == "ready":
+            try:
+                target_url = BunnyStreamClient().download_url(
+                    movie.bunny_video_id,
+                    movie.bunny_available_resolutions,
+                )
+            except BunnyStreamError:
+                return Response(
+                    {"detail": "The video download service is unavailable."},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                )
+            expires_in = settings.DOWNLOAD_LINK_EXPIRY_SECONDS
+        elif movie.external_url:
             target_url = movie.external_url
             expires_in = None
         elif uses_local_video_storage(movie.video_file):
@@ -52,6 +65,11 @@ class MovieViewSet(viewsets.ReadOnlyModelViewSet):
             )
             expires_in = settings.DOWNLOAD_LINK_EXPIRY_SECONDS
         else:
+            if movie.bunny_video_id:
+                return Response(
+                    {"detail": "This video is still processing."},
+                    status=status.HTTP_409_CONFLICT,
+                )
             target_url = build_download_url(movie.video_file)
             expires_in = settings.DOWNLOAD_LINK_EXPIRY_SECONDS
 

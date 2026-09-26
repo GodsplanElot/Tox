@@ -1,6 +1,9 @@
 from django.core.exceptions import ValidationError
+from django.test import override_settings
 from django.urls import reverse
 from rest_framework.test import APITestCase
+from unittest.mock import patch
+from uuid import uuid4
 
 from apps.categories.models import Category
 from apps.movies.models import Movie
@@ -83,6 +86,37 @@ class MovieApiVisibilityTests(APITestCase):
         )
 
         self.assertEqual(response.status_code, 403)
+
+    @override_settings(
+        VIDEO_PROVIDER="bunny_stream",
+        BUNNY_STREAM_LIBRARY_ID="123",
+        BUNNY_STREAM_CDN_HOSTNAME="example.b-cdn.net",
+        BUNNY_STREAM_API_KEY="api-key",
+        BUNNY_STREAM_TOKEN_AUTH_KEY="token-key",
+    )
+    @patch("apps.movies.views.BunnyStreamClient")
+    def test_bunny_movie_download_uses_signed_cdn_url(self, client_class):
+        movie = Movie.objects.create(
+            title="Bunny Movie",
+            slug="bunny-movie",
+            description="Movie description",
+            poster="posters/movies/example.jpg",
+            source_type="upload",
+            bunny_video_id=uuid4(),
+            bunny_status="ready",
+            bunny_available_resolutions="360p,720p",
+            status=Movie.STATUS_PUBLISHED,
+        )
+        client_class.return_value.download_url.return_value = "https://example.b-cdn.net/download.mp4?token=test"
+
+        response = self.client.post(reverse("movie-download", kwargs={"slug": movie.slug}))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.data["url"], "https://example.b-cdn.net/download.mp4?token=test")
+        client_class.return_value.download_url.assert_called_once_with(
+            movie.bunny_video_id,
+            "360p,720p",
+        )
 
     def test_movie_list_allows_fifty_item_pages(self):
         for index in range(55):

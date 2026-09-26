@@ -1,0 +1,17 @@
+{% extends "admin/change_form.html" %}
+
+{% block after_field_sets %}
+  {{ block.super }}
+  {% if bunny_upload_config %}
+    <fieldset class="module bunny-upload" id="bunny-upload-panel">
+      <h2>Bunny Stream video</h2>
+      <p class="help">Choose a licensed video file. It uploads directly to Bunny Stream and can resume after a network retry.</p>
+      {{ bunny_upload_config|json_script:"bunny-upload-config" }}
+      <input id="bunny-video-file" type="file" accept="video/*">
+      <div class="bunny-upload-progress" aria-live="polite">
+        <div class="bunny-upload-progress__bar"><span id="bunny-upload-progress-bar"></span></div>
+        <strong id="bunny-upload-status">Preparing upload...</strong>
+      </div>
+    </fieldset>
+  {% endif %}
+{% endblock %}

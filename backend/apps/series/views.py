@@ -13,6 +13,7 @@ from apps.common.downloads import (
     uses_local_video_storage,
     validate_local_download_token,
 )
+from apps.common.bunny import BunnyStreamClient, BunnyStreamError
 from .models import Series
 from .models import Episode, Season
 from .serializers import SeriesListSerializer, SeriesSerializer
@@ -74,14 +75,26 @@ class SeriesViewSet(viewsets.ReadOnlyModelViewSet):
                 status=status.HTTP_404_NOT_FOUND,
             )
 
-        if not (episode.external_url or episode.video_file):
+        if not (episode.external_url or episode.video_file or episode.bunny_video_id):
             return Response(
                 {"detail": "No download source is available for this episode."},
                 status=status.HTTP_404_NOT_FOUND,
             )
 
         download_rate_limit(request, f"episode:{episode.id}")
-        if episode.external_url:
+        if episode.bunny_video_id and episode.bunny_status == "ready":
+            try:
+                target_url = BunnyStreamClient().download_url(
+                    episode.bunny_video_id,
+                    episode.bunny_available_resolutions,
+                )
+            except BunnyStreamError:
+                return Response(
+                    {"detail": "The video download service is unavailable."},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                )
+            expires_in = settings.DOWNLOAD_LINK_EXPIRY_SECONDS
+        elif episode.external_url:
             target_url = episode.external_url
             expires_in = None
         elif uses_local_video_storage(episode.video_file):
@@ -93,6 +106,11 @@ class SeriesViewSet(viewsets.ReadOnlyModelViewSet):
             )
             expires_in = settings.DOWNLOAD_LINK_EXPIRY_SECONDS
         else:
+            if episode.bunny_video_id:
+                return Response(
+                    {"detail": "This episode is still processing."},
+                    status=status.HTTP_409_CONFLICT,
+                )
             target_url = build_download_url(episode.video_file)
             expires_in = settings.DOWNLOAD_LINK_EXPIRY_SECONDS
 

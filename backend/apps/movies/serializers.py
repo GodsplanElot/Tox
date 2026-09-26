@@ -15,7 +15,7 @@ class MovieSerializer(serializers.ModelSerializer):
         ]
 
     def get_download_available(self, obj):
-        return bool(obj.external_url or obj.video_file)
+        return bool(obj.external_url or obj.video_file or obj.bunny_video_id)
 
 
 class MovieListSerializer(serializers.ModelSerializer):
