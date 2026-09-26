@@ -24,8 +24,9 @@ docker compose up -d postgres minio minio-init
 docker compose ps
 ```
 
-The `minio-init` service creates the `tox-media` bucket and makes it readable
-for local media previews.
+Create the `tox-media` bucket with the MinIO Client after MinIO starts. Keep
+the bucket private in production; local development can use the same private
+bucket and signed URLs.
 
 Production uses the same MinIO pattern, but the bucket remains private and the
 MinIO API is exposed only through the HTTPS `media.toxicreels.com` reverse
