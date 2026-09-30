@@ -130,6 +130,67 @@
   color: var(--accent-primary);
 }
 
+.download-btn--hd {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #f9ab00 0%, #ff6f00 100%);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(249, 171, 0, 0.3);
+}
+
+.download-btn--hd:hover {
+  background: linear-gradient(135deg, #ffb700 0%, #ff8c00 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(249, 171, 0, 0.45);
+}
+
+.download-btn--external {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.75rem 1.5rem;
+  background: var(--bg-surface);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #ccc;
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.download-btn--external:hover {
+  background: var(--border-subtle);
+  border-color: rgba(255, 255, 255, 0.25);
+  color: #fff;
+}
+
+.download-btn__badge {
+  display: inline-block;
+  margin-left: 4px;
+  padding: 1px 5px;
+  background: rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.episode-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
 .episode-description-box {
   background: var(--bg-surface);
   border: 1px solid var(--border-subtle);

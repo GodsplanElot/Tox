@@ -21,6 +21,7 @@ const EpisodeDetail = () => {
   const [loading, setLoading] = useState(true);
   const [downloadTarget, setDownloadTarget] = useState<{
     title: string;
+    source: "bunny" | "external" | "local";
   } | null>(null);
 
   useEffect(() => {
@@ -58,16 +59,18 @@ const EpisodeDetail = () => {
     navigate(-1);
   };
 
-  const openDownloadModal = () => {
+  const openDownloadModal = (source: "bunny" | "external" | "local") => {
     triggerAdsterraPopunder();
     setDownloadTarget({
       title: `E${episode.episode_number}: ${episode.title}`,
+      source,
     });
   };
 
   const prepareDownloadLink = async () => {
-    if (!seriesSlug || !episodeSlug) return "";
-    const download = await api.getEpisodeDownloadLink(seriesSlug, episodeSlug);
+    if (!seriesSlug || !episodeSlug || !downloadTarget) return "";
+    const source = downloadTarget.source === "local" ? undefined : downloadTarget.source;
+    const download = await api.getEpisodeDownloadLink(seriesSlug, episodeSlug, source);
     return download.url;
   };
 
@@ -136,16 +139,35 @@ const EpisodeDetail = () => {
             <h1 className="episode-title-large">{episode.title}</h1>
 
             <div className="episode-actions">
-              {episode.download_available && (
+              {episode.bunny_ready && (
+                <button
+                  type="button"
+                  className="download-btn download-btn--hd"
+                  onClick={() => openDownloadModal("bunny")}
+                >
+                  <FaDownload />{" "}
+                  <span className="action-btn-label">HD Download</span>
+                  <span className="download-btn__badge">1080p</span>
+                </button>
+              )}
+              {episode.has_external_url && (
+                <button
+                  type="button"
+                  className="download-btn download-btn--external download-btn--small"
+                  onClick={() => openDownloadModal("external")}
+                >
+                  <FaDownload />{" "}
+                  <span className="action-btn-label">External Server</span>
+                </button>
+              )}
+              {!episode.bunny_ready && !episode.has_external_url && episode.download_available && (
                 <button
                   type="button"
                   className="download-btn download-btn--small"
-                  onClick={openDownloadModal}
+                  onClick={() => openDownloadModal("local")}
                 >
                   <FaDownload />{" "}
-                  <span className="action-btn-label">
-                    Download E{episode.episode_number}: {episode.title}
-                  </span>
+                  <span className="action-btn-label">Download</span>
                 </button>
               )}
             </div>
@@ -164,6 +186,7 @@ const EpisodeDetail = () => {
       <DownloadRedirectModal
         show={Boolean(downloadTarget)}
         title={downloadTarget?.title ?? ""}
+        sourceType={downloadTarget?.source}
         onPrepareDownload={prepareDownloadLink}
         onHide={() => setDownloadTarget(null)}
       />
