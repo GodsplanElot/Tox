@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
-import { FaExternalLinkAlt, FaShieldAlt } from "react-icons/fa";
+import { FaDownload, FaExternalLinkAlt, FaShieldAlt } from "react-icons/fa";
 import AdSlot from "./ads/AdSlot";
 import { ADSTERRA_SMARTLINK_URL } from "./ads/adsterraConfig";
 import "./DownloadRedirectModal.css";
@@ -8,6 +8,7 @@ import "./DownloadRedirectModal.css";
 type DownloadRedirectModalProps = {
   show: boolean;
   title: string;
+  sourceType?: "bunny" | "external" | "local";
   onPrepareDownload: () => Promise<string>;
   onHide: () => void;
 };
@@ -17,9 +18,11 @@ const CONTINUE_DELAY_SECONDS = 5;
 const DownloadRedirectModal = ({
   show,
   title,
+  sourceType = "external",
   onPrepareDownload,
   onHide,
 }: DownloadRedirectModalProps) => {
+  const isBunny = sourceType === "bunny";
   const [secondsRemaining, setSecondsRemaining] = useState(CONTINUE_DELAY_SECONDS);
   const [isPreparing, setIsPreparing] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -90,17 +93,17 @@ const DownloadRedirectModal = ({
       <Modal.Header closeButton>
         <Modal.Title>
           <span className="download-redirect-modal__icon">
-            <FaShieldAlt />
+            {isBunny ? <FaDownload /> : <FaShieldAlt />}
           </span>
-          Leaving ToxicReels
+          {isBunny ? "HD Download" : "Leaving ToxicReels"}
         </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         <p className="download-redirect-modal__message">
-          You are about to open a site where you can watch or download this title.
-          ToxicReels is not affiliated with that site, so please review the page
-          carefully before continuing.
+          {isBunny
+            ? "Your HD download link is being prepared from our secure CDN. The link expires shortly — your download will start immediately."
+            : "You are about to open a site where you can watch or download this title. ToxicReels is not affiliated with that site, so please review the page carefully before continuing."}
         </p>
 
         <div className="download-redirect-modal__target">
@@ -142,9 +145,13 @@ const DownloadRedirectModal = ({
             onClick={handleContinue}
           >
             {isPreparing ? (
-              "Preparing secure link..."
+              isBunny ? "Preparing HD link..." : "Preparing secure link..."
             ) : secondsRemaining > 0 ? (
               `Continue in ${secondsRemaining}s`
+            ) : isBunny ? (
+              <>
+                Start HD Download <FaDownload />
+              </>
             ) : (
               <>
                 Continue to site <FaExternalLinkAlt />
