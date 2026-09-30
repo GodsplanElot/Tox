@@ -46,8 +46,8 @@ class EpisodeAdmin(BunnyVideoAdminMixin, ContentRoleAdminMixin, admin.ModelAdmin
         (
             "Video Source",
             {
-                "fields": ("source_type", "bunny_stream_video", "video_file", "external_url"),
-                "description": "For new video uploads, save a draft then use the Bunny Stream panel below. Existing local files and external links remain supported.",
+                "fields": ("source_type", "bunny_video_id", "bunny_stream_video", "video_file", "external_url"),
+                "description": "Paste a Bunny Video GUID to attach an existing Bunny video, or use the upload panel below. Existing local files and external links remain supported.",
             },
         ),
         (
