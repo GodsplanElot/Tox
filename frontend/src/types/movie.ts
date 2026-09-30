@@ -16,6 +16,8 @@ export interface Movie {
   // Video Source Fields
   source_type?: "upload" | "external";
   download_available?: boolean;
+  bunny_ready?: boolean;
+  has_external_url?: boolean;
   
   created_at?: string;
 }

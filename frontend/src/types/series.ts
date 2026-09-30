@@ -11,6 +11,8 @@ export interface Episode {
   release_date?: string;
   source_type?: "upload" | "external";
   download_available?: boolean;
+  bunny_ready?: boolean;
+  has_external_url?: boolean;
 }
 
 export interface Season {
