@@ -1,8 +1,5 @@
 """Reusable Django Admin controls for secure Bunny Stream uploads."""
 
-import json
-
-from django.conf import settings
 from django.http import Http404, JsonResponse
 from django.urls import path, reverse
 
@@ -23,6 +20,51 @@ class BunnyVideoAdminMixin:
         return f"{obj.bunny_status or 'created'}{progress}"
 
     bunny_stream_video.short_description = "Bunny Stream status"
+
+    @staticmethod
+    def _apply_bunny_payload(obj, payload):
+        obj.bunny_encode_progress = max(0, min(100, int(payload.get("encodeProgress") or 0)))
+        obj.bunny_status = "ready" if bunny_video_is_ready(payload) else "processing"
+        obj.bunny_available_resolutions = payload.get("availableResolutions") or ""
+
+    def get_form(self, request, obj=None, **kwargs):
+        base_form = super().get_form(request, obj, **kwargs)
+        if "bunny_video_id" not in base_form.base_fields:
+            return base_form
+
+        admin = self
+        original_video_id = getattr(obj, "bunny_video_id", None)
+
+        class BunnyVideoForm(base_form):
+            def clean(form_self):
+                cleaned_data = super().clean()
+                bunny_video_id = cleaned_data.get("bunny_video_id")
+                if not bunny_video_id:
+                    form_self.instance.bunny_status = ""
+                    form_self.instance.bunny_encode_progress = 0
+                    form_self.instance.bunny_available_resolutions = ""
+                    return cleaned_data
+
+                if bunny_video_id == original_video_id:
+                    return cleaned_data
+                if not bunny_is_configured():
+                    form_self.add_error(
+                        "bunny_video_id",
+                        "Bunny Stream is not configured on this server.",
+                    )
+                    return cleaned_data
+                try:
+                    payload = BunnyStreamClient().get_video(str(bunny_video_id))
+                except BunnyStreamError as exc:
+                    form_self.add_error("bunny_video_id", str(exc))
+                    return cleaned_data
+
+                admin._apply_bunny_payload(form_self.instance, payload)
+                cleaned_data["source_type"] = "upload"
+                form_self.instance.source_type = "upload"
+                return cleaned_data
+
+        return BunnyVideoForm
 
     def get_urls(self):
         urls = super().get_urls()
@@ -51,10 +93,7 @@ class BunnyVideoAdminMixin:
 
     def _sync_bunny_status(self, obj):
         payload = BunnyStreamClient().get_video(str(obj.bunny_video_id))
-        progress = max(0, min(100, int(payload.get("encodeProgress") or 0)))
-        obj.bunny_encode_progress = progress
-        obj.bunny_status = "ready" if bunny_video_is_ready(payload) else "processing"
-        obj.bunny_available_resolutions = payload.get("availableResolutions") or ""
+        self._apply_bunny_payload(obj, payload)
         obj.save(
             update_fields=[
                 "bunny_encode_progress",
