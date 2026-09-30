@@ -21,6 +21,7 @@ const MovieDetail: React.FC = () => {
   const [watchlistItemId, setWatchlistItemId] = useState<number | null>(null);
   const [downloadTarget, setDownloadTarget] = useState<{
     title: string;
+    source: "bunny" | "external" | "local";
   } | null>(null);
 
   useEffect(() => {
@@ -97,15 +98,16 @@ const MovieDetail: React.FC = () => {
     }
   };
 
-  const openDownloadModal = () => {
+  const openDownloadModal = (source: "bunny" | "external" | "local") => {
     if (!movie) return;
     triggerAdsterraPopunder();
-    setDownloadTarget({ title: movie.title });
+    setDownloadTarget({ title: movie.title, source });
   };
 
   const prepareDownloadLink = async () => {
-    if (!movie) return "";
-    const download = await api.getMovieDownloadLink(movie.slug);
+    if (!movie || !downloadTarget) return "";
+    const source = downloadTarget.source === "local" ? undefined : downloadTarget.source;
+    const download = await api.getMovieDownloadLink(movie.slug, source);
     return download.url;
   };
 
@@ -166,20 +168,39 @@ const MovieDetail: React.FC = () => {
 
             <div className="movie-detail__actions">
               <div className="download-group">
-                {movie.download_available ? (
+                {movie.bunny_ready && (
+                  <button
+                    type="button"
+                    className="download-btn download-btn--hd"
+                    onClick={() => openDownloadModal("bunny")}
+                  >
+                    <FaDownload />{" "}
+                    <span className="action-btn-label">HD Download</span>
+                    <span className="download-btn__badge">1080p</span>
+                  </button>
+                )}
+                {movie.has_external_url && (
+                  <button
+                    type="button"
+                    className="download-btn download-btn--external"
+                    onClick={() => openDownloadModal("external")}
+                  >
+                    <FaDownload />{" "}
+                    <span className="action-btn-label">External Server</span>
+                  </button>
+                )}
+                {!movie.bunny_ready && !movie.has_external_url && movie.download_available && (
                   <button
                     type="button"
                     className="download-btn download-btn--1080p"
-                    onClick={openDownloadModal}
+                    onClick={() => openDownloadModal("local")}
                   >
                     <FaDownload />{" "}
                     <span className="action-btn-label">Download</span>
                   </button>
-                ) : (
-                  <button
-                    className="download-btn download-btn--1080p disabled"
-                    disabled
-                  >
+                )}
+                {!movie.download_available && (
+                  <button className="download-btn download-btn--1080p disabled" disabled>
                     <FaDownload />{" "}
                     <span className="action-btn-label">No Link</span>
                   </button>
@@ -211,6 +232,7 @@ const MovieDetail: React.FC = () => {
       <DownloadRedirectModal
         show={Boolean(downloadTarget)}
         title={downloadTarget?.title ?? ""}
+        sourceType={downloadTarget?.source}
         onPrepareDownload={prepareDownloadLink}
         onHide={() => setDownloadTarget(null)}
       />
