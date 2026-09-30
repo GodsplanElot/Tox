@@ -4,32 +4,48 @@ from apps.categories.serializers import CategorySerializer
 
 class EpisodeSerializer(serializers.ModelSerializer):
     download_available = serializers.SerializerMethodField()
+    bunny_ready = serializers.SerializerMethodField()
+    has_external_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Episode
         fields = [
             'id', 'episode_number', 'title', 'slug', 'plot',
             'thumbnail', 'runtime', 'release_date',
-            'source_type', 'download_available'
+            'source_type', 'download_available', 'bunny_ready', 'has_external_url',
         ]
 
     def get_download_available(self, obj):
         return bool(obj.external_url or obj.video_file or obj.bunny_video_id)
+
+    def get_bunny_ready(self, obj):
+        return bool(obj.bunny_video_id and obj.bunny_status == "ready")
+
+    def get_has_external_url(self, obj):
+        return bool(obj.external_url)
 
 
 class EpisodeSummarySerializer(serializers.ModelSerializer):
     download_available = serializers.SerializerMethodField()
+    bunny_ready = serializers.SerializerMethodField()
+    has_external_url = serializers.SerializerMethodField()
 
     class Meta:
         model = Episode
         fields = [
             'id', 'episode_number', 'title', 'slug', 'plot',
             'thumbnail', 'runtime', 'release_date',
-            'source_type', 'download_available'
+            'source_type', 'download_available', 'bunny_ready', 'has_external_url',
         ]
 
     def get_download_available(self, obj):
         return bool(obj.external_url or obj.video_file or obj.bunny_video_id)
+
+    def get_bunny_ready(self, obj):
+        return bool(obj.bunny_video_id and obj.bunny_status == "ready")
+
+    def get_has_external_url(self, obj):
+        return bool(obj.external_url)
 
 class SeasonSerializer(serializers.ModelSerializer):
     episodes = serializers.SerializerMethodField()
