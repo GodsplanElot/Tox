@@ -29,7 +29,7 @@ export type DownloadLinkResponse = {
   title: string;
   url: string;
   expires_in: number | null;
-  source_type: "upload" | "external";
+  source: "bunny" | "external" | "local";
 };
 
 const ACCESS_TOKEN_KEY = "tox_access_token";
@@ -218,17 +218,25 @@ export const api = {
     return `${MEDIA_BASE_URL}${cleanPath}`;
   },
 
-  getMovieDownloadLink: (slug: string): Promise<DownloadLinkResponse> =>
+  getMovieDownloadLink: (
+    slug: string,
+    source?: "bunny" | "external",
+  ): Promise<DownloadLinkResponse> =>
     fetch(`${API_BASE_URL}/movies/${slug}/download/`, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: source ? JSON.stringify({ source }) : undefined,
     }).then(handleResponse),
 
   getEpisodeDownloadLink: (
     seriesSlug: string,
     episodeSlug: string,
+    source?: "bunny" | "external",
   ): Promise<DownloadLinkResponse> =>
     fetch(`${API_BASE_URL}/series/${seriesSlug}/episodes/${episodeSlug}/download/`, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: source ? JSON.stringify({ source }) : undefined,
     }).then(handleResponse),
 
   getWatchlist: (): Promise<WatchlistItem[]> => 
