@@ -82,6 +82,45 @@ class SeriesViewSet(viewsets.ReadOnlyModelViewSet):
             )
 
         download_rate_limit(request, f"episode:{episode.id}")
+        source = request.data.get("source") or request.query_params.get("source")
+
+        if source == "bunny":
+            if not (episode.bunny_video_id and episode.bunny_status == "ready"):
+                return Response(
+                    {"detail": "HD source is not available for this episode."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            try:
+                target_url = BunnyStreamClient().download_url(
+                    episode.bunny_video_id,
+                    episode.bunny_available_resolutions,
+                )
+            except BunnyStreamError:
+                return Response(
+                    {"detail": "The HD download service is unavailable."},
+                    status=status.HTTP_503_SERVICE_UNAVAILABLE,
+                )
+            return Response({
+                "title": episode.title,
+                "url": target_url,
+                "expires_in": settings.DOWNLOAD_LINK_EXPIRY_SECONDS,
+                "source": "bunny",
+            })
+
+        if source == "external":
+            if not episode.external_url:
+                return Response(
+                    {"detail": "External download link is not available for this episode."},
+                    status=status.HTTP_404_NOT_FOUND,
+                )
+            return Response({
+                "title": episode.title,
+                "url": episode.external_url,
+                "expires_in": None,
+                "source": "external",
+            })
+
+        # Default: Bunny first, then external, then local
         if episode.bunny_video_id and episode.bunny_status == "ready":
             try:
                 target_url = BunnyStreamClient().download_url(
@@ -93,10 +132,19 @@ class SeriesViewSet(viewsets.ReadOnlyModelViewSet):
                     {"detail": "The video download service is unavailable."},
                     status=status.HTTP_503_SERVICE_UNAVAILABLE,
                 )
-            expires_in = settings.DOWNLOAD_LINK_EXPIRY_SECONDS
+            return Response({
+                "title": episode.title,
+                "url": target_url,
+                "expires_in": settings.DOWNLOAD_LINK_EXPIRY_SECONDS,
+                "source": "bunny",
+            })
         elif episode.external_url:
-            target_url = episode.external_url
-            expires_in = None
+            return Response({
+                "title": episode.title,
+                "url": episode.external_url,
+                "expires_in": None,
+                "source": "external",
+            })
         elif uses_local_video_storage(episode.video_file):
             target_url = build_local_download_url(
                 request,
@@ -104,24 +152,24 @@ class SeriesViewSet(viewsets.ReadOnlyModelViewSet):
                 {"slug": series.slug, "episode_slug": episode.slug},
                 episode.video_file,
             )
-            expires_in = settings.DOWNLOAD_LINK_EXPIRY_SECONDS
+            return Response({
+                "title": episode.title,
+                "url": target_url,
+                "expires_in": settings.DOWNLOAD_LINK_EXPIRY_SECONDS,
+                "source": "local",
+            })
         else:
             if episode.bunny_video_id:
                 return Response(
                     {"detail": "This episode is still processing."},
                     status=status.HTTP_409_CONFLICT,
                 )
-            target_url = build_download_url(episode.video_file)
-            expires_in = settings.DOWNLOAD_LINK_EXPIRY_SECONDS
-
-        return Response(
-            {
+            return Response({
                 "title": episode.title,
-                "url": target_url,
-                "expires_in": expires_in,
-                "source_type": episode.source_type,
-            }
-        )
+                "url": build_download_url(episode.video_file),
+                "expires_in": settings.DOWNLOAD_LINK_EXPIRY_SECONDS,
+                "source": "local",
+            })
 
     @action(
         detail=True,
