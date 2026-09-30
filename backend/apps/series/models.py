@@ -1,3 +1,4 @@
+from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.text import slugify
 from apps.categories.models import Category
@@ -144,8 +145,7 @@ class Episode(PublishableModel):
         blank=True,
         null=True,
         unique=True,
-        editable=False,
-        help_text="Bunny Stream video ID managed by the secure upload panel.",
+        help_text="Paste a Bunny Stream video GUID here, or use the upload panel below to upload directly.",
     )
     bunny_status = models.CharField(max_length=32, blank=True, default="")
     bunny_encode_progress = models.PositiveSmallIntegerField(default=0)
