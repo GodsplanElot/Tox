@@ -16,11 +16,25 @@ const getDateTime = (value?: string) => {
   return Number.isNaN(time) ? 0 : time;
 };
 
+// LCG-based seeded shuffle — stable per session, different every page load
+const seededShuffle = <T>(arr: T[], seed: number): T[] => {
+  const result = [...arr];
+  let s = seed >>> 0;
+  for (let i = result.length - 1; i > 0; i--) {
+    s = Math.imul(s, 1664525) + 1013904223;
+    const j = (s >>> 0) % (i + 1);
+    [result[i], result[j]] = [result[j], result[i]];
+  }
+  return result;
+};
+
 const Home = () => {
   const [movies, setMovies] = useState<Movie[]>([]);
   const [series, setSeries] = useState<Series[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadFailed, setLoadFailed] = useState(false);
+  // New seed each page load; stable within a session so memos don't thrash
+  const [rotationSeed] = useState(() => Math.floor(Math.random() * 0xffffffff));
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,16 +57,24 @@ const Home = () => {
   }, []);
 
   const trendingMovies = useMemo(() => {
-    return [...movies].sort((a, b) => {
-      const ratingDelta = (b.rating ?? 0) - (a.rating ?? 0);
-      if (ratingDelta !== 0) return ratingDelta;
-      return getDateTime(b.release_date) - getDateTime(a.release_date);
-    });
-  }, [movies]);
+    // Sort by rating+recency to build the candidate pool, then shuffle for variety
+    const pool = [...movies]
+      .sort((a, b) => {
+        const ratingDelta = (b.rating ?? 0) - (a.rating ?? 0);
+        if (ratingDelta !== 0) return ratingDelta;
+        return getDateTime(b.release_date) - getDateTime(a.release_date);
+      })
+      .slice(0, 30);
+    return seededShuffle(pool, rotationSeed);
+  }, [movies, rotationSeed]);
 
   const popularMovies = useMemo(() => {
-    return [...movies].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
-  }, [movies]);
+    // Top-rated pool shuffled so "Popular" shows different picks than "Trending"
+    const pool = [...movies]
+      .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))
+      .slice(0, 30);
+    return seededShuffle(pool, rotationSeed ^ 0xdeadbeef);
+  }, [movies, rotationSeed]);
 
   const newReleases = useMemo(() => {
     return [...movies].sort((a, b) => {
@@ -67,8 +89,11 @@ const Home = () => {
   }, [movies]);
 
   const trendingSeries = useMemo(() => {
-    return [...series].sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0));
-  }, [series]);
+    const pool = [...series]
+      .sort((a, b) => (b.rating ?? 0) - (a.rating ?? 0))
+      .slice(0, 15);
+    return seededShuffle(pool, rotationSeed ^ 0xc0ffee);
+  }, [series, rotationSeed]);
 
   const carouselItems = useMemo(() => {
     const movieItems = trendingMovies.slice(0, 3).map((movie) => ({
