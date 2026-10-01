@@ -7,6 +7,7 @@ import RatingBadge from "../../components/common/RatingBadge";
 import { FaDownload, FaPlus, FaCheck, FaShareAlt } from "react-icons/fa";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import DownloadRedirectModal from "../../components/DownloadRedirectModal";
+import AuthToast from "../../components/common/AuthToast";
 import AdResponsiveBanner from "../../components/ads/AdResponsiveBanner";
 import AdSlot from "../../components/ads/AdSlot";
 import { triggerAdsterraPopunder } from "../../components/ads/adsterraActions";
@@ -23,6 +24,7 @@ const MovieDetail: React.FC = () => {
     title: string;
     source: "bunny" | "external" | "local";
   } | null>(null);
+  const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
     const fetchMovieData = async () => {
@@ -89,11 +91,10 @@ const MovieDetail: React.FC = () => {
         setWatchlistItemId(newItem.id);
       }
     } catch (error) {
-      console.error("Error toggling watchlist:", error);
-      alert(
+      setToastMessage(
         error instanceof Error
           ? error.message
-          : "Failed to update watchlist. Are you logged in?",
+          : "Failed to update watchlist. Please sign in.",
       );
     }
   };
@@ -235,6 +236,12 @@ const MovieDetail: React.FC = () => {
         sourceType={downloadTarget?.source}
         onPrepareDownload={prepareDownloadLink}
         onHide={() => setDownloadTarget(null)}
+      />
+
+      <AuthToast
+        show={Boolean(toastMessage)}
+        message={toastMessage}
+        onClose={() => setToastMessage("")}
       />
 
       <AdResponsiveBanner />

@@ -1,0 +1,52 @@
+.auth-toast {
+  background: #1e1d24;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  min-width: 280px;
+  overflow: hidden;
+}
+
+.auth-toast__header {
+  background: rgba(249, 171, 0, 0.12);
+  border-bottom: 1px solid rgba(249, 171, 0, 0.18);
+  color: #f9ab00;
+  padding: 0.6rem 0.85rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.auth-toast__header strong {
+  color: #fff;
+  font-size: 0.88rem;
+  font-weight: 700;
+}
+
+.auth-toast__icon {
+  font-size: 0.8rem;
+  flex-shrink: 0;
+}
+
+.auth-toast__close {
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 2px 4px;
+  margin-left: auto;
+  line-height: 1;
+  font-size: 0.75rem;
+  transition: color 0.15s ease;
+}
+
+.auth-toast__close:hover {
+  color: #fff;
+}
+
+.auth-toast__body {
+  color: #ccc;
+  font-size: 0.88rem;
+  padding: 0.65rem 0.85rem;
+  line-height: 1.4;
+}

@@ -17,6 +17,7 @@ import RatingBadge from "../../components/common/RatingBadge";
 import { api } from "../../services/api";
 import type { Series } from "../../types/series";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
+import AuthToast from "../../components/common/AuthToast";
 import AdResponsiveBanner from "../../components/ads/AdResponsiveBanner";
 import AdSlot from "../../components/ads/AdSlot";
 import "./SeriesDetail.css";
@@ -29,6 +30,7 @@ const SeriesDetail = () => {
   const [activeSeason, setActiveSeason] = useState(0);
   const [isInWatchlist, setIsInWatchlist] = useState(false);
   const [watchlistItemId, setWatchlistItemId] = useState<number | null>(null);
+  const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
     const fetchSeries = async () => {
@@ -77,11 +79,10 @@ const SeriesDetail = () => {
         setWatchlistItemId(newItem.id);
       }
     } catch (error) {
-      console.error("Error toggling watchlist:", error);
-      alert(
+      setToastMessage(
         error instanceof Error
           ? error.message
-          : "Failed to update watchlist. Are you logged in?",
+          : "Failed to update watchlist. Please sign in.",
       );
     }
   };
@@ -218,6 +219,12 @@ const SeriesDetail = () => {
           ]}
         />
       </div>
+
+      <AuthToast
+        show={Boolean(toastMessage)}
+        message={toastMessage}
+        onClose={() => setToastMessage("")}
+      />
 
       <AdResponsiveBanner />
 
