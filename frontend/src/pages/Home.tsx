@@ -1,6 +1,7 @@
 import { useMemo, useEffect, useState } from "react";
 import HeroCarousel from "../components/HeroCarousel";
 import MovieRail from "../components/MovieRail/MovieRail";
+import SeriesRail from "../components/SeriesRail/SeriesRail";
 import { api } from "../services/api";
 import type { Movie } from "../types/movie";
 import type { Series } from "../types/series";
@@ -143,6 +144,7 @@ const Home = () => {
   return (
     <>
       <HeroCarousel items={carouselItems} />
+      <SeriesRail title="Series" series={trendingSeries} />
       <AdResponsiveBanner />
 
       {trendingMovies.length > 0 && (
