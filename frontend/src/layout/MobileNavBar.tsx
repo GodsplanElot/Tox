@@ -1,5 +1,17 @@
 import { useEffect, useRef, useState } from "react";
 import { NavLink } from "react-router-dom";
+import {
+  FaHome,
+  FaFilm,
+  FaLayerGroup,
+  FaSearch,
+  FaEllipsisH,
+  FaTv,
+  FaBookmark,
+  FaUser,
+  FaSignInAlt,
+  FaSignOutAlt,
+} from "react-icons/fa";
 
 type Props = {
   isAuthenticated: boolean;
@@ -47,70 +59,70 @@ const MobileNavBar = ({ isAuthenticated, onLoginClick, onLogout }: Props) => {
 
   return (
     <nav className="mobile-bottom-nav d-lg-none" aria-label="Primary mobile navigation">
-      <div className="mobile-bottom-nav__surface" aria-hidden="true"></div>
+      <div className="mobile-bottom-nav__surface" aria-hidden="true" />
 
-      <NavLink to="/" className="mobile-bottom-nav__item mobile-bottom-nav__item--home">
-        <i className="bi bi-house-door" aria-hidden="true"></i>
+      <NavLink end to="/" className="mobile-bottom-nav__item">
+        <span className="mnav-icon-bg"><FaHome aria-hidden="true" /></span>
         <span>Home</span>
       </NavLink>
 
-      <NavLink to="/movies" className="mobile-bottom-nav__item mobile-bottom-nav__item--movies">
-        <i className="bi bi-play-btn" aria-hidden="true"></i>
+      <NavLink to="/movies" className="mobile-bottom-nav__item">
+        <span className="mnav-icon-bg"><FaFilm aria-hidden="true" /></span>
         <span>Movies</span>
       </NavLink>
 
-      <span className="mobile-bottom-nav__spacer" aria-hidden="true"></span>
+      <span className="mobile-bottom-nav__spacer" aria-hidden="true" />
 
       <NavLink
         to="/categories"
         className="mobile-bottom-nav__center"
         aria-label="Browse categories"
       >
-        <i className="bi bi-grid-3x3-gap-fill" aria-hidden="true"></i>
+        <FaLayerGroup aria-hidden="true" />
       </NavLink>
 
-      <NavLink to="/search" className="mobile-bottom-nav__item mobile-bottom-nav__item--search">
-        <i className="bi bi-search" aria-hidden="true"></i>
+      <NavLink to="/search" className="mobile-bottom-nav__item">
+        <span className="mnav-icon-bg"><FaSearch aria-hidden="true" /></span>
         <span>Search</span>
       </NavLink>
 
       <div className="mobile-bottom-nav__more" ref={moreRef}>
         <button
           type="button"
-          className={`mobile-bottom-nav__item mobile-bottom-nav__item--more ${showMore ? "active" : ""}`}
+          className={`mobile-bottom-nav__item${showMore ? " active" : ""}`}
           aria-expanded={showMore}
           aria-haspopup="menu"
-          onClick={() => setShowMore((current) => !current)}
+          onClick={() => setShowMore((v) => !v)}
         >
-          <i className="bi bi-three-dots" aria-hidden="true"></i>
+          <span className="mnav-icon-bg"><FaEllipsisH aria-hidden="true" /></span>
           <span>More</span>
         </button>
 
         {showMore && (
           <div className="mobile-more-popover" role="menu">
             <NavLink to="/series" role="menuitem" onClick={closeMore}>
-              <i className="bi bi-collection-play" aria-hidden="true"></i>
+              <span className="mpop-icon"><FaTv /></span>
               <span>Series</span>
             </NavLink>
             <NavLink to="/watchlist" role="menuitem" onClick={closeMore}>
-              <i className="bi bi-bookmark-check" aria-hidden="true"></i>
+              <span className="mpop-icon"><FaBookmark /></span>
               <span>Watchlist</span>
             </NavLink>
             {isAuthenticated ? (
               <>
                 <NavLink to="/profile" role="menuitem" onClick={closeMore}>
-                  <i className="bi bi-person-circle" aria-hidden="true"></i>
+                  <span className="mpop-icon"><FaUser /></span>
                   <span>Profile</span>
                 </NavLink>
                 <button type="button" role="menuitem" onClick={logout}>
-                  <i className="bi bi-box-arrow-right" aria-hidden="true"></i>
-                  <span>Logout</span>
+                  <span className="mpop-icon"><FaSignOutAlt /></span>
+                  <span>Sign out</span>
                 </button>
               </>
             ) : (
               <button type="button" role="menuitem" onClick={openLogin}>
-                <i className="bi bi-person-circle" aria-hidden="true"></i>
-                <span>Login</span>
+                <span className="mpop-icon"><FaSignInAlt /></span>
+                <span>Sign in</span>
               </button>
             )}
           </div>
