@@ -17,7 +17,7 @@ const getDateTime = (value?: string) => {
 };
 
 // LCG-based seeded shuffle — stable per session, different every page load
-const seededShuffle = <T>(arr: T[], seed: number): T[] => {
+const seededShuffle = <T,>(arr: T[], seed: number): T[] => {
   const result = [...arr];
   let s = seed >>> 0;
   for (let i = result.length - 1; i > 0; i--) {
