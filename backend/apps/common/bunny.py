@@ -113,7 +113,11 @@ class BunnyStreamClient:
             if value.isdigit():
                 heights.append(int(value))
         height = max(heights) if heights else 1080
-        return self.signed_cdn_url(f"/{video_id}/play_{height}p.mp4")
+        # &download=1 asks Bunny to serve Content-Disposition: attachment so the
+        # browser saves the file instead of playing it inline.  Requires "Force
+        # Download" to be enabled on your Bunny pull zone for the param to take
+        # effect — without that setting Bunny ignores it silently.
+        return self.signed_cdn_url(f"/{video_id}/play_{height}p.mp4") + "&download=1"
 
 
 def bunny_video_is_ready(payload):
