@@ -234,6 +234,8 @@ const MovieDetail: React.FC = () => {
         show={Boolean(downloadTarget)}
         title={downloadTarget?.title ?? ""}
         sourceType={downloadTarget?.source}
+        contentSlug={movie.slug}
+        contentType="movie"
         onPrepareDownload={prepareDownloadLink}
         onHide={() => setDownloadTarget(null)}
       />

@@ -1,0 +1,112 @@
+.prep-page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: #121218;
+  color: #e5e5e5;
+  font-family: "Manrope", "Segoe UI", sans-serif;
+}
+
+.prep-page__header {
+  padding: 1.1rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  text-align: center;
+}
+
+.prep-page__brand {
+  color: #f9ab00;
+  font-size: 1rem;
+  font-weight: 900;
+  letter-spacing: 0.18em;
+  text-decoration: none;
+}
+
+.prep-page__main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  padding: 2.5rem 1rem;
+}
+
+.prep-page__ad-wrap {
+  flex-shrink: 0;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.prep-page__status {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.65rem;
+  text-align: center;
+  max-width: 320px;
+}
+
+/* Spinner */
+.prep-spinner {
+  width: 42px;
+  height: 42px;
+}
+
+.prep-spinner__ring {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 3px solid rgba(249, 171, 0, 0.15);
+  border-top-color: #f9ab00;
+  animation: prep-spin 0.7s linear infinite;
+}
+
+@keyframes prep-spin {
+  to { transform: rotate(360deg); }
+}
+
+.prep-page__message {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+}
+
+.prep-page__hint {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.45);
+  line-height: 1.55;
+}
+
+.prep-page__error {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #ff6b6b;
+  line-height: 1.5;
+}
+
+.prep-page__close-btn {
+  margin-top: 0.4rem;
+  padding: 0.6rem 1.5rem;
+  border: 1px solid rgba(255, 255, 255, 0.13);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #e5e5e5;
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease;
+}
+
+.prep-page__close-btn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.22);
+}
+
+.prep-page__footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  text-align: center;
+  color: rgba(255, 255, 255, 0.28);
+  font-size: 0.72rem;
+}

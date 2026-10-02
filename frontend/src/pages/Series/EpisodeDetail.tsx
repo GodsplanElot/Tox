@@ -187,6 +187,9 @@ const EpisodeDetail = () => {
         show={Boolean(downloadTarget)}
         title={downloadTarget?.title ?? ""}
         sourceType={downloadTarget?.source}
+        contentSlug={episodeSlug}
+        contentType="episode"
+        seriesSlug={seriesSlug}
         onPrepareDownload={prepareDownloadLink}
         onHide={() => setDownloadTarget(null)}
       />

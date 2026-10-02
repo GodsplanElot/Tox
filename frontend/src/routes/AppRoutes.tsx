@@ -13,10 +13,14 @@ import EpisodeDetail from "../pages/Series/EpisodeDetail";
 import Watchlist from "../pages/Watchlist";
 import Profile from "../pages/Profile";
 import LegalPage from "../pages/LegalPage";
+import PreparingDownload from "../pages/PreparingDownload/PreparingDownload";
 
 const AppRoutes = () => {
   return (
     <Routes>
+      {/* Standalone — no nav/footer; opens in a new tab from download modal */}
+      <Route path="/preparing-download" element={<PreparingDownload />} />
+
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/categories" element={<Categories />} />

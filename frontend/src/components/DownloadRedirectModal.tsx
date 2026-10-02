@@ -9,6 +9,11 @@ type DownloadRedirectModalProps = {
   show: boolean;
   title: string;
   sourceType?: "bunny" | "external" | "local";
+  // Bunny/external: open the /preparing-download ad page in a new tab
+  contentSlug?: string;
+  contentType?: "movie" | "episode";
+  seriesSlug?: string;
+  // Local source only: async callback that returns the download URL
   onPrepareDownload: () => Promise<string>;
   onHide: () => void;
 };
@@ -19,6 +24,9 @@ const DownloadRedirectModal = ({
   show,
   title,
   sourceType = "external",
+  contentSlug,
+  contentType = "movie",
+  seriesSlug,
   onPrepareDownload,
   onHide,
 }: DownloadRedirectModalProps) => {
@@ -49,6 +57,17 @@ const DownloadRedirectModal = ({
   const handleContinue = async () => {
     if (secondsRemaining > 0 || isPreparing) return;
 
+    // Bunny/external: open the /preparing-download page (shows ad + spinner,
+    // makes the API call itself, then navigates to the file URL).
+    if ((sourceType === "bunny" || sourceType === "external") && contentSlug) {
+      const qs = new URLSearchParams({ type: contentType, slug: contentSlug, source: sourceType });
+      if (seriesSlug) qs.set("series", seriesSlug);
+      window.open(`/preparing-download?${qs}`, "_blank", "noopener,noreferrer");
+      onHide();
+      return;
+    }
+
+    // Local source: fetch signed URL here and navigate the new tab to it.
     setIsPreparing(true);
     setErrorMessage("");
     const openedWindow = window.open("about:blank", "_blank", "noopener,noreferrer");
@@ -63,7 +82,6 @@ const DownloadRedirectModal = ({
       if (!targetUrl) {
         throw new Error("Download link is not available yet.");
       }
-
       if (openedWindow) {
         openedWindow.location.href = targetUrl;
       } else {
