@@ -813,6 +813,56 @@ body {
   scroll-snap-align: start;
 }
 
+/* ================= SERIES RAIL ================= */
+.series-rail {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  padding-inline: 0.1rem;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x proximity;
+}
+
+.series-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.series-rail > * {
+  scroll-snap-align: start;
+}
+
+/* "See All" link in section header */
+.section-see-all {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28rem;
+  margin-left: auto;
+  padding: 0.22rem 0.6rem;
+  border: 1px solid rgba(249, 171, 0, 0.3);
+  border-radius: 999px;
+  color: var(--accent-primary);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.03em;
+  text-decoration: none;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease;
+}
+
+.section-see-all svg {
+  font-size: 0.6rem;
+}
+
+.section-see-all:hover {
+  background: rgba(249, 171, 0, 0.1);
+  border-color: rgba(249, 171, 0, 0.55);
+  color: #ffc928;
+}
+
 /* ================= MOBILE OFFSET ================= */
 @media (max-width: 991.98px) {
   .app-content {
@@ -870,6 +920,10 @@ body {
   }
 
   .movie-rail {
+    gap: 18px;
+  }
+
+  .series-rail {
     gap: 18px;
   }
 }
