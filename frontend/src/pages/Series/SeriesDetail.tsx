@@ -154,7 +154,7 @@ const SeriesDetail = () => {
                 <FaLayerGroup /> {series.seasons?.length ?? 0} seasons
               </span>
               <span>
-                <FaClock /> {episodeCount} episodes
+                <FaClock /> {episodeCount} ep
               </span>
             </div>
 
@@ -167,8 +167,11 @@ const SeriesDetail = () => {
                 </span>
               ))}
             </div>
-            <p className="series-description-large">{series.description}</p>
+          </div>
 
+          {/* Summary spans full width on mobile; stays in right column on desktop */}
+          <div className="series-summary">
+            <p className="series-description-large">{series.description}</p>
             <div className="series-actions">
               <div className="secondary-actions">
                 {series.trailer_url && (
