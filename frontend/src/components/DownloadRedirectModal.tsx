@@ -101,9 +101,18 @@ const DownloadRedirectModal = ({
 
       <Modal.Body>
         <p className="download-redirect-modal__message">
-          {isBunny
-            ? "Your HD download link is being prepared from our secure CDN. The link expires shortly — your download will start immediately."
-            : "You are about to open a site where you can watch or download this title. ToxicReels is not affiliated with that site, so please review the page carefully before continuing."}
+          {isBunny ? (
+            <>
+              Your HD file will open in a new tab. It will either{" "}
+              <strong>download automatically</strong> or open in your browser&rsquo;s
+              built-in video player — if it plays instead of downloading,{" "}
+              <strong>right-click the video and choose &ldquo;Save video as&rdquo;</strong>{" "}
+              to save it to your device. The link expires shortly so start the
+              download straight away.
+            </>
+          ) : (
+            "You are about to open a site where you can watch or download this title. ToxicReels is not affiliated with that site, so please review the page carefully before continuing."
+          )}
         </p>
 
         <div className="download-redirect-modal__target">
