@@ -32,6 +32,12 @@ export type DownloadLinkResponse = {
   source: "bunny" | "external" | "local";
 };
 
+export type StreamUrlResponse = {
+  hls_url: string;
+  vast_tag: string;
+  title: string;
+};
+
 const ACCESS_TOKEN_KEY = "tox_access_token";
 const REFRESH_TOKEN_KEY = "tox_refresh_token";
 const AUTH_CLEARED_EVENT = "tox-auth-cleared";
@@ -227,6 +233,15 @@ export const api = {
       headers: { "Content-Type": "application/json" },
       body: source ? JSON.stringify({ source }) : undefined,
     }).then(handleResponse),
+
+  getMovieStreamUrl: (slug: string): Promise<StreamUrlResponse> =>
+    fetch(`${API_BASE_URL}/movies/${slug}/stream/`).then(handleResponse),
+
+  getEpisodeStreamUrl: (
+    seriesSlug: string,
+    episodeSlug: string,
+  ): Promise<StreamUrlResponse> =>
+    fetch(`${API_BASE_URL}/series/${seriesSlug}/episodes/${episodeSlug}/stream/`).then(handleResponse),
 
   getEpisodeDownloadLink: (
     seriesSlug: string,

@@ -130,6 +130,27 @@ class MovieViewSet(viewsets.ReadOnlyModelViewSet):
                 "source": "local",
             })
 
+    @action(detail=True, methods=["get"], url_path="stream")
+    def stream(self, request, slug=None):
+        movie = self.get_object()
+        if not (movie.bunny_video_id and movie.bunny_status == "ready"):
+            return Response(
+                {"detail": "Stream not available for this movie."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        try:
+            hls_url = BunnyStreamClient().hls_url(movie.bunny_video_id)
+        except BunnyStreamError:
+            return Response(
+                {"detail": "Stream service is unavailable."},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+        return Response({
+            "hls_url": hls_url,
+            "vast_tag": getattr(settings, "VAST_TAG_URL", ""),
+            "title": movie.title,
+        })
+
     @action(detail=True, methods=["get"], url_path="download-file", url_name="download-file")
     def download_file(self, request, slug=None):
         movie = self.get_object()
