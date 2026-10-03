@@ -130,6 +130,18 @@
   color: var(--accent-primary);
 }
 
+.download-btn--watch {
+  background: rgba(249, 171, 0, 0.12);
+  color: #f9ab00;
+  border: 1px solid rgba(249, 171, 0, 0.35);
+}
+
+.download-btn--watch:hover {
+  background: rgba(249, 171, 0, 0.2);
+  border-color: rgba(249, 171, 0, 0.6);
+  transform: translateY(-2px);
+}
+
 .download-btn--hd {
   display: inline-flex;
   align-items: center;

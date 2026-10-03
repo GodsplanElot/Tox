@@ -174,6 +174,41 @@ class SeriesViewSet(viewsets.ReadOnlyModelViewSet):
     @action(
         detail=True,
         methods=["get"],
+        url_path=r"episodes/(?P<episode_slug>[^/.]+)/stream",
+    )
+    def episode_stream(self, request, slug=None, episode_slug=None):
+        series = self.get_object()
+        episode = Episode.objects.filter(
+            season__series=series,
+            slug=episode_slug,
+            status=Episode.STATUS_PUBLISHED,
+            season__status=Season.STATUS_PUBLISHED,
+        ).first()
+
+        if episode is None:
+            return Response({"detail": "Episode not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        if not (episode.bunny_video_id and episode.bunny_status == "ready"):
+            return Response(
+                {"detail": "Stream not available for this episode."},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+        try:
+            hls_url = BunnyStreamClient().hls_url(episode.bunny_video_id)
+        except BunnyStreamError:
+            return Response(
+                {"detail": "Stream service is unavailable."},
+                status=status.HTTP_503_SERVICE_UNAVAILABLE,
+            )
+        return Response({
+            "hls_url": hls_url,
+            "vast_tag": getattr(settings, "VAST_TAG_URL", ""),
+            "title": episode.title,
+        })
+
+    @action(
+        detail=True,
+        methods=["get"],
         url_path=r"episodes/(?P<episode_slug>[^/.]+)/download-file",
         url_name="episode-download-file",
     )

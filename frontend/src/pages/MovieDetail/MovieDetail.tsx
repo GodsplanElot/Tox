@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import MovieGrid from "../../components/MovieGrid/MovieGrid";
 import { api } from "../../services/api";
 import type { Movie } from "../../types/movie";
 import RatingBadge from "../../components/common/RatingBadge";
-import { FaDownload, FaPlus, FaCheck, FaShareAlt } from "react-icons/fa";
+import { FaDownload, FaPlay, FaPlus, FaCheck, FaShareAlt } from "react-icons/fa";
 import LoadingSpinner from "../../components/common/LoadingSpinner";
 import DownloadRedirectModal from "../../components/DownloadRedirectModal";
 import AuthToast from "../../components/common/AuthToast";
@@ -12,6 +12,8 @@ import AdResponsiveBanner from "../../components/ads/AdResponsiveBanner";
 import AdSlot from "../../components/ads/AdSlot";
 import { triggerAdsterraPopunder } from "../../components/ads/adsterraActions";
 import "./MovieDetail.css";
+
+const VideoPlayer = lazy(() => import("../../components/VideoPlayer/VideoPlayer"));
 
 const MovieDetail: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -24,6 +26,7 @@ const MovieDetail: React.FC = () => {
     title: string;
     source: "bunny" | "external" | "local";
   } | null>(null);
+  const [watching, setWatching] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
 
   useEffect(() => {
@@ -139,11 +142,19 @@ const MovieDetail: React.FC = () => {
       >
         <div className="movie-detail__hero-content">
           <div className="movie-detail__poster">
-            <img src={api.getMediaUrl(movie.poster)} alt={movie.title} />
-            {movie.rating && (
-              <div className="movie-detail__rating">
-                <RatingBadge rating={movie.rating} size="medium" />
-              </div>
+            {watching ? (
+              <Suspense fallback={<div className="vp-state vp-loading"><span className="vp-spinner" /></div>}>
+                <VideoPlayer contentType="movie" slug={movie.slug} />
+              </Suspense>
+            ) : (
+              <>
+                <img src={api.getMediaUrl(movie.poster)} alt={movie.title} />
+                {movie.rating && (
+                  <div className="movie-detail__rating">
+                    <RatingBadge rating={movie.rating} size="medium" />
+                  </div>
+                )}
+              </>
             )}
           </div>
 
@@ -168,6 +179,18 @@ const MovieDetail: React.FC = () => {
             <p className="movie-detail__description">{movie.description}</p>
 
             <div className="movie-detail__actions">
+              {movie.bunny_ready && (
+                <button
+                  type="button"
+                  className="download-btn download-btn--watch"
+                  onClick={() => setWatching((v) => !v)}
+                >
+                  <FaPlay />
+                  <span className="action-btn-label">
+                    {watching ? "Close Player" : "Watch Online"}
+                  </span>
+                </button>
+              )}
               <div className="download-group">
                 {movie.bunny_ready && (
                   <button

@@ -106,6 +106,11 @@ class BunnyStreamClient:
         ).decode("ascii").rstrip("=")
         return f"https://{self.cdn_hostname}{path}?{urlencode({'token': token, 'expires': expires})}"
 
+    def hls_url(self, video_id):
+        """Return a signed HLS manifest URL for in-browser streaming.
+        Use a 4-hour expiry so long movies don't 403 mid-watch."""
+        return self.signed_cdn_url(f"/{video_id}/playlist.m3u8", expires_in=14400)
+
     def download_url(self, video_id, available_resolutions=""):
         heights = []
         for resolution in available_resolutions.split(","):

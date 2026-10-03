@@ -1,6 +1,8 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { FaDownload } from "react-icons/fa";
+import { lazy, Suspense, useEffect, useState } from "react";
+import { FaDownload, FaPlay } from "react-icons/fa";
+
+const VideoPlayer = lazy(() => import("../../components/VideoPlayer/VideoPlayer"));
 import Breadcrumbs from "../../components/common/Breadcrumbs";
 import { api } from "../../services/api";
 import type { Series } from "../../types/series";
@@ -23,6 +25,7 @@ const EpisodeDetail = () => {
     title: string;
     source: "bunny" | "external" | "local";
   } | null>(null);
+  const [watching, setWatching] = useState(false);
 
   useEffect(() => {
     const fetchEpisodeData = async () => {
@@ -88,10 +91,20 @@ const EpisodeDetail = () => {
 
         <div className="episode-hero-content">
           <div className="episode-thumbnail-main">
-            <img
-              src={api.getMediaUrl(episode.thumbnail || series?.poster)}
-              alt={episode.title}
-            />
+            {watching ? (
+              <Suspense fallback={<div className="vp-state vp-loading"><span className="vp-spinner" /></div>}>
+                <VideoPlayer
+                  contentType="episode"
+                  slug={episodeSlug!}
+                  seriesSlug={seriesSlug}
+                />
+              </Suspense>
+            ) : (
+              <img
+                src={api.getMediaUrl(episode.thumbnail || series?.poster)}
+                alt={episode.title}
+              />
+            )}
           </div>
         </div>
       </div>
@@ -139,6 +152,18 @@ const EpisodeDetail = () => {
             <h1 className="episode-title-large">{episode.title}</h1>
 
             <div className="episode-actions">
+              {episode.bunny_ready && (
+                <button
+                  type="button"
+                  className="download-btn download-btn--watch"
+                  onClick={() => setWatching((v) => !v)}
+                >
+                  <FaPlay />
+                  <span className="action-btn-label">
+                    {watching ? "Close Player" : "Watch Online"}
+                  </span>
+                </button>
+              )}
               {episode.bunny_ready && (
                 <button
                   type="button"
