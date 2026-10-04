@@ -3,11 +3,8 @@ import { api } from "../../services/api";
 import type { StreamUrlResponse } from "../../services/api";
 import "./VideoPlayer.css";
 
-// These imports end up in their own lazy chunk only when VideoPlayer
-// itself is lazy-loaded from the detail pages.
 import videojs from "video.js";
 import type Player from "video.js/dist/types/player";
-import "videojs-ima";
 import "video.js/dist/video-js.css";
 
 interface Props {
@@ -59,15 +56,14 @@ const VideoPlayer = ({ contentType, slug, seriesSlug }: Props) => {
       playsinline: true,
       responsive: true,
       html5: { vhs: { overrideNative: !videojs.browser.IS_SAFARI } },
-    }) as Player & { ima?: (opts: { adTagUrl: string }) => void };
+    });
 
     playerRef.current = player;
 
-    // Attach IMA ads only if VAST tag is set and IMA SDK has loaded
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    if (stream.vast_tag && (window as any).google?.ima) {
-      player.ima?.({ adTagUrl: stream.vast_tag });
-    }
+    player.on("error", () => {
+      const err = player.error();
+      setError(err?.message ?? "Video failed to load. Please try again.");
+    });
 
     return () => {
       if (playerRef.current && !playerRef.current.isDisposed()) {

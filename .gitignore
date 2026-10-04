@@ -273,3 +273,4 @@ secrets.json
 *.rar
 *.tar
 *.zip
+cc/
