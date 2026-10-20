@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "../ui/cn";
+import { hideBrokenImage } from "../ui/hideBrokenImage";
 
 type PosterStackProps = {
   src: string;
@@ -54,6 +55,7 @@ const PosterStack = ({ src, alt, sleeves, size = "sm", eager, className, childre
         )}
       >
         <img
+          onError={hideBrokenImage}
           src={src}
           alt={alt}
           loading={eager ? "eager" : "lazy"}

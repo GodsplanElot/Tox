@@ -18,6 +18,7 @@ import AmbientBackdrop from "../../components/ui/AmbientBackdrop";
 import Section from "../../components/ui/Section";
 import { buttonClass } from "../../components/ui/buttonClass";
 import { cn } from "../../components/ui/cn";
+import { hideBrokenImage } from "../../components/ui/hideBrokenImage";
 
 const VideoPlayer = lazy(() => import("../../components/VideoPlayer/VideoPlayer"));
 
@@ -181,7 +182,7 @@ const MovieDetail: React.FC = () => {
                 </Suspense>
               ) : (
                 <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-ink-800 shadow-[0_30px_80px_-30px_rgb(0_0_0/0.9)] ring-1 ring-white/10">
-                  <img src={still} alt="" className="size-full object-cover" />
+                  <img onError={hideBrokenImage} src={still} alt="" className="size-full object-cover" />
                   <div className="absolute inset-0 flex items-end bg-gradient-to-t from-black/85 via-black/10 to-transparent p-4 sm:p-6">
                     <p className="flex items-center gap-2 text-xs font-medium text-white/70">
                       <FiFilm className="size-3.5" /> Streaming isn't available for this title yet. Download options are listed alongside.

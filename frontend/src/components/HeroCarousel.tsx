@@ -5,6 +5,7 @@ import { api } from "../services/api";
 import RatingBadge from "./common/RatingBadge";
 import { buttonClass } from "./ui/buttonClass";
 import { cn } from "./ui/cn";
+import { hideBrokenImage } from "./ui/hideBrokenImage";
 
 export interface CarouselItem {
   id: number | string;
@@ -63,6 +64,7 @@ const HeroCarousel = ({ items }: HeroCarouselProps) => {
           )}
         >
           <img
+            onError={hideBrokenImage}
             src={api.getMediaUrl(item.poster)}
             alt=""
             loading={i === 0 ? "eager" : "lazy"}

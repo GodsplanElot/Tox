@@ -15,6 +15,7 @@ import AmbientBackdrop from "../../components/ui/AmbientBackdrop";
 import { buttonClass } from "../../components/ui/buttonClass";
 import { cn } from "../../components/ui/cn";
 import { chipClass } from "../../components/ui/chipClass";
+import { hideBrokenImage } from "../../components/ui/hideBrokenImage";
 
 type SortKey = "top" | "new" | "az";
 
@@ -37,16 +38,17 @@ const PosterConstellation = ({ items, active }: { items: Series[]; active: numbe
   );
   const placements = [
     "z-30 translate-x-0 rotate-0 scale-100",
-    "z-20 translate-x-[42%] translate-y-[6%] rotate-[7deg] scale-[0.86] opacity-70 brightness-75",
-    "z-10 -translate-x-[42%] translate-y-[8%] -rotate-[7deg] scale-[0.8] opacity-50 brightness-50",
+    "z-20 translate-x-[30%] translate-y-[5%] rotate-[6deg] scale-[0.86] opacity-70 brightness-75",
+    "z-10 -translate-x-[30%] translate-y-[7%] -rotate-[6deg] scale-[0.8] opacity-50 brightness-50",
   ];
 
   return (
-    <div className="relative mx-auto aspect-[2/3] w-[min(52vw,250px)] animate-float lg:w-[270px]" aria-hidden="true">
+    <div className="relative mx-auto aspect-[2/3] w-[min(46vw,220px)] animate-float lg:w-[240px]" aria-hidden="true">
       {items.map((series, index) => {
         const slot = order.indexOf(index);
         return (
           <img
+            onError={hideBrokenImage}
             key={series.id}
             src={api.getMediaUrl(series.poster)}
             alt=""
@@ -172,34 +174,31 @@ const SeriesList = () => {
             </div>
           </div>
 
-          <div className="order-1 lg:order-2 lg:pr-12">
+          <div className="order-1 flex flex-col items-center gap-8 lg:order-2 lg:px-16">
             <PosterConstellation items={featured} active={featuredIndex} />
+            {featured.length > 1 && (
+              <div className="flex gap-2 rounded-2xl bg-black/25 p-1.5 ring-1 ring-white/[0.08] backdrop-blur-xl">
+                {featured.map((item, i) => (
+                  <button
+                    key={item.id}
+                    type="button"
+                    aria-label={`Spotlight ${item.title}`}
+                    aria-pressed={i === featuredIndex}
+                    onClick={() => setFeaturedIndex(i)}
+                    className={cn(
+                      "relative h-14 w-10 overflow-hidden rounded-lg transition duration-300",
+                      i === featuredIndex
+                        ? "opacity-100 ring-2 ring-accent ring-offset-2 ring-offset-ink-950"
+                        : "opacity-45 grayscale hover:opacity-80 hover:grayscale-0",
+                    )}
+                  >
+                    <img onError={hideBrokenImage} src={api.getMediaUrl(item.poster)} alt="" className="size-full object-cover" />
+                  </button>
+                ))}
+              </div>
+            )}
           </div>
         </div>
-
-        {featured.length > 1 && (
-          <div className="page-x relative -mt-4 flex justify-center pb-8 lg:absolute lg:right-0 lg:bottom-6 lg:mt-0 lg:pb-0">
-            <div className="flex gap-2 rounded-2xl bg-black/25 p-1.5 ring-1 ring-white/[0.08] backdrop-blur-xl">
-              {featured.map((item, i) => (
-                <button
-                  key={item.id}
-                  type="button"
-                  aria-label={`Spotlight ${item.title}`}
-                  aria-pressed={i === featuredIndex}
-                  onClick={() => setFeaturedIndex(i)}
-                  className={cn(
-                    "relative h-14 w-10 overflow-hidden rounded-lg transition duration-300",
-                    i === featuredIndex
-                      ? "opacity-100 ring-2 ring-accent ring-offset-2 ring-offset-ink-950"
-                      : "opacity-45 grayscale hover:opacity-80 hover:grayscale-0",
-                  )}
-                >
-                  <img src={api.getMediaUrl(item.poster)} alt="" className="size-full object-cover" />
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
       </section>
 
       {/* Genre + sort controls stay pinned under the header while browsing. */}

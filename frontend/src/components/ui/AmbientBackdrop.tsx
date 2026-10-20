@@ -1,4 +1,5 @@
 import { cn } from "./cn";
+import { hideBrokenImage } from "./hideBrokenImage";
 
 type AmbientBackdropProps = {
   /** Image whose colours bleed into the page as a soft glow. */
@@ -16,12 +17,14 @@ type AmbientBackdropProps = {
 const AmbientBackdrop = ({ glow, image, className }: AmbientBackdropProps) => (
   <div aria-hidden="true" className={cn("pointer-events-none absolute inset-0 -z-10 overflow-hidden", className)}>
     <img
+      onError={hideBrokenImage}
       src={glow}
       alt=""
       className="absolute inset-0 size-full scale-150 object-cover opacity-45 blur-3xl saturate-[1.6]"
     />
     {image && (
       <img
+        onError={hideBrokenImage}
         src={image}
         alt=""
         className="absolute inset-y-0 right-0 h-full w-full object-cover object-[center_20%] opacity-55 [mask-image:linear-gradient(to_bottom,black_35%,transparent_95%)] lg:w-[72%] lg:[mask-image:linear-gradient(to_left,black_25%,transparent_90%),linear-gradient(to_bottom,black_50%,transparent)] lg:[mask-composite:intersect]"

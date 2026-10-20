@@ -9,6 +9,7 @@ import EmptyState from "../components/common/EmptyState";
 import PageHeader from "../components/ui/PageHeader";
 import { chipClass } from "../components/ui/chipClass";
 import { buttonClass } from "../components/ui/buttonClass";
+import { hideBrokenImage } from "../components/ui/hideBrokenImage";
 
 type Filter = "all" | "movie" | "series";
 
@@ -154,6 +155,7 @@ const Watchlist = () => {
                     <div className="relative aspect-[2/3] overflow-hidden rounded-xl bg-ink-800 ring-1 ring-white/[0.08] transition group-hover:ring-white/20">
                       {detail.poster ? (
                         <img
+                          onError={hideBrokenImage}
                           src={api.getMediaUrl(detail.poster)}
                           alt={detail.title}
                           loading="lazy"

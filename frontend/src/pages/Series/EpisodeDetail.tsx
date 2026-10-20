@@ -14,6 +14,7 @@ import AdSlot from "../../components/ads/AdSlot";
 import { triggerAdsterraPopunder } from "../../components/ads/adsterraActions";
 import AmbientBackdrop from "../../components/ui/AmbientBackdrop";
 import { cn } from "../../components/ui/cn";
+import { hideBrokenImage } from "../../components/ui/hideBrokenImage";
 
 const VideoPlayer = lazy(() => import("../../components/VideoPlayer/VideoPlayer"));
 
@@ -120,7 +121,7 @@ const EpisodeDetail = () => {
               </Suspense>
             ) : (
               <div className="relative aspect-video w-full overflow-hidden rounded-2xl bg-ink-800 ring-1 ring-white/10">
-                {still && <img src={still} alt="" className="size-full object-cover opacity-60" />}
+                {still && <img onError={hideBrokenImage} src={still} alt="" className="size-full object-cover opacity-60" />}
                 <div className="absolute inset-0 grid place-items-center bg-gradient-to-t from-black/80 to-black/20 p-6 text-center">
                   <div>
                     <FiFilm className="mx-auto size-6 text-white/60" />

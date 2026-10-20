@@ -4,6 +4,7 @@ import type { Movie } from "../../types/movie";
 import { api } from "../../services/api";
 import RatingBadge from "../common/RatingBadge";
 import { cn } from "../ui/cn";
+import { hideBrokenImage } from "../ui/hideBrokenImage";
 
 interface MovieCardProps {
   movie: Movie;
@@ -18,6 +19,7 @@ const MovieCard: React.FC<MovieCardProps> = ({ movie, className }) => {
     <Link to={`/movies/${movie.slug}`} className={cn("group block min-w-0 outline-none", className)}>
       <div className="relative aspect-[2/3] overflow-hidden rounded-xl bg-ink-800 shadow-[0_18px_40px_-18px_rgb(0_0_0/0.9)] ring-1 ring-white/[0.08] transition duration-500 group-hover:ring-white/20 group-focus-visible:ring-2 group-focus-visible:ring-accent">
         <img
+          onError={hideBrokenImage}
           src={api.getMediaUrl(movie.poster)}
           alt={movie.title}
           loading="lazy"

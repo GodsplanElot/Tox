@@ -7,6 +7,7 @@ import LoadingSpinner from "../components/common/LoadingSpinner";
 import MovieRail from "../components/MovieRail/MovieRail";
 import PageHeader from "../components/ui/PageHeader";
 import { FiArrowUpRight } from "react-icons/fi";
+import { hideBrokenImage } from "../components/ui/hideBrokenImage";
 
 const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -85,6 +86,7 @@ const Categories = () => {
           >
             {poster && (
               <img
+                onError={hideBrokenImage}
                 src={api.getMediaUrl(poster)}
                 alt=""
                 loading="lazy"

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FiArrowRight } from "react-icons/fi";
 import { api } from "../services/api";
 import type { Movie, Series } from "../services/api";
+import { hideBrokenImage } from "./ui/hideBrokenImage";
 
 interface SearchSuggestionsProps {
   query: string;
@@ -38,6 +39,7 @@ const SuggestionGroup = ({
         className="flex items-center gap-3 rounded-xl px-2.5 py-2 transition hover:bg-white/[0.05]"
       >
         <img
+          onError={hideBrokenImage}
           src={api.getMediaUrl(item.poster)}
           alt=""
           loading="lazy"

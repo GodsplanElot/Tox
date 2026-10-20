@@ -23,6 +23,7 @@ import { imaAvailable, runPreroll } from "./ima";
 import SeekBar from "./SeekBar";
 import SettingsMenu from "./SettingsMenu";
 import { useHls, type StreamError } from "./useHls";
+import { hideBrokenImage } from "../ui/hideBrokenImage";
 
 interface Props {
   contentType: "movie" | "episode";
@@ -584,7 +585,7 @@ const VideoPlayer = ({ contentType, slug, seriesSlug, poster, title, subtitle, n
           aria-label={sourceReady ? `Play ${title ?? "video"}` : "Preparing stream"}
           className="group/start absolute inset-0 z-20 grid place-items-center"
         >
-          {poster && <img src={poster} alt="" className="absolute inset-0 size-full object-cover" />}
+          {poster && <img onError={hideBrokenImage} src={poster} alt="" className="absolute inset-0 size-full object-cover" />}
           <span className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-black/30" />
           <span className="relative grid size-16 place-items-center rounded-full bg-white/15 ring-1 ring-white/30 backdrop-blur-md transition duration-300 group-hover/start:scale-110 group-hover/start:bg-accent group-hover/start:text-ink-950 group-hover/start:ring-accent sm:size-20">
             {sourceReady ? (
