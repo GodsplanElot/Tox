@@ -4,7 +4,7 @@ import base64
 import hashlib
 import time
 from dataclasses import dataclass
-from urllib.parse import urlencode
+from urllib.parse import quote, urlencode
 
 import requests
 from django.conf import settings
@@ -106,10 +106,27 @@ class BunnyStreamClient:
         ).decode("ascii").rstrip("=")
         return f"https://{self.cdn_hostname}{path}?{urlencode({'token': token, 'expires': expires})}"
 
+    def signed_cdn_directory_url(self, directory, path, expires_in=None):
+        """Sign a whole directory with the token embedded in the URL path.
+        Relative URLs inside an HLS manifest (sub-playlists, segments) then
+        inherit the token; a query-string token would not be carried over."""
+        expires = int(time.time()) + (expires_in or settings.DOWNLOAD_LINK_EXPIRY_SECONDS)
+        token = base64.urlsafe_b64encode(
+            hashlib.sha256(
+                f"{self.token_auth_key}{directory}{expires}token_path={directory}".encode("utf-8")
+            ).digest()
+        ).decode("ascii").rstrip("=")
+        return (
+            f"https://{self.cdn_hostname}/bcdn_token={token}&expires={expires}"
+            f"&token_path={quote(directory, safe='')}{path}"
+        )
+
     def hls_url(self, video_id):
         """Return a signed HLS manifest URL for in-browser streaming.
         Use a 4-hour expiry so long movies don't 403 mid-watch."""
-        return self.signed_cdn_url(f"/{video_id}/playlist.m3u8", expires_in=14400)
+        return self.signed_cdn_directory_url(
+            f"/{video_id}/", f"/{video_id}/playlist.m3u8", expires_in=14400
+        )
 
     def download_url(self, video_id, available_resolutions=""):
         heights = []
