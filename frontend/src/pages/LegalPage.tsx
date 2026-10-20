@@ -1,6 +1,16 @@
 import { useEffect } from "react";
-import { Link, Navigate, useParams } from "react-router-dom";
-import "./LegalPage.css";
+import { Navigate, NavLink, useParams } from "react-router-dom";
+import PageHeader from "../components/ui/PageHeader";
+import { cn } from "../components/ui/cn";
+
+const LEGAL_LINKS = [
+  { to: "/legal/privacy-policy", label: "Privacy Policy" },
+  { to: "/legal/terms-of-use", label: "Terms of Use" },
+  { to: "/legal/dmca", label: "DMCA / Copyright" },
+  { to: "/legal/contact", label: "Contact" },
+  { to: "/legal/about", label: "About" },
+  { to: "/legal/content-rights", label: "Content Rights" },
+];
 
 type LegalSection = {
   heading: string;
@@ -236,43 +246,57 @@ const LegalPage = () => {
   }
 
   return (
-    <section className="legal-page" aria-labelledby="legal-title">
-      <header className="legal-hero">
-        <span className="legal-kicker">{page.kicker}</span>
-        <h1 id="legal-title">{page.title}</h1>
-        <p>{page.intro}</p>
-        <div className="legal-meta">Last updated: {page.updated}</div>
-      </header>
+    <div className="animate-fade-in">
+      <PageHeader kicker={page.kicker} title={page.title} description={page.intro}>
+        <p className="text-xs font-medium text-fg-subtle">Last updated: {page.updated}</p>
+      </PageHeader>
 
-      <div className="legal-layout">
-        <aside className="legal-nav" aria-label="Legal pages">
-          <Link to="/legal/privacy-policy">Privacy Policy</Link>
-          <Link to="/legal/terms-of-use">Terms of Use</Link>
-          <Link to="/legal/dmca">DMCA / Copyright</Link>
-          <Link to="/legal/contact">Contact</Link>
-          <Link to="/legal/about">About</Link>
-          <Link to="/legal/content-rights">Content Rights</Link>
-        </aside>
+      <div className="page-x mt-8 grid gap-8 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-14">
+        <nav
+          aria-label="Legal pages"
+          className="bleed-x flex gap-1 overflow-x-auto scrollbar-none lg:sticky lg:top-24 lg:mx-0 lg:flex-col lg:self-start lg:overflow-visible lg:px-0"
+        >
+          {LEGAL_LINKS.map((link) => (
+            <NavLink
+              key={link.to}
+              to={link.to}
+              className={({ isActive }) =>
+                cn(
+                  "relative shrink-0 rounded-lg px-3 py-2 text-[13px] font-medium whitespace-nowrap transition",
+                  isActive
+                    ? "bg-white/[0.07] text-white lg:before:absolute lg:before:inset-y-2 lg:before:left-0 lg:before:w-0.5 lg:before:rounded-full lg:before:bg-accent"
+                    : "text-fg-muted hover:bg-white/[0.04] hover:text-white",
+                )
+              }
+            >
+              {link.label}
+            </NavLink>
+          ))}
+        </nav>
 
-        <article className="legal-document">
+        <article className="max-w-3xl">
           {page.sections.map((section) => (
-            <section key={section.heading} className="legal-section">
-              <h2>{section.heading}</h2>
+            <section key={section.heading} className="border-b border-white/[0.06] py-7 first:pt-0">
+              <h2 className="font-display text-lg font-semibold text-white">{section.heading}</h2>
               {section.body.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
+                <p key={paragraph} className="mt-3 text-sm leading-7 text-fg-muted sm:text-[15px]">
+                  {paragraph}
+                </p>
               ))}
             </section>
           ))}
 
-          <div className="legal-callout">
-            <strong>Rights holder notice:</strong> If anything on ToxicReels
-            infringes your rights, contact{" "}
-            <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a> with the
-            relevant page URL and details of your request.
+          <div className="mt-8 rounded-2xl bg-accent/[0.06] p-5 text-sm leading-relaxed text-fg-muted ring-1 ring-accent/20 ring-inset">
+            <strong className="text-white">Rights holder notice:</strong> If anything on ToxicReels infringes your rights,
+            contact{" "}
+            <a href={`mailto:${CONTACT_EMAIL}`} className="font-semibold text-accent hover:text-accent-strong">
+              {CONTACT_EMAIL}
+            </a>{" "}
+            with the relevant page URL and details of your request.
           </div>
         </article>
       </div>
-    </section>
+    </div>
   );
 };
 
