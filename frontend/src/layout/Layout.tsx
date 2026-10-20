@@ -9,8 +9,9 @@ const Layout = () => {
       <ScrollToTop />
       <Header />
 
-      {/* Pages own their gutters (see the `page-x` utility) so heroes can run full bleed. */}
-      <main className="flex-1 pb-[calc(104px+env(safe-area-inset-bottom))] lg:pb-12">
+      {/* Pages own their gutters (see the `page-x` utility) so heroes can run full bleed.
+          The footer reserves space for the mobile dock. */}
+      <main className="flex-1">
         <Outlet />
       </main>
 
