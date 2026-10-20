@@ -142,26 +142,35 @@ const Home = () => {
   }
 
   return (
-    <>
+    <div className="animate-fade-in">
       <HeroCarousel items={carouselItems} />
-      <SeriesRail title="Series" series={trendingSeries} />
-      <AdResponsiveBanner />
 
-      {trendingMovies.length > 0 && (
-        <MovieRail title="Trending Now" movies={trendingMovies.slice(0, 18)} />
-      )}
-      <AdSlot unit="native" className="my-8" label="Sponsored recommendations" />
-      {popularMovies.length > 0 && (
-        <MovieRail title="Popular Movies" movies={popularMovies.slice(0, 18)} />
-      )}
-      <AdSlot unit="468x60" className="my-8" />
-      {newReleases.length > 0 && (
-        <MovieRail title="New Releases" movies={newReleases.slice(0, 18)} />
-      )}
+      <div className="relative z-10 -mt-6 lg:-mt-10">
+        <SeriesRail kicker="Binge-worthy" title="Trending series" series={trendingSeries} />
+        {trendingMovies.length > 0 && (
+          <MovieRail kicker="Right now" title="Trending movies" href="/movies" movies={trendingMovies.slice(0, 18)} />
+        )}
+      </div>
+
+      <div className="page-x">
+        <AdResponsiveBanner className="mt-12" />
+      </div>
+
+      {popularMovies.length > 0 && <MovieRail title="Popular movies" href="/movies" movies={popularMovies.slice(0, 18)} />}
+
+      <div className="page-x">
+        <AdSlot unit="native" className="mt-12" label="Sponsored recommendations" />
+      </div>
+
+      {newReleases.length > 0 && <MovieRail title="New releases" href="/movies" movies={newReleases.slice(0, 18)} />}
       {topRatedMovies.length > 0 && (
-        <MovieRail title="Top Rated" movies={topRatedMovies.slice(0, 18)} />
+        <MovieRail kicker="Most toxic" title="Top rated" href="/movies" movies={topRatedMovies.slice(0, 18)} />
       )}
-    </>
+
+      <div className="page-x">
+        <AdSlot unit="468x60" className="mt-12" />
+      </div>
+    </div>
   );
 };
 
