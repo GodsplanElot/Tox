@@ -1,18 +1,43 @@
-import { useState } from "react";
-import { Container, Dropdown, Nav, Navbar } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { useCallback, useRef, useState } from "react";
+import { Link, NavLink } from "react-router-dom";
+import { FiBookmark, FiChevronDown, FiLogOut, FiUser } from "react-icons/fi";
 import SearchForm from "../components/SearchForm";
 import AuthModal from "../components/AuthModal";
 import { useAuth } from "../context/useAuth";
 import MobileNavBar from "./MobileNavBar";
 import logo from "../assets/icons/nav_logo.png";
+import { cn } from "../components/ui/cn";
+import { buttonClass } from "../components/ui/buttonClass";
+import { useDismiss } from "../components/ui/useDismiss";
 
 type AuthTab = "login" | "signup";
+
+const NAV_ITEMS = [
+  { to: "/", label: "Home", end: true },
+  { to: "/movies", label: "Movies" },
+  { to: "/series", label: "TV Series" },
+  { to: "/categories", label: "Categories" },
+];
+
+const navLinkClass = ({ isActive }: { isActive: boolean }) =>
+  cn(
+    "relative rounded-full px-3.5 py-1.5 text-[13px] font-semibold transition-colors duration-200",
+    isActive
+      ? "bg-white/[0.09] text-white shadow-[inset_0_1px_0_rgb(255_255_255/0.08)]"
+      : "text-fg-muted hover:text-white",
+  );
+
+const menuItemClass =
+  "flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-[13px] font-medium text-fg-muted transition hover:bg-white/[0.06] hover:text-white";
 
 const Header = () => {
   const { isAuthenticated, logout, user } = useAuth();
   const [showAuth, setShowAuth] = useState(false);
   const [authTab, setAuthTab] = useState<AuthTab>("login");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const closeMenu = useCallback(() => setMenuOpen(false), []);
+  useDismiss(menuRef, menuOpen, closeMenu);
 
   const openAuth = (tab: AuthTab) => {
     setAuthTab(tab);
@@ -21,104 +46,126 @@ const Header = () => {
 
   const displayName = user?.first_name || user?.username || user?.email || "Account";
   const accountLabel = user?.email || user?.username || "Signed in";
-  const initials = displayName
-    .split(" ")
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0]?.toUpperCase())
-    .join("") || "U";
+  const initials =
+    displayName
+      .split(" ")
+      .filter(Boolean)
+      .slice(0, 2)
+      .map((part) => part[0]?.toUpperCase())
+      .join("") || "U";
+
+  const avatar = (
+    <span
+      aria-hidden="true"
+      className="grid size-8 shrink-0 place-items-center rounded-full bg-gradient-to-br from-accent to-ember font-display text-[11px] font-bold text-ink-950"
+    >
+      {initials}
+    </span>
+  );
 
   return (
     <>
-      <Navbar bg="dark" variant="dark" sticky="top" className="navbar">
-        <Container fluid>
-          {/* LOGO */}
-          <Navbar.Brand as={NavLink} to="/">
-            <img src={logo} alt="TOXin" height={32} />
-          </Navbar.Brand>
+      <header className="sticky top-0 z-[1040] border-b border-white/[0.06] bg-ink-950/80 backdrop-blur-xl backdrop-saturate-150">
+        <div className="mx-auto flex h-14 max-w-[1600px] items-center gap-4 px-4 lg:h-16 lg:px-8">
+          <Link to="/" className="shrink-0" aria-label="ToxicReels home">
+            <img src={logo} alt="ToxicReels" className="h-7 w-auto lg:h-8" />
+          </Link>
 
-          {/* DESKTOP NAV */}
-          <Nav className="me-auto d-none d-lg-flex gap-3">
-            <Nav.Link as={NavLink} to="/">
-              Home
-            </Nav.Link>
-
-            <Nav.Link as={NavLink} to="/categories">
-              Categories
-            </Nav.Link>
-
-            <Nav.Link as={NavLink} to="/movies">
-              Movies
-            </Nav.Link>
-
-            <Nav.Link as={NavLink} to="/series">
-              Tv Series
-            </Nav.Link>
-
+          <nav
+            aria-label="Primary"
+            className="ml-4 hidden items-center gap-0.5 rounded-full bg-white/[0.03] p-1 ring-1 ring-white/[0.06] lg:flex"
+          >
+            {NAV_ITEMS.map((item) => (
+              <NavLink key={item.to} to={item.to} end={item.end} className={navLinkClass}>
+                {item.label}
+              </NavLink>
+            ))}
             {isAuthenticated && (
-              <Nav.Link as={NavLink} to="/watchlist">
+              <NavLink to="/watchlist" className={navLinkClass}>
                 Watchlist
-              </Nav.Link>
+              </NavLink>
             )}
-          </Nav>
+          </nav>
 
-          {/* DESKTOP SEARCH AND AUTH */}
-          <div className="d-none d-lg-flex align-items-center gap-3">
-            <SearchForm />
+          <div className="ml-auto flex items-center gap-3">
+            <div className="hidden lg:block">
+              <SearchForm />
+            </div>
+
             {isAuthenticated ? (
-              <Dropdown align="end" className="account-menu">
-                <Dropdown.Toggle className="account-toggle" id="account-menu-toggle">
-                  <span className="account-avatar" aria-hidden="true">
-                    {initials}
-                  </span>
-                  <span className="account-copy">
-                    <span className="account-name">{displayName}</span>
-                    <span className="account-meta">{accountLabel}</span>
-                  </span>
-                </Dropdown.Toggle>
-
-                <Dropdown.Menu className="account-dropdown">
-                  <Dropdown.Item as={NavLink} to="/profile">
-                    <i className="bi bi-person-circle" aria-hidden="true"></i>
-                    Profile
-                  </Dropdown.Item>
-                  <Dropdown.Item as={NavLink} to="/watchlist">
-                    <i className="bi bi-bookmark-check" aria-hidden="true"></i>
-                    Watchlist
-                  </Dropdown.Item>
-                  <Dropdown.Divider />
-                  <Dropdown.Item as="button" onClick={logout}>
-                    <i className="bi bi-box-arrow-right" aria-hidden="true"></i>
-                    Logout
-                  </Dropdown.Item>
-                </Dropdown.Menu>
-              </Dropdown>
-            ) : (
-              <div className="d-flex align-items-center gap-2 border-start border-secondary ps-3 ms-1">
+              <div ref={menuRef} className="relative">
                 <button
-                  className="btn btn-sm btn-outline-light rounded-pill px-3 py-1"
-                  style={{ fontWeight: 500, letterSpacing: "0.5px" }}
+                  type="button"
+                  aria-haspopup="menu"
+                  aria-expanded={menuOpen}
+                  onClick={() => setMenuOpen((open) => !open)}
+                  className={cn(
+                    "flex items-center gap-2 rounded-full p-0.5 transition lg:py-1 lg:pr-3 lg:pl-1",
+                    "ring-1 ring-white/10 ring-inset hover:bg-white/[0.06]",
+                    menuOpen && "bg-white/[0.06] ring-white/20",
+                  )}
+                >
+                  {avatar}
+                  <span className="hidden max-w-32 truncate text-[13px] font-semibold text-white lg:block">
+                    {displayName}
+                  </span>
+                  <FiChevronDown
+                    aria-hidden="true"
+                    className={cn("hidden size-3.5 text-fg-muted transition lg:block", menuOpen && "rotate-180")}
+                  />
+                </button>
+
+                {menuOpen && (
+                  <div
+                    role="menu"
+                    className="absolute top-[calc(100%+10px)] right-0 w-60 origin-top-right animate-scale-in rounded-2xl p-1.5 shadow-2xl shadow-black/60 glass"
+                  >
+                    <div className="flex items-center gap-3 px-2.5 pt-2 pb-3">
+                      {avatar}
+                      <div className="min-w-0">
+                        <p className="truncate text-[13px] font-semibold text-white">{displayName}</p>
+                        <p className="truncate text-xs text-fg-subtle">{accountLabel}</p>
+                      </div>
+                    </div>
+                    <div className="mb-1 h-px bg-white/[0.06]" />
+                    <Link to="/profile" role="menuitem" className={menuItemClass} onClick={closeMenu}>
+                      <FiUser className="size-4" /> Profile
+                    </Link>
+                    <Link to="/watchlist" role="menuitem" className={menuItemClass} onClick={closeMenu}>
+                      <FiBookmark className="size-4" /> Watchlist
+                    </Link>
+                    <div className="my-1 h-px bg-white/[0.06]" />
+                    <button
+                      type="button"
+                      role="menuitem"
+                      className={menuItemClass}
+                      onClick={() => {
+                        closeMenu();
+                        logout();
+                      }}
+                    >
+                      <FiLogOut className="size-4" /> Sign out
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  className={buttonClass("ghost", "sm", "hidden sm:inline-flex")}
                   onClick={() => openAuth("login")}
                 >
-                  Login
+                  Sign in
                 </button>
-                <button
-                  className="btn btn-sm btn-primary rounded-pill px-3 py-1"
-                  style={{
-                    fontWeight: 600,
-                    letterSpacing: "0.5px",
-                    backgroundColor: "var(--accent-primary)",
-                    borderColor: "var(--accent-primary)",
-                  }}
-                  onClick={() => openAuth("signup")}
-                >
-                  Sign Up
+                <button type="button" className={buttonClass("primary", "sm")} onClick={() => openAuth("signup")}>
+                  Get started
                 </button>
               </div>
             )}
           </div>
-        </Container>
-      </Navbar>
+        </div>
+      </header>
 
       <MobileNavBar
         isAuthenticated={isAuthenticated}
@@ -126,12 +173,7 @@ const Header = () => {
         onLogout={logout}
       />
 
-      {/* AUTH MODAL */}
-      <AuthModal
-        show={showAuth}
-        onHide={() => setShowAuth(false)}
-        defaultTab={authTab}
-      />
+      <AuthModal show={showAuth} onHide={() => setShowAuth(false)} defaultTab={authTab} />
     </>
   );
 };

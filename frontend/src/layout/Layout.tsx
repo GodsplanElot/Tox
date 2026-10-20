@@ -5,11 +5,12 @@ import ScrollToTop from "./ScrollToTop";
 
 const Layout = () => {
   return (
-    <div className="app-layout">
+    <div className="flex min-h-svh flex-col bg-ink-950">
       <ScrollToTop />
       <Header />
 
-      <main className="app-content">
+      {/* Pages own their gutters (see the `page-x` utility) so heroes can run full bleed. */}
+      <main className="flex-1 pb-[calc(104px+env(safe-area-inset-bottom))] lg:pb-12">
         <Outlet />
       </main>
 

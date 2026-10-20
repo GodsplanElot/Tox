@@ -1,17 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState, type ReactNode } from "react";
 import { NavLink } from "react-router-dom";
 import {
-  FaHome,
-  FaFilm,
-  FaLayerGroup,
-  FaSearch,
-  FaEllipsisH,
-  FaTv,
-  FaBookmark,
-  FaUser,
-  FaSignInAlt,
-  FaSignOutAlt,
-} from "react-icons/fa";
+  FiBookmark,
+  FiFilm,
+  FiGrid,
+  FiHome,
+  FiLogIn,
+  FiLogOut,
+  FiMoreHorizontal,
+  FiSearch,
+  FiTv,
+  FiUser,
+} from "react-icons/fi";
+import { cn } from "../components/ui/cn";
+import { useDismiss } from "../components/ui/useDismiss";
 
 type Props = {
   isAuthenticated: boolean;
@@ -19,114 +21,120 @@ type Props = {
   onLogout: () => void;
 };
 
+const TABS = [
+  { to: "/", label: "Home", icon: FiHome, end: true },
+  { to: "/movies", label: "Movies", icon: FiFilm },
+  { to: "/series", label: "Series", icon: FiTv },
+  { to: "/search", label: "Search", icon: FiSearch },
+];
+
+const tabClass = (active: boolean) =>
+  cn(
+    "group relative flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-2xl py-2 text-[10.5px] font-semibold transition-colors duration-200",
+    active ? "text-white" : "text-fg-subtle hover:text-fg-muted",
+  );
+
+const TabIcon = ({ active, children }: { active: boolean; children: ReactNode }) => (
+  <span
+    className={cn(
+      "grid h-7 w-12 place-items-center rounded-full transition-all duration-300 ease-[var(--ease-spring)] [&_svg]:size-[19px]",
+      active ? "bg-accent/15 text-accent" : "group-active:scale-90",
+    )}
+  >
+    {children}
+  </span>
+);
+
+const popoverItemClass = ({ isActive }: { isActive: boolean }) =>
+  cn(
+    "flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-[13px] font-medium transition",
+    isActive ? "bg-white/[0.07] text-white" : "text-fg-muted hover:bg-white/[0.05] hover:text-white",
+  );
+
 const MobileNavBar = ({ isAuthenticated, onLoginClick, onLogout }: Props) => {
   const [showMore, setShowMore] = useState(false);
-  const moreRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    if (!showMore) return;
-
-    const handlePointerDown = (event: PointerEvent) => {
-      if (!moreRef.current?.contains(event.target as Node)) {
-        setShowMore(false);
-      }
-    };
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "Escape") setShowMore(false);
-    };
-
-    document.addEventListener("pointerdown", handlePointerDown);
-    document.addEventListener("keydown", handleKeyDown);
-
-    return () => {
-      document.removeEventListener("pointerdown", handlePointerDown);
-      document.removeEventListener("keydown", handleKeyDown);
-    };
-  }, [showMore]);
-
-  const closeMore = () => setShowMore(false);
-
-  const openLogin = () => {
-    closeMore();
-    onLoginClick();
-  };
-
-  const logout = () => {
-    closeMore();
-    onLogout();
-  };
+  const moreRef = useRef<HTMLDivElement>(null);
+  const closeMore = useCallback(() => setShowMore(false), []);
+  useDismiss(moreRef, showMore, closeMore);
 
   return (
-    <nav className="mobile-bottom-nav d-lg-none" aria-label="Primary mobile navigation">
-      <div className="mobile-bottom-nav__surface" aria-hidden="true" />
-
-      <NavLink end to="/" className="mobile-bottom-nav__item">
-        <span className="mnav-icon-bg"><FaHome aria-hidden="true" /></span>
-        <span>Home</span>
-      </NavLink>
-
-      <NavLink to="/movies" className="mobile-bottom-nav__item">
-        <span className="mnav-icon-bg"><FaFilm aria-hidden="true" /></span>
-        <span>Movies</span>
-      </NavLink>
-
-      <span className="mobile-bottom-nav__spacer" aria-hidden="true" />
-
-      <NavLink
-        to="/categories"
-        className="mobile-bottom-nav__center"
-        aria-label="Browse categories"
-      >
-        <FaLayerGroup aria-hidden="true" />
-      </NavLink>
-
-      <NavLink to="/search" className="mobile-bottom-nav__item">
-        <span className="mnav-icon-bg"><FaSearch aria-hidden="true" /></span>
-        <span>Search</span>
-      </NavLink>
-
-      <div className="mobile-bottom-nav__more" ref={moreRef}>
-        <button
-          type="button"
-          className={`mobile-bottom-nav__item${showMore ? " active" : ""}`}
-          aria-expanded={showMore}
-          aria-haspopup="menu"
-          onClick={() => setShowMore((v) => !v)}
-        >
-          <span className="mnav-icon-bg"><FaEllipsisH aria-hidden="true" /></span>
-          <span>More</span>
-        </button>
-
-        {showMore && (
-          <div className="mobile-more-popover" role="menu">
-            <NavLink to="/series" role="menuitem" onClick={closeMore}>
-              <span className="mpop-icon"><FaTv /></span>
-              <span>Series</span>
-            </NavLink>
-            <NavLink to="/watchlist" role="menuitem" onClick={closeMore}>
-              <span className="mpop-icon"><FaBookmark /></span>
-              <span>Watchlist</span>
-            </NavLink>
-            {isAuthenticated ? (
+    <nav
+      aria-label="Primary mobile navigation"
+      className="fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-[1040] lg:hidden"
+    >
+      <div className="mx-auto flex max-w-md items-stretch gap-0.5 rounded-[26px] border border-white/[0.08] bg-ink-900/85 p-1.5 shadow-[0_20px_50px_-12px_rgb(0_0_0/0.8)] backdrop-blur-2xl backdrop-saturate-150">
+        {TABS.map(({ to, label, icon: Icon, end }) => (
+          <NavLink key={to} to={to} end={end} className={({ isActive }) => tabClass(isActive)}>
+            {({ isActive }) => (
               <>
-                <NavLink to="/profile" role="menuitem" onClick={closeMore}>
-                  <span className="mpop-icon"><FaUser /></span>
-                  <span>Profile</span>
-                </NavLink>
-                <button type="button" role="menuitem" onClick={logout}>
-                  <span className="mpop-icon"><FaSignOutAlt /></span>
-                  <span>Sign out</span>
-                </button>
+                <TabIcon active={isActive}>
+                  <Icon aria-hidden="true" />
+                </TabIcon>
+                <span className="max-w-full truncate">{label}</span>
               </>
-            ) : (
-              <button type="button" role="menuitem" onClick={openLogin}>
-                <span className="mpop-icon"><FaSignInAlt /></span>
-                <span>Sign in</span>
-              </button>
             )}
-          </div>
-        )}
+          </NavLink>
+        ))}
+
+        <div ref={moreRef} className="relative flex min-w-0 flex-1">
+          <button
+            type="button"
+            aria-expanded={showMore}
+            aria-haspopup="menu"
+            onClick={() => setShowMore((v) => !v)}
+            className={tabClass(showMore)}
+          >
+            <TabIcon active={showMore}>
+              <FiMoreHorizontal aria-hidden="true" />
+            </TabIcon>
+            <span>More</span>
+          </button>
+
+          {showMore && (
+            <div
+              role="menu"
+              className="absolute right-0 bottom-[calc(100%+12px)] w-52 origin-bottom-right animate-scale-in rounded-2xl p-1.5 shadow-2xl shadow-black/60 glass"
+            >
+              <NavLink to="/categories" role="menuitem" className={popoverItemClass} onClick={closeMore}>
+                <FiGrid className="size-4" /> Categories
+              </NavLink>
+              <NavLink to="/watchlist" role="menuitem" className={popoverItemClass} onClick={closeMore}>
+                <FiBookmark className="size-4" /> Watchlist
+              </NavLink>
+              {isAuthenticated ? (
+                <>
+                  <NavLink to="/profile" role="menuitem" className={popoverItemClass} onClick={closeMore}>
+                    <FiUser className="size-4" /> Profile
+                  </NavLink>
+                  <div className="my-1 h-px bg-white/[0.06]" />
+                  <button
+                    type="button"
+                    role="menuitem"
+                    className={popoverItemClass({ isActive: false })}
+                    onClick={() => {
+                      closeMore();
+                      onLogout();
+                    }}
+                  >
+                    <FiLogOut className="size-4" /> Sign out
+                  </button>
+                </>
+              ) : (
+                <button
+                  type="button"
+                  role="menuitem"
+                  className={popoverItemClass({ isActive: false })}
+                  onClick={() => {
+                    closeMore();
+                    onLoginClick();
+                  }}
+                >
+                  <FiLogIn className="size-4" /> Sign in
+                </button>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   );
