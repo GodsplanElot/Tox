@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework import status
-from django.db.models import Prefetch
+from django.db.models import Count, Prefetch, Q
 
 from apps.common.downloads import (
     build_download_url,
@@ -28,6 +28,15 @@ class SeriesViewSet(viewsets.ReadOnlyModelViewSet):
             .prefetch_related("categories")
             .order_by('-created_at')
         )
+
+        if self.action == "list":
+            queryset = queryset.annotate(
+                season_count=Count(
+                    "seasons",
+                    filter=Q(seasons__status=Season.STATUS_PUBLISHED),
+                    distinct=True,
+                )
+            )
 
         if self.action == "retrieve":
             published_episodes = Episode.objects.filter(

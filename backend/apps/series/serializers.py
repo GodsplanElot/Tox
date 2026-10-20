@@ -81,11 +81,14 @@ class SeriesSerializer(serializers.ModelSerializer):
 
 class SeriesListSerializer(serializers.ModelSerializer):
     categories = CategorySerializer(many=True, read_only=True)
+    # Annotated by SeriesViewSet.get_queryset; lets cards show season counts
+    # without serializing every season and episode.
+    season_count = serializers.IntegerField(read_only=True, default=0)
 
     class Meta:
         model = Series
         fields = [
             'id', 'title', 'slug', 'description', 'poster', 'hero_image',
             'trailer_url', 'rating', 'first_air_date', 'categories',
-            'created_at'
+            'season_count', 'created_at'
         ]

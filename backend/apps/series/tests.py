@@ -54,6 +54,18 @@ class SeriesApiVisibilityTests(APITestCase):
         self.assertNotIn("seasons", item)
         self.assertEqual(len(response.data["results"]), 1)
 
+    def test_series_list_counts_only_published_seasons(self):
+        Season.objects.create(
+            series=self.series,
+            season_number=2,
+            slug="published-series-season-2",
+            status=Season.STATUS_DRAFT,
+        )
+
+        response = self.client.get(reverse("series-list"))
+
+        self.assertEqual(response.data["results"][0]["season_count"], 1)
+
     def test_series_detail_only_includes_published_children(self):
         response = self.client.get(reverse("series-detail", kwargs={"slug": self.series.slug}))
 

@@ -36,7 +36,9 @@ export interface Series {
   rating?: number;
   first_air_date?: string;
   categories: Category[];
-  seasons: Season[];
+  /** Present on detail responses only; list responses send `season_count`. */
+  seasons?: Season[];
+  season_count?: number;
   tmdb_id?: number;
   created_at?: string;
 }

@@ -12,7 +12,7 @@ interface Props {
 
 /** Series poster card; the stacked sleeves behind it hint at its seasons. */
 const SeriesCard = ({ series, className }: Props) => {
-  const seasonCount = series.seasons?.length ?? 0;
+  const seasonCount = series.seasons?.length ?? series.season_count ?? 0;
   const year = series.first_air_date?.slice(0, 4);
   const genre = series.categories?.[0]?.name;
 
