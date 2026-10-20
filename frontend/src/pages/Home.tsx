@@ -150,11 +150,11 @@ const Home = () => {
       {trendingMovies.length > 0 && (
         <MovieRail title="Trending Now" movies={trendingMovies.slice(0, 18)} />
       )}
-      <AdSlot unit="native" className="ad-inline" label="Sponsored recommendations" />
+      <AdSlot unit="native" className="my-8" label="Sponsored recommendations" />
       {popularMovies.length > 0 && (
         <MovieRail title="Popular Movies" movies={popularMovies.slice(0, 18)} />
       )}
-      <AdSlot unit="468x60" className="ad-inline" />
+      <AdSlot unit="468x60" className="my-8" />
       {newReleases.length > 0 && (
         <MovieRail title="New Releases" movies={newReleases.slice(0, 18)} />
       )}

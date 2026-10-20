@@ -205,7 +205,7 @@ const EpisodeDetail = () => {
         </div>
 
         <AdResponsiveBanner />
-        <AdSlot unit="native" className="ad-inline" label="Sponsored titles" />
+        <AdSlot unit="native" className="my-8" label="Sponsored titles" />
       </div>
 
       <DownloadRedirectModal

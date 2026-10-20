@@ -136,7 +136,7 @@ const Search = () => {
         <MovieRail title="Recommended Movies" movies={recommended} />
       )}
 
-      <AdSlot unit="native" className="ad-inline" label="Sponsored results" />
+      <AdSlot unit="native" className="my-8" label="Sponsored results" />
 
       {initialQuery && (
         <div className="search-results">

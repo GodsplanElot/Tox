@@ -1,12 +1,11 @@
 import { useEffect, useId, useMemo, useRef, useState } from "react";
-import type { CSSProperties } from "react";
 import {
   NATIVE_ADSTERRA_CONTAINER_ID,
   NATIVE_ADSTERRA_SRC,
   type DisplayAdUnit,
   getDisplayAdConfig,
 } from "./adsterraConfig";
-import "./AdSlot.css";
+import { cn } from "../ui/cn";
 
 type AdSlotProps = {
   unit: DisplayAdUnit | "native";
@@ -119,15 +118,23 @@ const AdSlot = ({ unit, className = "", label = "Advertisement" }: AdSlotProps) 
   return (
     <div
       ref={wrapperRef}
-      className={`ad-slot ad-slot--${unit.replace("x", "-")} ${className}`}
-      style={{ "--ad-width": `${width}px`, "--ad-height": `${height}px` } as CSSProperties}
       aria-label={label}
+      className={cn(
+        "mx-auto grid justify-items-center overflow-hidden rounded-xl bg-white/[0.02] ring-1 ring-white/[0.05] ring-inset",
+        className,
+      )}
+      style={{
+        width: unit === "native" ? "min(100%, 760px)" : `min(100%, ${width}px)`,
+        gridTemplateRows: `auto ${height}px`,
+      }}
     >
-      <span className="ad-slot__label">{label}</span>
+      <span className="w-full px-2 py-1 text-center text-[9px] font-semibold tracking-[0.14em] text-fg-subtle/70 uppercase">
+        {label}
+      </span>
       {shouldRender ? (
         <iframe
           key={`${frameId}-${unit}`}
-          className="ad-slot__frame"
+          className="block max-w-full border-0 bg-transparent"
           title={`${label} ${unit}`}
           srcDoc={srcDoc}
           width={width}
@@ -136,7 +143,7 @@ const AdSlot = ({ unit, className = "", label = "Advertisement" }: AdSlotProps) 
           sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox allow-top-navigation-by-user-activation"
         />
       ) : (
-        <div className="ad-slot__reserve" aria-hidden="true" />
+        <div aria-hidden="true" style={{ height }} className="w-full animate-pulse bg-white/[0.02]" />
       )}
     </div>
   );

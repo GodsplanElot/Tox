@@ -151,7 +151,7 @@ const CategoryDetail = () => {
       {movies.length > 0 && <MovieGrid movies={movies} />}
 
       {movies.length > 0 && series.length > 0 && (
-        <AdSlot unit="300x250" className="ad-inline" />
+        <AdSlot unit="300x250" className="my-8" />
       )}
 
       {/* SERIES */}

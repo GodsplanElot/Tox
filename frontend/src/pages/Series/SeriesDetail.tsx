@@ -234,7 +234,7 @@ const SeriesDetail = () => {
       <section className="series-body">
         {series.seasons && series.seasons.length > 0 ? (
           <>
-            <AdSlot unit="native" className="ad-inline" label="Sponsored episodes" />
+            <AdSlot unit="native" className="my-8" label="Sponsored episodes" />
             <div className="section-head">
               <div>
                 <span>Episode guide</span>
