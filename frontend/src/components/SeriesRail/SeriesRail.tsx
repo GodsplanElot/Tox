@@ -1,31 +1,26 @@
-import { Link } from "react-router-dom";
-import { FaChevronRight } from "react-icons/fa";
 import SeriesCard from "../SeriesCard/SeriesCard";
+import Section from "../ui/Section";
+import Rail from "../ui/Rail";
 import type { Series } from "../../types/series";
 
 interface Props {
-  title: string;
+  title?: string;
+  kicker?: string;
   series: Series[];
+  href?: string;
 }
 
-const SeriesRail = ({ title, series }: Props) => {
+const SeriesRail = ({ title, kicker, series, href = "/series" }: Props) => {
   if (series.length === 0) return null;
 
   return (
-    <section className="content-section">
-      <div className="section-header">
-        <h2 className="section-title">{title}</h2>
-        <Link to="/series" className="section-see-all">
-          See All <FaChevronRight />
-        </Link>
-      </div>
-
-      <div className="series-rail">
+    <Section title={title} kicker={kicker} href={href}>
+      <Rail>
         {series.map((s) => (
-          <SeriesCard key={s.id} series={s} />
+          <SeriesCard key={s.id} series={s} className="w-[132px] shrink-0 sm:w-[150px] lg:w-[170px]" />
         ))}
-      </div>
-    </section>
+      </Rail>
+    </Section>
   );
 };
 
