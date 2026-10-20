@@ -5,9 +5,12 @@ import EmptyState from "../components/common/EmptyState";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import AdResponsiveBanner from "../components/ads/AdResponsiveBanner";
 import AdSlot from "../components/ads/AdSlot";
+import AdLayout from "../components/ads/AdLayout";
+import PageHeader from "../components/ui/PageHeader";
+import { buttonClass } from "../components/ui/buttonClass";
 import { api } from "../services/api";
 import type { Movie, PaginatedResponse } from "../services/api";
-import "./Movies.css";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 
 const PAGE_SIZE = 50;
 
@@ -90,29 +93,22 @@ const Movies = () => {
   }
 
   return (
-    <section className="movies-page">
-      <header className="movies-page__hero">
-        <span>Movie Library</span>
-        <h1>All Movies</h1>
-        <p>Browse every published movie in a stable grid, 50 titles per page.</p>
-      </header>
+    <div className="animate-fade-in">
+      <PageHeader
+        kicker="Movie library"
+        title="All movies"
+        description={`${moviePage.count} published titles, ${PAGE_SIZE} per page.`}
+      />
 
-      <AdResponsiveBanner />
+      <div className="page-x">
+        <AdResponsiveBanner />
 
-      <div className="ad-supported-layout">
-        <div className="ad-supported-layout__main">
-          <div className="movies-page__summary">
-            <span>
-              Page {currentPage} of {totalPages}
-            </span>
-            <strong>{moviePage.count} published movies</strong>
-          </div>
-
-          <div className="movies-page__grid">
+        <AdLayout>
+          <div className="grid grid-cols-3 gap-x-3 gap-y-6 sm:grid-cols-4 sm:gap-x-4 md:grid-cols-5 lg:grid-cols-6">
             {moviePage.results.map((movie, index) => (
               <Fragment key={movie.id}>
-                {index === 16 && (
-                  <div className="ad-grid-wide">
+                {index === 18 && (
+                  <div className="col-span-full my-2">
                     <AdSlot unit="300x250" />
                   </div>
                 )}
@@ -121,35 +117,32 @@ const Movies = () => {
             ))}
           </div>
 
-          <nav className="movies-pagination" aria-label="Movie pages">
-            <button
-              type="button"
-              disabled={!moviePage.previous}
-              onClick={() => goToPage(currentPage - 1)}
-            >
-              Previous
-            </button>
-
-            <span>
-              {currentPage} / {totalPages}
-            </span>
-
-            <button
-              type="button"
-              disabled={!moviePage.next}
-              onClick={() => goToPage(currentPage + 1)}
-            >
-              Next
-            </button>
-          </nav>
-        </div>
-
-        <aside className="ad-side-rail" aria-label="Sponsored">
-          <AdSlot unit="160x600" />
-          <AdSlot unit="160x300" />
-        </aside>
+          {totalPages > 1 && (
+            <nav aria-label="Movie pages" className="mt-12 flex items-center justify-center gap-3">
+              <button
+                type="button"
+                disabled={!moviePage.previous}
+                onClick={() => goToPage(currentPage - 1)}
+                className={buttonClass("secondary")}
+              >
+                <FiChevronLeft /> Previous
+              </button>
+              <span className="min-w-20 text-center text-[13px] font-semibold text-fg-muted tabular-nums">
+                {currentPage} <span className="text-fg-subtle">of {totalPages}</span>
+              </span>
+              <button
+                type="button"
+                disabled={!moviePage.next}
+                onClick={() => goToPage(currentPage + 1)}
+                className={buttonClass("secondary")}
+              >
+                Next <FiChevronRight />
+              </button>
+            </nav>
+          )}
+        </AdLayout>
       </div>
-    </section>
+    </div>
   );
 };
 
