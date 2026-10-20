@@ -64,6 +64,8 @@
 
   body {
     @apply bg-ink-950 font-sans text-[15px] text-fg antialiased;
+    /* Full-bleed rails use negative margins; never let them scroll the page sideways. */
+    overflow-x: clip;
   }
 
   ::selection {
@@ -104,6 +106,24 @@
   }
 }
 
+/* Cancels `page-x` so a scroller can run edge to edge while its content
+   still lines up with the page gutter. */
+@utility bleed-x {
+  margin-inline: -1rem;
+  padding-inline: 1rem;
+  scroll-padding-inline: 1rem;
+  @media (width >= 40rem) {
+    margin-inline: -1.5rem;
+    padding-inline: 1.5rem;
+    scroll-padding-inline: 1.5rem;
+  }
+  @media (width >= 64rem) {
+    margin-inline: -2.5rem;
+    padding-inline: 2.5rem;
+    scroll-padding-inline: 2.5rem;
+  }
+}
+
 /* Lighter, edge-lit surface used by panels and popovers. */
 @utility glass {
   background: color-mix(in oklab, var(--color-ink-850) 82%, transparent);
@@ -112,8 +132,6 @@
 }
 
 /* ================= LEGACY (removed as components migrate) ================= */
-
-/* ================= CSS VARIABLES ================= */
 :root {
   /* Backgrounds */
   --app-bg: #121218;
@@ -153,156 +171,4 @@
 
   /* Layout */
   --navbar-height: 56px;
-}
-
-/* ================= RESET ================= */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-
-html,
-body {
-  height: 100%;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden;
-  background-color: var(--bg-app);
-  color: var(--text-primary);
-  font-family: var(--font-body);
-  font-size: 15px;
-  letter-spacing: 0;
-}
-
-/* ================= CONTENT SECTIONS ================= */
-.content-section {
-  margin-bottom: 2rem;
-}
-
-.section-header {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 1.35rem;
-  padding-left: 0;
-  border-left: 0;
-}
-
-.section-header::before {
-  content: "";
-  width: 34px;
-  height: 2px;
-  flex: 0 0 34px;
-  border-radius: 999px;
-  background: linear-gradient(90deg, var(--accent-primary), var(--accent-secondary));
-  box-shadow: 0 0 18px rgba(249, 171, 0, 0.24);
-}
-
-.section-title {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  margin-bottom: 0;
-  color: #ffffff;
-}
-
-.title-icon {
-  display: none;
-}
-
-/* ================= MOVIE RAIL ================= */
-.movie-rail {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding-bottom: 10px;
-  padding-inline: 0.1rem;
-
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  scroll-snap-type: x proximity;
-}
-
-.movie-rail::-webkit-scrollbar {
-  display: none;
-}
-
-.movie-rail > * {
-  scroll-snap-align: start;
-}
-
-/* ================= SERIES RAIL ================= */
-.series-rail {
-  display: flex;
-  gap: 12px;
-  overflow-x: auto;
-  padding-bottom: 10px;
-  padding-inline: 0.1rem;
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-  scroll-snap-type: x proximity;
-}
-
-.series-rail::-webkit-scrollbar {
-  display: none;
-}
-
-.series-rail > * {
-  scroll-snap-align: start;
-}
-
-/* "See All" link in section header */
-.section-see-all {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.28rem;
-  margin-left: auto;
-  padding: 0.22rem 0.6rem;
-  border: 1px solid rgba(249, 171, 0, 0.3);
-  border-radius: 999px;
-  color: var(--accent-primary);
-  font-size: 0.7rem;
-  font-weight: 800;
-  letter-spacing: 0.03em;
-  text-decoration: none;
-  transition:
-    background 0.18s ease,
-    border-color 0.18s ease,
-    color 0.18s ease;
-}
-
-.section-see-all svg {
-  font-size: 0.6rem;
-}
-
-.section-see-all:hover {
-  background: rgba(249, 171, 0, 0.1);
-  border-color: rgba(249, 171, 0, 0.55);
-  color: #ffc928;
-}
-
-/* ================= MOBILE OFFSET ================= */
-@media (max-width: 991.98px) {
-  .section-title {
-    font-size: clamp(1.1rem, 4vw, 1.25rem);
-    margin-bottom: 0.5rem;
-  }
-
-}
-
-/* ================= DESKTOP RESET ================= */
-@media (min-width: 992px) {
-  .movie-rail {
-    gap: 18px;
-  }
-
-  .series-rail {
-    gap: 18px;
-  }
 }
