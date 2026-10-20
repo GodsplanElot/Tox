@@ -124,6 +124,25 @@ const authFetch = async (url: string, init: RequestInit = {}) => {
   });
 };
 
+/** Follow `next` links until every page of a paginated list is loaded. */
+const fetchAllPages = async <T>(url: string): Promise<T[]> => {
+  const items: T[] = [];
+  let next: string | null = url;
+  while (next) {
+    const data: PaginatedResponse<T> | T[] = await fetch(next).then(handleResponse);
+    if (Array.isArray(data)) return [...items, ...data];
+    items.push(...data.results);
+    next = data.next;
+  }
+  return items;
+};
+
+const listUrl = (path: string, category?: string) => {
+  const params = new URLSearchParams({ page_size: "50" });
+  if (category) params.set("category", category);
+  return `${API_BASE_URL}/${path}/?${params.toString()}`;
+};
+
 const unwrapList = async <T>(response: Response): Promise<T[]> => {
   const data = await handleResponse(response);
   if (Array.isArray(data)) return data;
@@ -196,6 +215,12 @@ export const api = {
 
   getMovies: (): Promise<Movie[]> => 
     fetch(`${API_BASE_URL}/movies/`).then(unwrapList<Movie>),
+
+  /** Every published movie, optionally limited to one category slug. */
+  getAllMovies: (category?: string): Promise<Movie[]> => fetchAllPages<Movie>(listUrl("movies", category)),
+
+  /** Every published series, optionally limited to one category slug. */
+  getAllSeries: (category?: string): Promise<Series[]> => fetchAllPages<Series>(listUrl("series", category)),
 
   getMoviesPage: (page = 1, pageSize = 50): Promise<PaginatedResponse<Movie>> => {
     const params = new URLSearchParams({

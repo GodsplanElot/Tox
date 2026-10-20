@@ -19,7 +19,7 @@ const Categories = () => {
       try {
         const [catsData, moviesData] = await Promise.all([
           api.getCategories(),
-          api.getMovies().catch(() => []), // Fallback to empty array if movies fail
+          api.getAllMovies().catch(() => []), // Rails still render the genre tiles if movies fail
         ]);
         setCategories(catsData);
         setMovies(moviesData);
@@ -43,11 +43,17 @@ const Categories = () => {
             return dateB - dateA;
           });
 
+        // Counts come from the API (published titles); fall back to the loaded movies.
+        const movieCount = category.movie_count ?? categoryMovies.length;
+        const seriesCount = category.series_count ?? 0;
+
         return {
           category,
           movies: categoryMovies,
           poster: category.poster || categoryMovies[0]?.poster || null,
-          featuredCount: categoryMovies.length,
+          movieCount,
+          seriesCount,
+          featuredCount: movieCount + seriesCount,
         };
       })
       .filter((section) => section.featuredCount > 0 || section.category.is_active !== false);
@@ -77,7 +83,7 @@ const Categories = () => {
       />
 
       <section aria-label="Movie genres" className="page-x mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
-        {genreSections.map(({ category: cat, poster, featuredCount }, index) => (
+        {genreSections.map(({ category: cat, poster, movieCount, seriesCount, featuredCount }, index) => (
           <Link
             key={cat.id}
             to={`/categories/${cat.slug}`}
@@ -96,7 +102,14 @@ const Categories = () => {
             <div className="absolute inset-0 -z-10 bg-gradient-to-t from-ink-950 via-ink-950/60 to-ink-950/10" />
             <FiArrowUpRight className="absolute top-3.5 right-3.5 size-4 text-white/40 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
             <span className="text-[10px] font-bold tracking-[0.16em] text-accent uppercase">
-              {featuredCount > 0 ? `${featuredCount} titles` : "Coming soon"}
+              {featuredCount > 0
+                ? [
+                    movieCount ? `${movieCount} ${movieCount === 1 ? "movie" : "movies"}` : null,
+                    seriesCount ? `${seriesCount} series` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" · ")
+                : "Coming soon"}
             </span>
             <h2 className="mt-1 truncate font-display text-lg font-semibold text-white sm:text-xl">{cat.name}</h2>
             {cat.description && (
@@ -109,7 +122,7 @@ const Categories = () => {
       {movieSections.map(({ category, movies: categoryMovies }) => (
         <MovieRail
           key={category.id}
-          kicker={`${categoryMovies.length} movies`}
+          kicker={`${categoryMovies.length} ${categoryMovies.length === 1 ? "movie" : "movies"}`}
           title={category.name}
           href={`/categories/${category.slug}`}
           movies={categoryMovies.slice(0, 18)}

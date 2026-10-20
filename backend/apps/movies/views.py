@@ -20,11 +20,15 @@ class MovieViewSet(viewsets.ReadOnlyModelViewSet):
     lookup_field = 'slug'
 
     def get_queryset(self):
-        return (
+        queryset = (
             Movie.objects.filter(status=Movie.STATUS_PUBLISHED)
             .prefetch_related("categories")
             .order_by('-created_at')
         )
+        category = self.request.query_params.get("category")
+        if self.action == "list" and category:
+            queryset = queryset.filter(categories__slug=category).distinct()
+        return queryset
 
     def get_serializer_class(self):
         if self.action == "list":

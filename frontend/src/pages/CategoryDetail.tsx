@@ -34,10 +34,11 @@ const CategoryDetail = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch only this category's titles, across every page.
         const [catData, allMovies, allSeries] = await Promise.all([
           api.getCategories().catch(() => []),
-          api.getMovies().catch(() => []),
-          api.getSeries().catch(() => []),
+          slug ? api.getAllMovies(slug).catch(() => []) : Promise.resolve([]),
+          slug ? api.getAllSeries(slug).catch(() => []) : Promise.resolve([]),
         ]);
 
         const currentCat = catData.find((c) => c.slug === slug) || null;

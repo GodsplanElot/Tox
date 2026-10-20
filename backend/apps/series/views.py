@@ -29,6 +29,10 @@ class SeriesViewSet(viewsets.ReadOnlyModelViewSet):
             .order_by('-created_at')
         )
 
+        category = self.request.query_params.get("category")
+        if self.action == "list" and category:
+            queryset = queryset.filter(categories__slug=category).distinct()
+
         if self.action == "list":
             queryset = queryset.annotate(
                 season_count=Count(
