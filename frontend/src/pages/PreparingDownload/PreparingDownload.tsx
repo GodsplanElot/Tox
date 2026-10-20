@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { api } from "../../services/api";
+import { FiAlertTriangle } from "react-icons/fi";
 import AdSlot from "../../components/ads/AdSlot";
-import "./PreparingDownload.css";
+import Button from "../../components/ui/Button";
+import logo from "../../assets/icons/nav_logo.png";
 
 const PreparingDownload = () => {
   const [params] = useSearchParams();
@@ -48,47 +50,41 @@ const PreparingDownload = () => {
   }, []);
 
   return (
-    <div className="prep-page">
-      <header className="prep-page__header">
-        <a href="/" className="prep-page__brand">TOXICREELS</a>
+    <div className="flex min-h-svh flex-col bg-ink-950">
+      <header className="border-b border-white/[0.06] px-5 py-4">
+        <a href="/" aria-label="ToxicReels home">
+          <img src={logo} alt="ToxicReels" className="h-7 w-auto" />
+        </a>
       </header>
 
-      <main className="prep-page__main">
-        <div className="prep-page__ad-wrap">
-          <AdSlot unit="300x250" label="Advertisement" />
-        </div>
+      <main className="flex flex-1 flex-col items-center justify-center gap-10 px-5 py-10">
+        <AdSlot unit="300x250" label="Advertisement" />
 
-        <div className="prep-page__status">
+        <div className="flex max-w-sm flex-col items-center text-center" aria-live="polite">
           {status === "preparing" ? (
             <>
-              <div className="prep-spinner" aria-hidden="true">
-                <div className="prep-spinner__ring" />
-              </div>
-              <p className="prep-page__message">Preparing your download&hellip;</p>
-              <p className="prep-page__hint">
-                Your file will start automatically. Keep this tab open.
-              </p>
+              <span className="size-10 animate-spin rounded-full border-[3px] border-white/10 border-t-accent" aria-hidden="true" />
+              <p className="mt-5 font-display text-lg font-semibold text-white">Preparing your download…</p>
+              <p className="mt-1.5 text-sm text-fg-muted">Your file will start automatically. Keep this tab open.</p>
             </>
           ) : (
             <>
-              <p className="prep-page__error">{errorMsg}</p>
-              <button
-                type="button"
-                className="prep-page__close-btn"
-                onClick={() => window.close()}
-              >
+              <span className="grid size-12 place-items-center rounded-2xl bg-red-500/10 text-red-300 ring-1 ring-red-400/20">
+                <FiAlertTriangle className="size-5" />
+              </span>
+              <p role="alert" className="mt-4 text-sm font-semibold text-white">
+                {errorMsg}
+              </p>
+              <Button variant="secondary" className="mt-6" onClick={() => window.close()}>
                 Close this tab
-              </button>
+              </Button>
             </>
           )}
         </div>
       </main>
 
-      <footer className="prep-page__footer">
-        <span>
-          &copy; {new Date().getFullYear()} ToxicReels &mdash; content served from
-          secure CDN
-        </span>
+      <footer className="px-5 py-5 text-center text-xs text-fg-subtle">
+        &copy; {new Date().getFullYear()} ToxicReels &mdash; content served from secure CDN
       </footer>
     </div>
   );
