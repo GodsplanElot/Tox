@@ -64,6 +64,31 @@ export const GoogleIcon = () => (
   </svg>
 );
 
+const InstagramIcon = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+    <path d="M7.75 2h8.5A5.76 5.76 0 0 1 22 7.75v8.5A5.76 5.76 0 0 1 16.25 22h-8.5A5.76 5.76 0 0 1 2 16.25v-8.5A5.76 5.76 0 0 1 7.75 2zm0 2A3.76 3.76 0 0 0 4 7.75v8.5A3.76 3.76 0 0 0 7.75 20h8.5A3.76 3.76 0 0 0 20 16.25v-8.5A3.76 3.76 0 0 0 16.25 4h-8.5zM12 7.25A4.75 4.75 0 1 1 12 16.75 4.75 4.75 0 0 1 12 7.25zm0 2A2.75 2.75 0 1 0 12 14.75 2.75 2.75 0 0 0 12 9.25zm5-2.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z" />
+  </svg>
+);
+
+const FacebookIcon = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+    <path d="M22 12.06C22 6.48 17.52 2 11.94 2S2 6.48 2 12.06c0 5.04 3.69 9.21 8.51 9.94v-7.03H7.98v-2.91h2.53V9.84c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.45h-1.25c-1.24 0-1.63.77-1.63 1.56v1.89h2.77l-.44 2.91h-2.33V22A10.02 10.02 0 0 0 22 12.06z" />
+  </svg>
+);
+
+const YouTubeIcon = () => (
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true">
+    <path d="M23.5 6.2a3 3 0 0 0-2.1-2.12C19.55 3.58 12 3.58 12 3.58s-7.55 0-9.4.5A3 3 0 0 0 .5 6.2 31.2 31.2 0 0 0 0 12a31.2 31.2 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.12c1.85.5 9.4.5 9.4.5s7.55 0 9.4-.5a3 3 0 0 0 2.1-2.12A31.2 31.2 0 0 0 24 12a31.2 31.2 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z" />
+  </svg>
+);
+
+/** Providers we plan to support; shown so the row reads complete, but not wired up yet. */
+const UPCOMING_PROVIDERS = [
+  { name: "Instagram", icon: InstagramIcon, tone: "hover:text-[#e1306c]" },
+  { name: "Facebook", icon: FacebookIcon, tone: "hover:text-[#1877f2]" },
+  { name: "YouTube", icon: YouTubeIcon, tone: "hover:text-[#ff0000]" },
+];
+
 const Field = ({
   id,
   label,
@@ -147,8 +172,26 @@ const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
               ))}
             </div>
 
-            <div className="space-y-2">
-              <GoogleSignInButton onSuccess={onHide} onError={setOauthError} />
+            <div className="space-y-3">
+              <p className="text-center text-xs font-medium text-fg-subtle">Continue with</p>
+              <div className="flex items-center justify-center gap-3">
+                <GoogleSignInButton onSuccess={onHide} onError={setOauthError} variant="icon" />
+                {UPCOMING_PROVIDERS.map(({ name, icon: Icon, tone }) => (
+                  <button
+                    key={name}
+                    type="button"
+                    disabled
+                    title={`${name} sign-in is coming soon`}
+                    aria-label={`Continue with ${name} (coming soon)`}
+                    className={cn(
+                      "grid size-11 shrink-0 cursor-not-allowed place-items-center rounded-full bg-white/[0.05] text-white/70 ring-1 ring-white/10 transition ring-inset",
+                      tone,
+                    )}
+                  >
+                    <Icon />
+                  </button>
+                ))}
+              </div>
               {oauthError && <Notice tone="error">{oauthError}</Notice>}
             </div>
 
@@ -308,7 +351,7 @@ export const GoogleSignInButton = ({
         <span className="pointer-events-none absolute inset-0 grid place-items-center" aria-hidden="true">
           <GoogleIcon />
         </span>
-        <div ref={buttonRef} className="absolute inset-0 opacity-[0.01]" />
+        <div ref={buttonRef} className="absolute inset-0 opacity-[0.01] [&_iframe]:!w-11 [&>div]:!w-11" />
       </div>
     );
   }
