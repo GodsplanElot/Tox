@@ -1,27 +1,27 @@
 import React from "react";
 import MovieCard from "../MovieCard/MovieCard";
+import Section from "../ui/Section";
+import Rail from "../ui/Rail";
 import type { Movie } from "../../types/movie";
 
 interface MovieRailProps {
-  title: string;
+  title?: string;
+  kicker?: string;
+  href?: string;
   movies: Movie[];
 }
 
-const MovieRail: React.FC<MovieRailProps> = ({ title, movies }) => {
-  return (
-    <section className="content-section">
-      {title && (
-        <div className="section-header">
-          <h2 className="section-title">{title}</h2>
-        </div>
-      )}
+const MovieRail: React.FC<MovieRailProps> = ({ title, kicker, href, movies }) => {
+  if (movies.length === 0) return null;
 
-      <div className="movie-rail">
+  return (
+    <Section title={title} kicker={kicker} href={href}>
+      <Rail>
         {movies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
+          <MovieCard key={movie.id} movie={movie} className="w-[124px] shrink-0 sm:w-[142px] lg:w-[160px]" />
         ))}
-      </div>
-    </section>
+      </Rail>
+    </Section>
   );
 };
 

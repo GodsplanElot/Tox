@@ -1,6 +1,7 @@
 import React, { lazy, Suspense, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import MovieGrid from "../../components/MovieGrid/MovieGrid";
+import Section from "../../components/ui/Section";
 import { api } from "../../services/api";
 import type { Movie } from "../../types/movie";
 import RatingBadge from "../../components/common/RatingBadge";
@@ -274,9 +275,9 @@ const MovieDetail: React.FC = () => {
 
       {/* RECOMMENDATIONS */}
       {relatedMovies.length > 0 && (
-        <section className="movie-detail__related">
-          <MovieGrid title="More Like This" movies={relatedMovies} />
-        </section>
+        <Section title="More like this">
+          <MovieGrid movies={relatedMovies} />
+        </Section>
       )}
     </div>
   );

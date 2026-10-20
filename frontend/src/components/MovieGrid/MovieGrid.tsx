@@ -1,46 +1,38 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { FiArrowRight } from "react-icons/fi";
 import MovieCard from "../MovieCard/MovieCard";
 import type { Movie } from "../../types/movie";
-import "./MovieGrid.css";
+import { buttonClass } from "../ui/buttonClass";
 
 interface MovieGridProps {
   movies: Movie[];
-  title?: string;
-  showLimit?: boolean; // optional, default true
+  showLimit?: boolean;
 }
 
 const MAX_MOVIES = 100;
 
-const MovieGrid: React.FC<MovieGridProps> = ({
-  movies,
-  title,
-  showLimit = true,
-}) => {
+/** Responsive poster grid. Wrap in a `Section` for the heading and gutter. */
+const MovieGrid: React.FC<MovieGridProps> = ({ movies, showLimit = true }) => {
   const shouldLimit = showLimit && movies.length > MAX_MOVIES;
   const visibleMovies = shouldLimit ? movies.slice(0, MAX_MOVIES) : movies;
 
   return (
-    <section className="movie-grid-section w-full">
-      {title && <h2 className="movie-grid-title">{title}</h2>}
-      <p className="movie-count">
-        Showing {visibleMovies.length} of {movies.length} movies
-      </p>
-
-      <div className="movie-grid">
+    <>
+      <div className="grid grid-cols-3 gap-x-3 gap-y-6 sm:grid-cols-4 sm:gap-x-4 md:grid-cols-5 lg:grid-cols-6 2xl:grid-cols-8">
         {visibleMovies.map((movie) => (
           <MovieCard key={movie.id} movie={movie} />
         ))}
       </div>
 
       {shouldLimit && (
-        <div className="movie-grid-cta">
-          <Link to="/movies" className="movie-grid-link">
-            View all {movies.length} movies →
+        <div className="mt-8 flex justify-center">
+          <Link to="/movies" className={buttonClass("secondary")}>
+            View all {movies.length} movies <FiArrowRight />
           </Link>
         </div>
       )}
-    </section>
+    </>
   );
 };
 
