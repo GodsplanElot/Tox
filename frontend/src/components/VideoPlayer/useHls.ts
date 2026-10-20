@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState, type RefObject } from "react";
-import Hls, { ErrorTypes, Events, type ErrorData } from "hls.js";
+import Hls, { ErrorTypes, Events, type ErrorData } from "hls.js/light";
 
 export type QualityLevel = { index: number; height: number; bitrate: number };
 
