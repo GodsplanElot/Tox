@@ -1,8 +1,9 @@
-import { useEffect, useRef, useState, type FormEvent } from "react";
-import { Modal } from "react-bootstrap";
+import { useEffect, useRef, useState, type FormEvent, type InputHTMLAttributes, type ReactNode } from "react";
 import { useAuth } from "../context/useAuth";
 import type { GoogleCredentialResponse } from "../types/auth";
-import "./AuthModal.css";
+import Dialog from "./ui/Dialog";
+import { cn } from "./ui/cn";
+import { buttonClass } from "./ui/buttonClass";
 
 type AuthTab = "login" | "signup" | "reset";
 
@@ -63,23 +64,52 @@ export const GoogleIcon = () => (
   </svg>
 );
 
-const InstagramIcon = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-    <path d="M7.75 2h8.5A5.76 5.76 0 0 1 22 7.75v8.5A5.76 5.76 0 0 1 16.25 22h-8.5A5.76 5.76 0 0 1 2 16.25v-8.5A5.76 5.76 0 0 1 7.75 2zm0 2A3.76 3.76 0 0 0 4 7.75v8.5A3.76 3.76 0 0 0 7.75 20h8.5A3.76 3.76 0 0 0 20 16.25v-8.5A3.76 3.76 0 0 0 16.25 4h-8.5zM12 7.25A4.75 4.75 0 1 1 12 16.75 4.75 4.75 0 0 1 12 7.25zm0 2A2.75 2.75 0 1 0 12 14.75 2.75 2.75 0 0 0 12 9.25zm5-2.5a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z" />
-  </svg>
+const Field = ({
+  id,
+  label,
+  className,
+  ...input
+}: InputHTMLAttributes<HTMLInputElement> & { id: string; label: string }) => (
+  <div className="space-y-1.5">
+    <label htmlFor={id} className="block text-xs font-semibold text-fg-muted">
+      {label}
+    </label>
+    <input
+      id={id}
+      className={cn(
+        "h-11 w-full rounded-xl bg-white/[0.04] px-3.5 text-sm text-white ring-1 ring-white/[0.08] transition ring-inset",
+        "placeholder:text-fg-subtle hover:ring-white/15 focus:bg-white/[0.06] focus:ring-accent/50 focus:outline-none",
+        className,
+      )}
+      {...input}
+    />
+  </div>
 );
 
-const FacebookIcon = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-    <path d="M22 12.06C22 6.48 17.52 2 11.94 2S2 6.48 2 12.06c0 5.04 3.69 9.21 8.51 9.94v-7.03H7.98v-2.91h2.53V9.84c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.23.2 2.23.2v2.45h-1.25c-1.24 0-1.63.77-1.63 1.56v1.89h2.77l-.44 2.91h-2.33V22A10.02 10.02 0 0 0 22 12.06z" />
-  </svg>
+const Notice = ({ tone, children }: { tone: "error" | "success"; children: ReactNode }) => (
+  <div
+    role={tone === "error" ? "alert" : "status"}
+    className={cn(
+      "rounded-xl px-3.5 py-2.5 text-[13px] leading-snug ring-1 ring-inset",
+      tone === "error" ? "bg-red-500/10 text-red-200 ring-red-400/25" : "bg-emerald-500/10 text-emerald-200 ring-emerald-400/25",
+    )}
+  >
+    {children}
+  </div>
 );
 
-const YouTubeIcon = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
-    <path d="M23.5 6.2a3 3 0 0 0-2.1-2.12C19.55 3.58 12 3.58 12 3.58s-7.55 0-9.4.5A3 3 0 0 0 .5 6.2 31.2 31.2 0 0 0 0 12a31.2 31.2 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.12c1.85.5 9.4.5 9.4.5s7.55 0 9.4-.5a3 3 0 0 0 2.1-2.12A31.2 31.2 0 0 0 24 12a31.2 31.2 0 0 0-.5-5.8zM9.55 15.57V8.43L15.82 12l-6.27 3.57z" />
-  </svg>
+const StepIntro = ({ kicker, title, children }: { kicker: string; title: string; children: ReactNode }) => (
+  <div className="rounded-2xl bg-white/[0.03] p-4 ring-1 ring-white/[0.06] ring-inset">
+    <p className="text-[10px] font-bold tracking-[0.16em] text-accent uppercase">{kicker}</p>
+    <h3 className="mt-1 font-display text-base font-semibold text-white">{title}</h3>
+    <p className="mt-1 text-[13px] leading-relaxed text-fg-muted">{children}</p>
+  </div>
 );
+
+const submitClass = buttonClass("primary", "lg", "w-full");
+const linkClass = "font-semibold text-accent transition hover:text-accent-strong disabled:cursor-not-allowed disabled:text-fg-subtle";
+const footerClass = "text-center text-[13px] text-fg-muted";
+const otpInputClass = "h-14 text-center font-display text-2xl tracking-[0.5em] tabular-nums";
 
 const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
   const [activeTab, setActiveTab] = useState<AuthTab>(defaultTab);
@@ -91,83 +121,46 @@ const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
 
   const switchTab = (tab: AuthTab) => setActiveTab(tab);
 
+  const title =
+    activeTab === "login" ? "Welcome back" : activeTab === "signup" ? "Create your account" : "Reset password";
+
   return (
-    <Modal
-      show={show}
-      onHide={onHide}
-      centered
-      className="auth-modal"
-      backdropClassName="auth-modal-backdrop"
-    >
-      <Modal.Header closeButton>
-        <Modal.Title>
-          {activeTab === "login"
-            ? "Welcome back"
-            : activeTab === "signup"
-              ? "Create account"
-              : "Reset password"}
-        </Modal.Title>
-      </Modal.Header>
-
-      <Modal.Body>
-        {activeTab !== "reset" && (
-          <div className="auth-tab-nav">
-            <button
-              type="button"
-              className={`auth-tab-btn ${activeTab === "login" ? "auth-tab-btn--active" : ""}`}
-              onClick={() => switchTab("login")}
-            >
-              Log In
-            </button>
-            <button
-              type="button"
-              className={`auth-tab-btn ${activeTab === "signup" ? "auth-tab-btn--active" : ""}`}
-              onClick={() => switchTab("signup")}
-            >
-              Sign Up
-            </button>
-          </div>
-        )}
-
+    <Dialog open={show} onClose={onHide} title={title}>
+      <div className="space-y-5 px-5 pt-2 pb-6">
         {activeTab !== "reset" && (
           <>
-            <div className="auth-oauth-section">
-              <GoogleSignInButton
-                onSuccess={onHide}
-                onError={setOauthError}
-                variant="icon"
-              />
-              {oauthError && <div className="auth-oauth-error">{oauthError}</div>}
-
-              <button type="button" className="auth-oauth-btn auth-oauth-btn--instagram" aria-label="Continue with Instagram" disabled>
-                <span className="auth-oauth-icon">
-                  <InstagramIcon />
-                </span>
-                <span className="auth-oauth-label">Continue with Instagram</span>
-              </button>
-
-              <button type="button" className="auth-oauth-btn auth-oauth-btn--facebook" aria-label="Continue with Facebook" disabled>
-                <span className="auth-oauth-icon">
-                  <FacebookIcon />
-                </span>
-                <span className="auth-oauth-label">Continue with Facebook</span>
-              </button>
-
-              <button type="button" className="auth-oauth-btn auth-oauth-btn--youtube" aria-label="Continue with YouTube" disabled>
-                <span className="auth-oauth-icon">
-                  <YouTubeIcon />
-                </span>
-                <span className="auth-oauth-label">Continue with YouTube</span>
-              </button>
+            <div role="tablist" className="grid grid-cols-2 rounded-full bg-white/[0.04] p-1 ring-1 ring-white/[0.06] ring-inset">
+              {(["login", "signup"] as const).map((tab) => (
+                <button
+                  key={tab}
+                  type="button"
+                  role="tab"
+                  aria-selected={activeTab === tab}
+                  onClick={() => switchTab(tab)}
+                  className={cn(
+                    "h-9 rounded-full text-[13px] font-semibold transition",
+                    activeTab === tab ? "bg-white/10 text-white shadow-sm" : "text-fg-muted hover:text-white",
+                  )}
+                >
+                  {tab === "login" ? "Sign in" : "Sign up"}
+                </button>
+              ))}
             </div>
 
-            <div className="auth-divider">
-              <span>or continue with email</span>
+            <div className="space-y-2">
+              <GoogleSignInButton onSuccess={onHide} onError={setOauthError} />
+              {oauthError && <Notice tone="error">{oauthError}</Notice>}
+            </div>
+
+            <div className="flex items-center gap-3 text-[11px] font-medium text-fg-subtle">
+              <span className="h-px flex-1 bg-white/[0.07]" />
+              or with email
+              <span className="h-px flex-1 bg-white/[0.07]" />
             </div>
           </>
         )}
 
-        <div key={activeTab} className="auth-tab-content">
+        <div key={activeTab} className="animate-fade-in">
           {activeTab === "login" ? (
             <LoginForm
               onSuccess={onHide}
@@ -175,16 +168,13 @@ const AuthModal = ({ show, onHide, defaultTab = "login" }: Props) => {
               onForgotPassword={() => switchTab("reset")}
             />
           ) : activeTab === "signup" ? (
-            <SignUpForm
-              onSuccess={onHide}
-              onSwitchTab={() => switchTab("login")}
-            />
+            <SignUpForm onSuccess={onHide} onSwitchTab={() => switchTab("login")} />
           ) : (
             <PasswordResetForm onSwitchLogin={() => switchTab("login")} />
           )}
         </div>
-      </Modal.Body>
-    </Modal>
+      </div>
+    </Dialog>
   );
 };
 
@@ -244,9 +234,9 @@ export const GoogleSignInButton = ({
       }
 
       const renderOptions: GoogleButtonOptions = {
-        theme: "outline",
+        theme: variant === "icon" ? "outline" : "filled_black",
         size: "large",
-        shape: variant === "icon" ? "circle" : "rectangular",
+        shape: variant === "icon" ? "circle" : "pill",
         type: variant === "icon" ? "icon" : "standard",
         text: "continue_with",
       };
@@ -301,28 +291,29 @@ export const GoogleSignInButton = ({
     return (
       <button
         type="button"
-        className={`auth-oauth-btn auth-oauth-btn--google ${variant === "icon" ? "auth-oauth-btn--icon" : ""}`}
-        aria-label="Google sign-in not configured"
         disabled
+        aria-label="Google sign-in not configured"
+        className={buttonClass("secondary", "lg", variant === "icon" ? "size-11 px-0" : "w-full")}
       >
-        <span className="auth-oauth-icon">
-          <GoogleIcon />
-        </span>
-        <span className="auth-oauth-label">Google sign-in not configured</span>
+        <GoogleIcon />
+        {variant === "standard" && <span>Google sign-in unavailable</span>}
       </button>
     );
   }
 
-  return (
-    <div className={`auth-google-button auth-google-button--${variant}`}>
-      {variant === "icon" && (
-        <span className="auth-google-button__mark" aria-hidden="true">
+  if (variant === "icon") {
+    // The SDK renders an invisible button on top of our own mark.
+    return (
+      <div className="relative size-11 shrink-0 overflow-hidden rounded-full bg-white">
+        <span className="pointer-events-none absolute inset-0 grid place-items-center" aria-hidden="true">
           <GoogleIcon />
         </span>
-      )}
-      <div ref={buttonRef} className="auth-google-button__sdk" />
-    </div>
-  );
+        <div ref={buttonRef} className="absolute inset-0 opacity-[0.01]" />
+      </div>
+    );
+  }
+
+  return <div ref={buttonRef} className="flex min-h-11 w-full justify-center [color-scheme:light]" />;
 };
 
 const LoginForm = ({
@@ -360,55 +351,44 @@ const LoginForm = ({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      {error && <div className="auth-error">{error}</div>}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {error && <Notice tone="error">{error}</Notice>}
 
-      <div className="auth-form-group">
-        <label className="auth-form-label" htmlFor="login-email">
-          Email
-        </label>
-        <input
-          id="login-email"
-          type="email"
-          className="auth-form-input"
-          placeholder="you@example.com"
-          autoComplete="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          required
-        />
-      </div>
+      <Field
+        id="login-email"
+        label="Email"
+        type="email"
+        placeholder="you@example.com"
+        autoComplete="email"
+        value={email}
+        onChange={(event) => setEmail(event.target.value)}
+        required
+      />
 
-      <div className="auth-form-group">
-        <label className="auth-form-label" htmlFor="login-password">
-          Password
-        </label>
-        <input
-          id="login-password"
-          type="password"
-          className="auth-form-input"
-          placeholder="Password"
-          autoComplete="current-password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          required
-        />
-      </div>
+      <Field
+        id="login-password"
+        label="Password"
+        type="password"
+        placeholder="Password"
+        autoComplete="current-password"
+        value={password}
+        onChange={(event) => setPassword(event.target.value)}
+        required
+      />
 
-      <div className="auth-extras">
-        <div />
-        <button type="button" className="auth-forgot-link" onClick={onForgotPassword}>
+      <div className="-mt-1 flex justify-end">
+        <button type="button" className={cn(linkClass, "text-xs")} onClick={onForgotPassword}>
           Forgot password?
         </button>
       </div>
 
-      <button type="submit" className="auth-submit-btn" disabled={isSubmitting}>
-        {isSubmitting ? "Logging in..." : "Log In"}
+      <button type="submit" className={submitClass} disabled={isSubmitting}>
+        {isSubmitting ? "Signing in…" : "Sign in"}
       </button>
 
-      <div className="auth-footer">
+      <div className={footerClass}>
         <span>Don't have an account? </span>
-        <button type="button" className="auth-footer-link" onClick={onSwitchTab}>
+        <button type="button" className={linkClass} onClick={onSwitchTab}>
           Sign Up
         </button>
       </div>
@@ -513,89 +493,71 @@ const PasswordResetForm = ({ onSwitchLogin }: { onSwitchLogin: () => void }) => 
 
   if (isAwaitingOtp) {
     return (
-      <form onSubmit={handleConfirm}>
-        {error && <div className="auth-error">{error}</div>}
-        {message && <div className="auth-success">{message}</div>}
+      <form onSubmit={handleConfirm} className="space-y-4">
+        {error && <Notice tone="error">{error}</Notice>}
+        {message && <Notice tone="success">{message}</Notice>}
 
-        <div className="auth-otp-panel">
-          <span className="auth-otp-kicker">Password reset</span>
-          <h3>Check your inbox</h3>
-          <p>
-            Enter the 6 digit code sent to <strong>{pendingEmail}</strong>.
-          </p>
-        </div>
+        <StepIntro kicker="Password reset" title="Check your inbox">
+          Enter the 6 digit code sent to <strong className="text-white">{pendingEmail}</strong>.
+        </StepIntro>
 
-        <div className="auth-form-group">
-          <label className="auth-form-label" htmlFor="reset-otp">
-            Reset code
-          </label>
-          <input
-            id="reset-otp"
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            className="auth-form-input auth-otp-input"
-            placeholder="000000"
-            autoComplete="one-time-code"
-            value={otp}
-            onChange={(event) => setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))}
-            required
-          />
-        </div>
+        <Field
+          id="reset-otp"
+          label="Reset code"
+          className={otpInputClass}
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          placeholder="000000"
+          autoComplete="one-time-code"
+          value={otp}
+          onChange={(event) => setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))}
+          required
+        />
 
-        <div className="auth-form-group">
-          <label className="auth-form-label" htmlFor="reset-password">
-            New password
-          </label>
-          <input
-            id="reset-password"
-            type="password"
-            className="auth-form-input"
-            placeholder="Create a new password"
-            autoComplete="new-password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            minLength={8}
-            required
-          />
-        </div>
+        <Field
+          id="reset-password"
+          label="New password"
+          type="password"
+          placeholder="Create a new password"
+          autoComplete="new-password"
+          value={password}
+          onChange={(event) => setPassword(event.target.value)}
+          minLength={8}
+          required
+        />
 
-        <div className="auth-form-group">
-          <label className="auth-form-label" htmlFor="reset-password-confirm">
-            Confirm new password
-          </label>
-          <input
-            id="reset-password-confirm"
-            type="password"
-            className="auth-form-input"
-            placeholder="Confirm new password"
-            autoComplete="new-password"
-            value={passwordConfirm}
-            onChange={(event) => setPasswordConfirm(event.target.value)}
-            minLength={8}
-            required
-          />
-        </div>
+        <Field
+          id="reset-password-confirm"
+          label="Confirm new password"
+          type="password"
+          placeholder="Confirm new password"
+          autoComplete="new-password"
+          value={passwordConfirm}
+          onChange={(event) => setPasswordConfirm(event.target.value)}
+          minLength={8}
+          required
+        />
 
         <button
           type="submit"
-          className="auth-submit-btn"
+          className={submitClass}
           disabled={isSubmitting || otp.length !== 6}
         >
           {isSubmitting ? "Resetting..." : "Reset Password"}
         </button>
 
-        <div className="auth-footer auth-footer--otp">
+        <div className={cn(footerClass, "flex items-center justify-center gap-2")}>
           <button
             type="button"
-            className="auth-footer-link"
+            className={linkClass}
             onClick={handleResend}
             disabled={resendWait > 0}
           >
             {resendWait > 0 ? `Resend in ${resendWait}s` : "Send another code"}
           </button>
-          <span> - </span>
-          <button type="button" className="auth-footer-link" onClick={onSwitchLogin}>
+          <span aria-hidden="true">·</span>
+          <button type="button" className={linkClass} onClick={onSwitchLogin}>
             Back to log in
           </button>
         </div>
@@ -604,38 +566,31 @@ const PasswordResetForm = ({ onSwitchLogin }: { onSwitchLogin: () => void }) => 
   }
 
   return (
-    <form onSubmit={handleRequest}>
-      {error && <div className="auth-error">{error}</div>}
-      {message && <div className="auth-success">{message}</div>}
+    <form onSubmit={handleRequest} className="space-y-4">
+      {error && <Notice tone="error">{error}</Notice>}
+      {message && <Notice tone="success">{message}</Notice>}
 
-      <div className="auth-otp-panel">
-        <span className="auth-otp-kicker">Account recovery</span>
-        <h3>Get a reset code</h3>
-        <p>Enter your account email and we will send a one-time reset code.</p>
-      </div>
+      <StepIntro kicker="Account recovery" title="Get a reset code">
+        Enter your account email and we will send a one-time reset code.
+      </StepIntro>
 
-      <div className="auth-form-group">
-        <label className="auth-form-label" htmlFor="reset-email">
-          Email
-        </label>
-        <input
-          id="reset-email"
-          type="email"
-          className="auth-form-input"
-          placeholder="you@example.com"
-          autoComplete="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          required
-        />
-      </div>
+      <Field
+        id="reset-email"
+        label="Email"
+        type="email"
+        placeholder="you@example.com"
+        autoComplete="email"
+        value={email}
+        onChange={(event) => setEmail(event.target.value)}
+        required
+      />
 
-      <button type="submit" className="auth-submit-btn" disabled={isSubmitting}>
+      <button type="submit" className={submitClass} disabled={isSubmitting}>
         {isSubmitting ? "Sending..." : "Send Reset Code"}
       </button>
 
-      <div className="auth-footer">
-        <button type="button" className="auth-footer-link" onClick={onSwitchLogin}>
+      <div className={footerClass}>
+        <button type="button" className={linkClass} onClick={onSwitchLogin}>
           Back to log in
         </button>
       </div>
@@ -745,43 +700,35 @@ const SignUpForm = ({
 
   if (isAwaitingOtp) {
     return (
-      <form onSubmit={handleVerify}>
-        {error && <div className="auth-error">{error}</div>}
+      <form onSubmit={handleVerify} className="space-y-4">
+        {error && <Notice tone="error">{error}</Notice>}
 
-        <div className="auth-otp-panel">
-          <span className="auth-otp-kicker">Email verification</span>
-          <h3>Check your inbox</h3>
-          <p>
-            Enter the 6 digit code sent to <strong>{pendingEmail}</strong>.
-          </p>
-        </div>
+        <StepIntro kicker="Email verification" title="Check your inbox">
+          Enter the 6 digit code sent to <strong className="text-white">{pendingEmail}</strong>.
+        </StepIntro>
 
-        <div className="auth-form-group">
-          <label className="auth-form-label" htmlFor="signup-otp">
-            Verification code
-          </label>
-          <input
-            id="signup-otp"
-            type="text"
-            inputMode="numeric"
-            pattern="[0-9]*"
-            className="auth-form-input auth-otp-input"
-            placeholder="000000"
-            autoComplete="one-time-code"
-            value={otp}
-            onChange={(event) => setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))}
-            required
-          />
-        </div>
+        <Field
+          id="signup-otp"
+          label="Verification code"
+          className={otpInputClass}
+          type="text"
+          inputMode="numeric"
+          pattern="[0-9]*"
+          placeholder="000000"
+          autoComplete="one-time-code"
+          value={otp}
+          onChange={(event) => setOtp(event.target.value.replace(/\D/g, "").slice(0, 6))}
+          required
+        />
 
-        <button type="submit" className="auth-submit-btn" disabled={isVerifying || otp.length !== 6}>
+        <button type="submit" className={submitClass} disabled={isVerifying || otp.length !== 6}>
           {isVerifying ? "Verifying..." : "Verify Email"}
         </button>
 
-        <div className="auth-footer auth-footer--otp">
+        <div className={cn(footerClass, "flex items-center justify-center gap-2")}>
           <button
             type="button"
-            className="auth-footer-link"
+            className={linkClass}
             onClick={handleResend}
             disabled={isResending || resendWait > 0}
           >
@@ -791,10 +738,10 @@ const SignUpForm = ({
                 ? "Resending..."
                 : "Resend code"}
           </button>
-          <span> · </span>
+          <span aria-hidden="true">·</span>
           <button
             type="button"
-            className="auth-footer-link"
+            className={linkClass}
             onClick={() => {
               setPendingEmail("");
               setOtp("");
@@ -809,96 +756,82 @@ const SignUpForm = ({
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      {error && <div className="auth-error">{error}</div>}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      {error && <Notice tone="error">{error}</Notice>}
 
-      <div className="auth-form-group">
-        <label className="auth-form-label" htmlFor="signup-username">
-          Username
-        </label>
-        <input
-          id="signup-username"
-          type="text"
-          className="auth-form-input"
-          placeholder="Choose a username"
-          autoComplete="username"
-          value={username}
-          onChange={(event) => setUsername(event.target.value)}
-          required
-        />
-      </div>
+      <Field
+        id="signup-username"
+        label="Username"
+        type="text"
+        placeholder="Choose a username"
+        autoComplete="username"
+        value={username}
+        onChange={(event) => setUsername(event.target.value)}
+        required
+      />
 
-      <div className="auth-form-group">
-        <label className="auth-form-label" htmlFor="signup-email">
-          Email
-        </label>
-        <input
-          id="signup-email"
-          type="email"
-          className="auth-form-input"
-          placeholder="you@example.com"
-          autoComplete="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-          required
-        />
-      </div>
+      <Field
+        id="signup-email"
+        label="Email"
+        type="email"
+        placeholder="you@example.com"
+        autoComplete="email"
+        value={email}
+        onChange={(event) => setEmail(event.target.value)}
+        required
+      />
 
-      <div className="auth-form-group">
-        <label className="auth-form-label" htmlFor="signup-password">
-          Password
-        </label>
-        <input
-          id="signup-password"
-          type="password"
-          className="auth-form-input"
-          placeholder="Create a password"
-          autoComplete="new-password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-          minLength={8}
-          required
-        />
-      </div>
+      <Field
+        id="signup-password"
+        label="Password"
+        type="password"
+        placeholder="Create a password"
+        autoComplete="new-password"
+        value={password}
+        onChange={(event) => setPassword(event.target.value)}
+        minLength={8}
+        required
+      />
 
-      <div className="auth-form-group">
-        <label className="auth-form-label" htmlFor="signup-confirm">
-          Confirm Password
-        </label>
-        <input
-          id="signup-confirm"
-          type="password"
-          className="auth-form-input"
-          placeholder="Confirm your password"
-          autoComplete="new-password"
-          value={passwordConfirm}
-          onChange={(event) => setPasswordConfirm(event.target.value)}
-          minLength={8}
-          required
-        />
-      </div>
+      <Field
+        id="signup-confirm"
+        label="Confirm Password"
+        type="password"
+        placeholder="Confirm your password"
+        autoComplete="new-password"
+        value={passwordConfirm}
+        onChange={(event) => setPasswordConfirm(event.target.value)}
+        minLength={8}
+        required
+      />
 
-      <div className="auth-checkbox-wrapper">
+      <label htmlFor="terms" className="flex cursor-pointer items-start gap-2.5 text-[13px] leading-snug text-fg-muted">
         <input
           id="terms"
           type="checkbox"
-          className="auth-checkbox"
+          className="mt-0.5 size-4 shrink-0 cursor-pointer rounded accent-accent"
           checked={acceptedTerms}
           onChange={(event) => setAcceptedTerms(event.target.checked)}
         />
-        <label htmlFor="terms" className="auth-checkbox-label">
-          I agree to the <a href="#">Terms of Service</a> and{" "}
-          <a href="#">Privacy Policy</a>
-        </label>
-      </div>
+        <span>
+          I agree to the{" "}
+          <a href="/legal/terms-of-use" target="_blank" className={linkClass}>
+            Terms of Use
+          </a>{" "}
+          and{" "}
+          <a href="/legal/privacy-policy" target="_blank" className={linkClass}>
+            Privacy Policy
+          </a>
+        </span>
+      </label>
 
-      <button type="submit" className="auth-submit-btn" disabled={isSubmitting}>
+      <button type="submit" className={submitClass} disabled={isSubmitting}>
         {isSubmitting ? "Creating..." : "Create Account"}
       </button>
 
-      <div className="auth-footer">
+      <div className={footerClass}>
         <span>Already have an account? </span>
-        <button type="button" className="auth-footer-link" onClick={onSwitchTab}>
+        <button type="button" className={linkClass} onClick={onSwitchTab}>
           Log In
         </button>
       </div>

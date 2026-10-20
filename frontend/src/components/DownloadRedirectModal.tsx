@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import { Modal } from "react-bootstrap";
-import { FaDownload, FaExternalLinkAlt, FaShieldAlt } from "react-icons/fa";
+import { FiDownload, FiExternalLink, FiShield } from "react-icons/fi";
 import AdSlot from "./ads/AdSlot";
 import { ADSTERRA_SMARTLINK_URL } from "./ads/adsterraConfig";
-import "./DownloadRedirectModal.css";
+import Dialog from "./ui/Dialog";
+import { buttonClass } from "./ui/buttonClass";
 
 type DownloadRedirectModalProps = {
   show: boolean;
@@ -101,93 +101,88 @@ const DownloadRedirectModal = ({
   };
 
   return (
-    <Modal
-      show={show}
-      onHide={onHide}
-      centered
-      className="download-redirect-modal"
-      backdropClassName="auth-modal-backdrop"
+    <Dialog
+      open={show}
+      onClose={onHide}
+      title={isBunny ? "HD Download" : "Leaving ToxicReels"}
+      icon={isBunny ? <FiDownload className="size-4" /> : <FiShield className="size-4" />}
     >
-      <Modal.Header closeButton>
-        <Modal.Title>
-          <span className="download-redirect-modal__icon">
-            {isBunny ? <FaDownload /> : <FaShieldAlt />}
-          </span>
-          {isBunny ? "HD Download" : "Leaving ToxicReels"}
-        </Modal.Title>
-      </Modal.Header>
-
-      <Modal.Body>
-        <p className="download-redirect-modal__message">
+      <div className="space-y-4 px-5 pt-1 pb-6">
+        <p className="text-[13px] leading-relaxed text-fg-muted">
           {isBunny ? (
             <>
-              Your HD file will open in a new tab. It will either{" "}
-              <strong>download automatically</strong> or open in your browser&rsquo;s
-              built-in video player — if it plays instead of downloading,{" "}
-              <strong>right-click the video and choose &ldquo;Save video as&rdquo;</strong>{" "}
-              to save it to your device. The link expires shortly so start the
-              download straight away.
+              Your HD file opens in a new tab. It will either{" "}
+              <strong className="text-white">download automatically</strong> or play in your browser. If it plays,{" "}
+              <strong className="text-white">right-click the video and choose &ldquo;Save video as&rdquo;</strong>. The
+              link expires shortly, so start the download straight away.
             </>
           ) : (
             "You are about to open a site where you can watch or download this title. ToxicReels is not affiliated with that site, so please review the page carefully before continuing."
           )}
         </p>
 
-        <div className="download-redirect-modal__target">
-          <span>Selected title</span>
-          <strong title={title}>{title}</strong>
+        <div className="rounded-xl bg-white/[0.03] px-3.5 py-3 ring-1 ring-white/[0.06] ring-inset">
+          <p className="text-[10px] font-bold tracking-[0.16em] text-fg-subtle uppercase">Selected title</p>
+          <p className="mt-0.5 truncate text-sm font-semibold text-white" title={title}>
+            {title}
+          </p>
         </div>
 
         {errorMessage && (
-          <div className="download-redirect-modal__status" role="alert">
+          <div role="alert" className="rounded-xl bg-red-500/10 px-3.5 py-2.5 text-[13px] text-red-200 ring-1 ring-red-400/25 ring-inset">
             {errorMessage}
           </div>
         )}
 
-        <div className="download-redirect-modal__ad">
+        <div className="flex min-h-[250px] justify-center overflow-hidden rounded-xl bg-black/20">
           {show && <AdSlot unit="300x250" />}
         </div>
 
         <a
-          className="download-redirect-modal__sponsor"
           href={ADSTERRA_SMARTLINK_URL}
           target="_blank"
           rel="noopener noreferrer"
+          className="flex items-center justify-center gap-1.5 text-xs font-medium text-fg-subtle transition hover:text-fg-muted"
         >
-          Sponsored discovery link <FaExternalLinkAlt />
+          Sponsored discovery link <FiExternalLink className="size-3" />
         </a>
 
-        <div className="download-redirect-modal__actions">
-          <button
-            type="button"
-            className="download-redirect-modal__btn download-redirect-modal__btn--secondary"
-            onClick={onHide}
-          >
+        <div className="grid grid-cols-[auto_1fr] gap-2 pt-1">
+          <button type="button" className={buttonClass("ghost", "lg")} onClick={onHide}>
             Stay here
           </button>
           <button
             type="button"
-            className="download-redirect-modal__btn download-redirect-modal__btn--primary"
+            className={buttonClass("primary", "lg", "relative overflow-hidden tabular-nums")}
             disabled={secondsRemaining > 0 || isPreparing}
             onClick={handleContinue}
           >
-            {isPreparing ? (
-              isBunny ? "Preparing HD link..." : "Preparing secure link..."
-            ) : secondsRemaining > 0 ? (
-              `Continue in ${secondsRemaining}s`
-            ) : isBunny ? (
-              <>
-                Start HD Download <FaDownload />
-              </>
-            ) : (
-              <>
-                Continue to site <FaExternalLinkAlt />
-              </>
+            {secondsRemaining > 0 && (
+              <span
+                aria-hidden="true"
+                className="absolute inset-y-0 left-0 bg-black/15 transition-[width] duration-1000 ease-linear"
+                style={{ width: `${(secondsRemaining / CONTINUE_DELAY_SECONDS) * 100}%` }}
+              />
             )}
+            <span className="relative inline-flex items-center gap-2">
+              {isPreparing ? (
+                isBunny ? "Preparing HD link…" : "Preparing secure link…"
+              ) : secondsRemaining > 0 ? (
+                `Continue in ${secondsRemaining}s`
+              ) : isBunny ? (
+                <>
+                  Start HD download <FiDownload />
+                </>
+              ) : (
+                <>
+                  Continue to site <FiExternalLink />
+                </>
+              )}
+            </span>
           </button>
         </div>
-      </Modal.Body>
-    </Modal>
+      </div>
+    </Dialog>
   );
 };
 
