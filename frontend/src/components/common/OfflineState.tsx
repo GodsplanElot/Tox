@@ -1,8 +1,8 @@
-import "./OfflineState.css";
+import Button from "../ui/Button";
 
 const SkullMarsGraphic = () => (
   <svg
-    className="offline-skull"
+    className="mb-2 h-auto w-[min(70vw,240px)]"
     viewBox="0 0 320 260"
     role="img"
     aria-label="Rugged skull drifting through space"
@@ -94,17 +94,19 @@ const SkullMarsGraphic = () => (
 
 const OfflineState = () => {
   return (
-    <section className="offline-state" aria-live="polite">
-      <div className="offline-state__panel">
+    <section aria-live="polite" className="grid min-h-[75svh] place-items-center px-4 py-12 text-center">
+      <div className="flex max-w-md flex-col items-center">
         <SkullMarsGraphic />
-        <span className="offline-state__kicker">Signal lost</span>
-        <h1>Your internet connection has gone to Mars.</h1>
-        <p>
+        <span className="text-[11px] font-bold tracking-[0.18em] text-accent uppercase">Signal lost</span>
+        <h1 className="mt-3 font-display text-3xl font-semibold tracking-tight text-balance text-white sm:text-4xl">
+          Your internet connection has gone to Mars.
+        </h1>
+        <p className="mt-3 text-sm leading-relaxed text-fg-muted">
           ToxicReels is still here. Reconnect your network and punch back in.
         </p>
-        <button type="button" onClick={() => window.location.reload()}>
+        <Button className="mt-7" onClick={() => window.location.reload()}>
           Try again
-        </button>
+        </Button>
       </div>
     </section>
   );

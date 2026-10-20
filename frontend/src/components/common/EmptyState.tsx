@@ -1,6 +1,6 @@
 import React from "react";
-import { Container, Button } from "react-bootstrap";
-import { BiBox } from "react-icons/bi";
+import { FiInbox } from "react-icons/fi";
+import Button from "../ui/Button";
 
 interface EmptyStateProps {
   title?: string;
@@ -15,27 +15,21 @@ const EmptyState: React.FC<EmptyStateProps> = ({
   message = "We couldn't find any items matching your criteria. Check back later!",
   actionText,
   onAction,
-  icon = <BiBox size={60} className="mb-4 text-muted opacity-50" />,
+  icon = <FiInbox className="size-6" />,
 }) => {
   return (
-    <Container className="d-flex flex-column align-items-center justify-content-center py-5 text-center min-vh-50">
-      <div className="glass-card p-5 rounded-4 border border-secondary border-opacity-25 shadow-lg">
+    <div className="flex min-h-[50svh] flex-col items-center justify-center px-6 py-16 text-center">
+      <span className="mb-5 grid size-14 place-items-center rounded-2xl bg-white/[0.04] text-fg-muted ring-1 ring-white/[0.08]">
         {icon}
-        <h2 className="fw-bold mb-3 text-white">{title}</h2>
-        <p className="text-muted mb-4 mx-auto" style={{ maxWidth: "400px" }}>
-          {message}
-        </p>
-        {actionText && onAction && (
-          <Button
-            variant="outline-primary"
-            className="rounded-pill px-4 py-2 fw-semibold"
-            onClick={onAction}
-          >
-            {actionText}
-          </Button>
-        )}
-      </div>
-    </Container>
+      </span>
+      <h2 className="font-display text-lg font-semibold text-white">{title}</h2>
+      <p className="mt-2 max-w-sm text-sm leading-relaxed text-fg-muted">{message}</p>
+      {actionText && onAction && (
+        <Button variant="secondary" className="mt-6" onClick={onAction}>
+          {actionText}
+        </Button>
+      )}
+    </div>
   );
 };
 
