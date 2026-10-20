@@ -9,10 +9,19 @@ import MovieGrid from "../components/MovieGrid/MovieGrid";
 import SeriesRail from "../components/SeriesRail/SeriesRail";
 import AdResponsiveBanner from "../components/ads/AdResponsiveBanner";
 import AdSlot from "../components/ads/AdSlot";
-
-import "../styles/CategoryDetail.css";
+import EmptyState from "../components/common/EmptyState";
+import PageHeader from "../components/ui/PageHeader";
+import Section from "../components/ui/Section";
+import { chipClass } from "../components/ui/chipClass";
 
 type SortOption = "az" | "newest" | "oldest" | "rating";
+
+const SORTS: { key: SortOption; label: string }[] = [
+  { key: "az", label: "A–Z" },
+  { key: "newest", label: "Newest" },
+  { key: "oldest", label: "Oldest" },
+  { key: "rating", label: "Top rated" },
+];
 
 const CategoryDetail = () => {
   const { slug } = useParams();
@@ -122,46 +131,44 @@ const CategoryDetail = () => {
   }
 
   if (!category) {
-    return <p>Category not found</p>;
+    return <EmptyState title="Category not found" message="This genre doesn't exist or is no longer available." />;
   }
 
   return (
-    <section className="content-section">
-      <header className="category-header">
-        <h1>{category.name}</h1>
-        {category.description && <p>{category.description}</p>}
-
-        {/* SORT CONTROLS */}
-        <div className="category-sort">
-          <select
-            value={sortBy}
-            onChange={(e) => setSortBy(e.target.value as SortOption)}
-          >
-            <option value="az">A–Z</option>
-            <option value="newest">Newest</option>
-            <option value="oldest">Oldest</option>
-            <option value="rating">Highest Rated</option>
-          </select>
+    <div className="animate-fade-in">
+      <PageHeader kicker="Genre" title={category.name} description={category.description}>
+        <div className="bleed-x flex gap-1.5 overflow-x-auto scrollbar-none sm:mx-0 sm:px-0" role="group" aria-label="Sort titles">
+          {SORTS.map((option) => (
+            <button
+              key={option.key}
+              type="button"
+              aria-pressed={sortBy === option.key}
+              onClick={() => setSortBy(option.key)}
+              className={chipClass(sortBy === option.key)}
+            >
+              {option.label}
+            </button>
+          ))}
         </div>
-      </header>
+      </PageHeader>
 
-      <AdResponsiveBanner />
+      {series.length > 0 && <SeriesRail kicker={`${series.length} shows`} title="TV series" series={series} />}
 
-      {/* MOVIES */}
-      {movies.length > 0 && <MovieGrid movies={movies} />}
-
-      {movies.length > 0 && series.length > 0 && (
-        <AdSlot unit="300x250" className="my-8" />
+      {movies.length > 0 && (
+        <Section title="Movies" meta={`${movies.length}`}>
+          <MovieGrid movies={movies} />
+        </Section>
       )}
 
-      {/* SERIES */}
-      {series.length > 0 && <SeriesRail title="TV Series" series={series} />}
-
-      {/* EMPTY STATE */}
       {movies.length === 0 && series.length === 0 && (
-        <p>No movies or TV series found in this category.</p>
+        <EmptyState title="Nothing here yet" message="No movies or TV series found in this category." />
       )}
-    </section>
+
+      <div className="page-x">
+        <AdResponsiveBanner className="mt-12" />
+        {movies.length > 0 && series.length > 0 && <AdSlot unit="300x250" className="my-8" />}
+      </div>
+    </div>
   );
 };
 

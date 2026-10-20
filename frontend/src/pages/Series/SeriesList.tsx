@@ -14,6 +14,7 @@ import AdLayout from "../../components/ads/AdLayout";
 import AmbientBackdrop from "../../components/ui/AmbientBackdrop";
 import { buttonClass } from "../../components/ui/buttonClass";
 import { cn } from "../../components/ui/cn";
+import { chipClass } from "../../components/ui/chipClass";
 
 type SortKey = "top" | "new" | "az";
 
@@ -28,14 +29,6 @@ const sorters: Record<SortKey, (a: Series, b: Series) => number> = {
   new: (a, b) => (b.first_air_date ?? "").localeCompare(a.first_air_date ?? ""),
   az: (a, b) => a.title.localeCompare(b.title),
 };
-
-const chipClass = (active: boolean) =>
-  cn(
-    "inline-flex h-8 shrink-0 items-center gap-1.5 rounded-full px-3.5 text-[13px] font-semibold whitespace-nowrap transition duration-200",
-    active
-      ? "bg-white text-ink-950 shadow-[0_6px_20px_-8px_rgb(255_255_255/0.5)]"
-      : "bg-white/[0.04] text-fg-muted ring-1 ring-white/[0.07] ring-inset hover:bg-white/[0.08] hover:text-white",
-  );
 
 /** Fanned trio of posters that drifts slowly; the featured title sits in front. */
 const PosterConstellation = ({ items, active }: { items: Series[]; active: number }) => {
