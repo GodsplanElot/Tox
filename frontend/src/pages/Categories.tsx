@@ -5,7 +5,8 @@ import type { Category, Movie } from "../services/api";
 import EmptyState from "../components/common/EmptyState";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import MovieRail from "../components/MovieRail/MovieRail";
-import "../styles/Categories.css";
+import PageHeader from "../components/ui/PageHeader";
+import { FiArrowUpRight } from "react-icons/fi";
 
 const Categories = () => {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -67,79 +68,51 @@ const Categories = () => {
   }
 
   return (
-    <div className="categories-page">
-      <header className="categories-hero">
-        <span>Genre Atlas</span>
-        <h1>Choose the mood, then press play.</h1>
-        <p>
-          Drift through curated worlds of action, drama, suspense, comedy, and
-          everything in between.
-        </p>
-      </header>
+    <div className="animate-fade-in">
+      <PageHeader
+        kicker="Genre atlas"
+        title="Choose the mood, then press play."
+        description="Drift through curated worlds of action, drama, suspense, comedy, and everything in between."
+      />
 
-      <section className="categories-grid" aria-label="Movie genres">
-        {genreSections.map(({ category: cat, poster, featuredCount }, index) => {
-          return (
-            <Link
-              key={cat.id}
-              to={`/categories/${cat.slug}`}
-              className="category-card-premium"
-              style={{ animationDelay: `${index * 55}ms` }}
-            >
-              <div
-                className="card-bg"
-                style={
-                  poster
-                    ? { backgroundImage: `url(${api.getMediaUrl(poster)})` }
-                    : undefined
-                }
+      <section aria-label="Movie genres" className="page-x mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
+        {genreSections.map(({ category: cat, poster, featuredCount }, index) => (
+          <Link
+            key={cat.id}
+            to={`/categories/${cat.slug}`}
+            className="group relative isolate flex aspect-[16/11] animate-fade-up flex-col justify-end overflow-hidden rounded-2xl bg-ink-800 p-4 ring-1 ring-white/[0.07] transition duration-300 hover:ring-white/20 sm:p-5"
+            style={{ animationDelay: `${Math.min(index, 12) * 40}ms` }}
+          >
+            {poster && (
+              <img
+                src={api.getMediaUrl(poster)}
+                alt=""
+                loading="lazy"
+                className="absolute inset-0 -z-10 size-full object-cover opacity-50 saturate-[0.85] transition duration-700 ease-[var(--ease-out-expo)] group-hover:scale-105 group-hover:opacity-70"
               />
-              <div className="card-overlay" />
-              <div className="card-content">
-                <span className="card-count">
-                  {featuredCount > 0 ? `${featuredCount} titles` : "Coming soon"}
-                </span>
-                <h2>{cat.name}</h2>
-                {cat.description && (
-                  <p>{cat.description}</p>
-                )}
-              </div>
-            </Link>
-          );
-        })}
+            )}
+            <div className="absolute inset-0 -z-10 bg-gradient-to-t from-ink-950 via-ink-950/60 to-ink-950/10" />
+            <FiArrowUpRight className="absolute top-3.5 right-3.5 size-4 text-white/40 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-white" />
+            <span className="text-[10px] font-bold tracking-[0.16em] text-accent uppercase">
+              {featuredCount > 0 ? `${featuredCount} titles` : "Coming soon"}
+            </span>
+            <h2 className="mt-1 truncate font-display text-lg font-semibold text-white sm:text-xl">{cat.name}</h2>
+            {cat.description && (
+              <p className="mt-1 line-clamp-2 hidden text-xs leading-snug text-white/60 sm:block">{cat.description}</p>
+            )}
+          </Link>
+        ))}
       </section>
 
-      {movieSections.length > 0 && (
-        <section className="genre-movie-showcase" aria-label="Movies by genre">
-          <div className="genre-showcase-header">
-            <span>Curated shelves</span>
-            <h2>Movies by genre</h2>
-            <p>
-              Each row is pulled from your live catalog, sorted with the newest
-              uploads first.
-            </p>
-          </div>
-
-          <div className="genre-rails">
-            {movieSections.map(({ category, movies: categoryMovies }, index) => (
-              <div
-                key={category.id}
-                className="genre-rail-section"
-                style={{ animationDelay: `${index * 70}ms` }}
-              >
-                <div className="genre-rail-heading">
-                  <div>
-                    <span>{categoryMovies.length} movies</span>
-                    <h3>{category.name}</h3>
-                  </div>
-                  <Link to={`/categories/${category.slug}`}>View all</Link>
-                </div>
-                <MovieRail title="" movies={categoryMovies.slice(0, 18)} />
-              </div>
-            ))}
-          </div>
-        </section>
-      )}
+      {movieSections.map(({ category, movies: categoryMovies }) => (
+        <MovieRail
+          key={category.id}
+          kicker={`${categoryMovies.length} movies`}
+          title={category.name}
+          href={`/categories/${category.slug}`}
+          movies={categoryMovies.slice(0, 18)}
+        />
+      ))}
     </div>
   );
 };
