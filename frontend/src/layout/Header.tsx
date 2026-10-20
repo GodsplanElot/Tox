@@ -5,7 +5,7 @@ import SearchForm from "../components/SearchForm";
 import AuthModal from "../components/AuthModal";
 import { useAuth } from "../context/useAuth";
 import MobileNavBar from "./MobileNavBar";
-import logo from "../assets/icons/nav_logo.png";
+import Logo from "../components/brand/Logo";
 import { cn } from "../components/ui/cn";
 import { buttonClass } from "../components/ui/buttonClass";
 import { useDismiss } from "../components/ui/useDismiss";
@@ -68,7 +68,7 @@ const Header = () => {
       <header className="sticky top-0 z-[1040] border-b border-white/[0.06] bg-ink-950/80 backdrop-blur-xl backdrop-saturate-150">
         <div className="mx-auto flex h-14 max-w-[1600px] items-center gap-4 px-4 lg:h-16 lg:px-8">
           <Link to="/" className="shrink-0" aria-label="ToxicReels home">
-            <img src={logo} alt="ToxicReels" className="h-7 w-auto lg:h-8" />
+            <Logo />
           </Link>
 
           <nav

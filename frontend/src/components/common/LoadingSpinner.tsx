@@ -1,5 +1,5 @@
 import React from "react";
-import logo from "../../assets/logo.png";
+import { LogoMark } from "../brand/Logo";
 
 interface LoadingSpinnerProps {
   size?: number;
@@ -10,7 +10,9 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ size = 44, fullscreen =
   const spinner = (
     <div role="status" aria-label="Loading" className="relative grid place-items-center" style={{ width: size * 1.8, height: size * 1.8 }}>
       <span className="absolute inset-0 animate-spin rounded-full border-2 border-white/[0.06] border-t-accent [animation-duration:900ms]" />
-      <img src={logo} alt="" style={{ width: size, height: size }} className="animate-pulse object-contain opacity-90" />
+      <span style={{ width: size, height: size }} className="animate-pulse">
+        <LogoMark className="size-full" />
+      </span>
     </div>
   );
 

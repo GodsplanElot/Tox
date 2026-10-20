@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import logo from "../../assets/icons/nav_logo.png";
+import Logo from "../../components/brand/Logo";
 
 const COLUMNS = [
   {
@@ -38,7 +38,7 @@ const Footer = () => {
     <footer className="mt-16 border-t border-white/[0.06] bg-ink-950 pb-[calc(112px+env(safe-area-inset-bottom))] lg:pb-0">
       <div className="page-x mx-auto grid max-w-[1600px] gap-10 pt-12 pb-10 sm:grid-cols-2 lg:grid-cols-[1.5fr_1fr_1fr_1fr]">
         <div className="max-w-xs">
-          <img src={logo} alt="ToxicReels" className="h-7 w-auto" />
+          <Logo />
           <p className="mt-4 text-sm leading-relaxed text-fg-subtle">
             Discover, explore, and stream the latest movies and series in one place.
           </p>

@@ -4,7 +4,7 @@ import { api } from "../../services/api";
 import { FiAlertTriangle } from "react-icons/fi";
 import AdSlot from "../../components/ads/AdSlot";
 import Button from "../../components/ui/Button";
-import logo from "../../assets/icons/nav_logo.png";
+import Logo from "../../components/brand/Logo";
 
 const PreparingDownload = () => {
   const [params] = useSearchParams();
@@ -53,7 +53,7 @@ const PreparingDownload = () => {
     <div className="flex min-h-svh flex-col bg-ink-950">
       <header className="border-b border-white/[0.06] px-5 py-4">
         <a href="/" aria-label="ToxicReels home">
-          <img src={logo} alt="ToxicReels" className="h-7 w-auto" />
+          <Logo />
         </a>
       </header>
 
